@@ -1,15 +1,18 @@
 import React from 'react';
-import { FaGithub, FaLinkedin, FaRocket, FaPaperPlane, FaDownload } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaRocket, FaPaperPlane } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import yesmineImg from '../../assets/images/yesmine.jpg';
 
 const Hero = () => {
   return (
-    <section id="accueil" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900">
+    <section
+      id="accueil"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900"
+    >
       <div className="absolute inset-0 bg-black/50 backdrop-blur-3xl"></div>
-      
+
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -22,7 +25,8 @@ const Hero = () => {
             </div>
 
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-              Bonjour, je suis<br />
+              Bonjour, je suis
+              <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
                 Yesmine Cherif
               </span>
@@ -33,11 +37,12 @@ const Hero = () => {
             </h2>
 
             <p className="text-lg text-gray-200 max-w-2xl leading-relaxed">
-              Étudiante passionnée en développement web, spécialisée en <strong>React</strong>, <strong>Flutter</strong>, et création de projets interactifs. 
-              Basée en Tunisie, je suis motivée à apprendre, explorer de nouvelles technologies, et créer des expériences numériques modernes et fonctionnelles.
+              Étudiante passionnée en développement web, spécialisée en <strong>React</strong>,{' '}
+              <strong>Flutter</strong>, et création de projets interactifs. Basée en Tunisie, je suis
+              motivée à apprendre, explorer de nouvelles technologies, et créer des expériences
+              numériques modernes et fonctionnelles.
             </p>
 
-            {/* BOUTONS CORRIGÉS + NOUVEAU BOUTON CV */}
             <div className="flex flex-wrap gap-5">
               <a
                 href="#projets"
@@ -54,24 +59,29 @@ const Hero = () => {
                 <FaPaperPlane className="text-xl" />
                 Me contacter
               </a>
-
-              
             </div>
 
-            {/* Réseaux sociaux */}
             <div className="flex gap-5 pt-6">
-              <a href="https://github.com/yesmine879" target="_blank" rel="noopener noreferrer"
-                className="p-4 bg-white/10 backdrop-blur-md rounded-2xl hover:bg-white/20 transition hover:scale-110">
+              <a
+                href="https://github.com/yesmine879"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 bg-white/10 backdrop-blur-md rounded-2xl hover:bg-white/20 transition hover:scale-110"
+              >
                 <FaGithub className="text-2xl" />
               </a>
-              <a href="https://www.linkedin.com/in/yesmine-cherif/" target="_blank" rel="noopener noreferrer"
-                className="p-4 bg-white/10 backdrop-blur-md rounded-2xl hover:bg-white/20 transition hover:scale-110">
+
+              <a
+                href="https://www.linkedin.com/in/yesmine-cherif/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 bg-white/10 backdrop-blur-md rounded-2xl hover:bg-white/20 transition hover:scale-110"
+              >
                 <FaLinkedin className="text-2xl" />
               </a>
             </div>
           </motion.div>
 
-          {/* Photo */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -79,8 +89,9 @@ const Hero = () => {
             className="relative flex justify-center"
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/60 to-purple-600/60 rounded-3xl blur-3xl animate-pulse"></div>
+
             <img
-              src="src/assets/images/yesmine.jpg"
+              src={yesmineImg}
               alt="Yesmine Cherif"
               className="relative w-80 h-96 md:w-96 md:h-96 rounded-3xl object-cover shadow-2xl ring-8 ring-pink-500/40 hover:ring-pink-500/70 transition-all duration-500 border-4 border-pink-300/30"
             />
