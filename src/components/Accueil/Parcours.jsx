@@ -13,7 +13,7 @@ import {
 
 const Parcours = () => {
   return (
-    <section id="parcours" className="scroll-mt-24 relative py-24 lg:py-36 overflow-hidden">
+    <section id="parcours" className="scroll-mt-32 relative py-24 lg:py-36 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900"></div>
       <div className="absolute top-10 left-10 w-96 h-96 bg-pink-500/40 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-purple-600/40 rounded-full blur-3xl animate-pulse delay-700"></div>
@@ -43,19 +43,33 @@ const Parcours = () => {
             <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl">
               <h3 className="text-3xl font-bold text-white mb-8">Contact</h3>
               <div className="space-y-5 text-gray-100 text-lg">
-                <div className="flex items-center gap-4"><FaPhone className="text-pink-400" /> 58 715 159</div>
-                <div className="flex items-center gap-4"><FaEnvelope className="text-pink-400" /> cherifyesmine685@gmail.com</div>
-                <div className="flex items-center gap-4"><FaMapMarkerAlt className="text-pink-400" /> Hay L Ons 3021, Sfax, Tunisie</div>
-                <div className="flex items-center gap-4"><FaLinkedin className="text-cyan-400" /> linkedin.com/in/yesmine-cherif</div>
+                <div className="flex items-center gap-4">
+                  <FaPhone className="text-pink-400" /> 58 715 159
+                </div>
+                <div className="flex items-center gap-4">
+                  <FaEnvelope className="text-pink-400" /> cherifyesmine685@gmail.com
+                </div>
+                <div className="flex items-center gap-4">
+                  <FaMapMarkerAlt className="text-pink-400" /> Hay L Ons 3021, Sfax, Tunisie
+                </div>
+                <div className="flex items-center gap-4">
+                  <FaLinkedin className="text-cyan-400" /> linkedin.com/in/yesmine-cherif
+                </div>
               </div>
             </div>
 
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-pink-500/30">
               <h4 className="text-2xl font-bold text-white mb-6">Langues</h4>
               <ul className="space-y-4 text-gray-200 text-lg">
-                <li>• Français : <span className="text-pink-300 font-medium">Courant</span></li>
-                <li>• Anglais : <span className="text-pink-300 font-medium">Intermédiaire</span></li>
-                <li>• Arabe : <span className="text-pink-300 font-medium">Langue maternelle</span></li>
+                <li>
+                  • Français : <span className="text-pink-300 font-medium">Courant</span>
+                </li>
+                <li>
+                  • Anglais : <span className="text-pink-300 font-medium">Intermédiaire</span>
+                </li>
+                <li>
+                  • Arabe : <span className="text-pink-300 font-medium">Langue maternelle</span>
+                </li>
               </ul>
             </div>
 
@@ -157,8 +171,17 @@ const Parcours = () => {
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/30">
               <h4 className="text-2xl font-bold text-white mb-6">Centres d’intérêt</h4>
               <div className="flex flex-wrap gap-4">
-                {['Technologie & Programmation', 'Projets personnels', 'Compétitions / Challenges', 'Pianiste', 'Musique'].map((item) => (
-                  <span key={item} className="px-6 py-3 bg-pink-600/30 rounded-full text-pink-200 font-medium">
+                {[
+                  'Technologie & Programmation',
+                  'Projets personnels',
+                  'Compétitions / Challenges',
+                  'Pianiste',
+                  'Musique',
+                ].map((item) => (
+                  <span
+                    key={item}
+                    className="px-6 py-3 bg-pink-600/30 rounded-full text-pink-200 font-medium"
+                  >
                     {item}
                   </span>
                 ))}

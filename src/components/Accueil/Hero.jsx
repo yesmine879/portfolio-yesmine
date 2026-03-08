@@ -4,11 +4,27 @@ import { motion } from 'framer-motion';
 import yesmineImg from '../../assets/images/yesmine.jpg';
 
 const Hero = () => {
+  const scrollToSection = (e, id) => {
+    e.preventDefault();
+
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const navbarOffset = 96;
+    const elementPosition = el.getBoundingClientRect().top + window.pageYOffset;
+    const offsetPosition = elementPosition - navbarOffset;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth',
+    });
+  };
+
   return (
     <section
-      id="accueil"
-      className="scroll-mt-24 relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900"
-    >
+  id="accueil"
+  className="scroll-mt-32 relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900"
+>
       <div className="absolute inset-0 bg-black/50 backdrop-blur-3xl"></div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-20">
@@ -46,6 +62,7 @@ const Hero = () => {
             <div className="flex flex-wrap gap-5">
               <a
                 href="#projets"
+                onClick={(e) => scrollToSection(e, 'projets')}
                 className="bg-gradient-to-r from-pink-500 to-purple-600 px-8 py-4 rounded-full font-semibold flex items-center gap-3 hover:scale-105 transition shadow-2xl shadow-pink-500/30"
               >
                 <FaRocket className="text-xl" />
@@ -54,6 +71,7 @@ const Hero = () => {
 
               <a
                 href="#contact"
+                onClick={(e) => scrollToSection(e, 'contact')}
                 className="bg-white/10 backdrop-blur-md border-2 border-pink-500 px-8 py-4 rounded-full font-semibold flex items-center gap-3 hover:bg-pink-500/20 transition"
               >
                 <FaPaperPlane className="text-xl" />

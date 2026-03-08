@@ -148,7 +148,7 @@ const About = () => {
   };
 
   return (
-    <section id="about" className="scroll-mt-24 relative py-24 lg:py-32 overflow-hidden bg-gray-50">
+    <section id="about" className="scroll-mt-32 relative py-24 lg:py-32 overflow-hidden bg-gray-50">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"></div>
 
       <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-indigo-300/30 to-purple-300/20 rounded-full blur-3xl animate-pulse"></div>

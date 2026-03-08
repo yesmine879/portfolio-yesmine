@@ -38,14 +38,32 @@ const Navbar = () => {
         }
       },
       {
-        threshold: [0.25, 0.4, 0.6],
-        rootMargin: '-90px 0px -35% 0px',
+        threshold: [0.2, 0.35, 0.5],
+        rootMargin: '-100px 0px -35% 0px',
       }
     );
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
+
+  const handleNavClick = (e, id) => {
+    e.preventDefault();
+    const section = document.getElementById(id);
+
+    if (section) {
+      const navbarOffset = 100;
+      const top = section.offsetTop - navbarOffset;
+
+      window.scrollTo({
+        top,
+        behavior: 'smooth',
+      });
+
+      setActiveSection(id);
+      setIsOpen(false);
+    }
+  };
 
   return (
     <motion.nav
@@ -84,6 +102,7 @@ const Navbar = () => {
               <motion.a
                 key={item.id}
                 href={`#${item.id}`}
+                onClick={(e) => handleNavClick(e, item.id)}
                 whileHover={{ y: -3 }}
                 whileTap={{ scale: 0.95 }}
                 className={`relative px-6 py-3 rounded-2xl text-sm font-medium transition-all ${
@@ -153,7 +172,7 @@ const Navbar = () => {
                 <motion.a
                   key={item.id}
                   href={`#${item.id}`}
-                  onClick={() => setIsOpen(false)}
+                  onClick={(e) => handleNavClick(e, item.id)}
                   className="block py-4 text-lg text-gray-300 hover:text-pink-400 transition"
                 >
                   {item.icon && <span className="mr-3">{item.icon}</span>}

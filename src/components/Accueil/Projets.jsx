@@ -510,9 +510,9 @@ const ProjectCard = ({ projet, index }) => {
 const Projets = () => {
   return (
     <section
-      id="projets"
-      className="scroll-mt-24 relative py-24 lg:py-32 overflow-hidden bg-gray-50"
-    >
+  id="projets"
+  className="scroll-mt-32 relative py-24 lg:py-32 overflow-hidden bg-gray-50"
+>
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50"></div>
 
       <div className="absolute top-20 left-10 w-96 h-96 bg-indigo-300/20 rounded-full blur-3xl animate-pulse"></div>
