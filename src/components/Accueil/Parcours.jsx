@@ -1,29 +1,24 @@
-// src/components/Accueil/Parcours.jsx   (ou src/components/Parcours.jsx)
-
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  FaPhone, 
-  FaEnvelope, 
-  FaMapMarkerAlt, 
-  FaLinkedin, 
-  FaGraduationCap, 
-  FaBriefcase, 
-  FaCertificate, 
-  FaUsers 
+import {
+  FaPhone,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaLinkedin,
+  FaGraduationCap,
+  FaBriefcase,
+  FaCertificate,
+  FaUsers,
 } from 'react-icons/fa';
 
 const Parcours = () => {
   return (
-    <section id="parcours" className="relative py-24 lg:py-36 overflow-hidden">
-      {/* Fond violet/rose élégant */}
+    <section id="parcours" className="scroll-mt-24 relative py-24 lg:py-36 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900"></div>
       <div className="absolute top-10 left-10 w-96 h-96 bg-pink-500/40 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-purple-600/40 rounded-full blur-3xl animate-pulse delay-700"></div>
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8 z-10">
-
-        {/* Titre principal */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -39,11 +34,12 @@ const Parcours = () => {
         </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-12">
-
-          {/* === COLONNE 1 : Contact + Langues + Compétences === */}
-          <motion.div initial={{ opacity: 0, x: -50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="space-y-10">
-
-            {/* Contact */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-10"
+          >
             <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl">
               <h3 className="text-3xl font-bold text-white mb-8">Contact</h3>
               <div className="space-y-5 text-gray-100 text-lg">
@@ -54,7 +50,6 @@ const Parcours = () => {
               </div>
             </div>
 
-            {/* Langues */}
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-pink-500/30">
               <h4 className="text-2xl font-bold text-white mb-6">Langues</h4>
               <ul className="space-y-4 text-gray-200 text-lg">
@@ -64,7 +59,6 @@ const Parcours = () => {
               </ul>
             </div>
 
-            {/* Compétences techniques */}
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-cyan-500/30">
               <h4 className="text-2xl font-bold text-white mb-6">Compétences</h4>
               <ul className="text-gray-200 text-base space-y-2 leading-relaxed">
@@ -78,10 +72,13 @@ const Parcours = () => {
             </div>
           </motion.div>
 
-          {/* === COLONNE 2 : Formation + Stages === */}
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }} className="space-y-10">
-
-            {/* Formation */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="space-y-10"
+          >
             <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-10 border border-white/20 shadow-2xl">
               <h3 className="text-3xl font-bold text-white mb-8 flex items-center gap-4">
                 <FaGraduationCap className="text-pink-400 text-4xl" />
@@ -101,7 +98,6 @@ const Parcours = () => {
               </div>
             </div>
 
-            {/* Stages */}
             <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-10 border border-purple-500/30 shadow-2xl">
               <h3 className="text-3xl font-bold text-white mb-8 flex items-center gap-4">
                 <FaBriefcase className="text-purple-400 text-4xl" />
@@ -124,10 +120,13 @@ const Parcours = () => {
             </div>
           </motion.div>
 
-          {/* === COLONNE 3 : Certifications + Associations + Intérêts === */}
-          <motion.div initial={{ opacity: 0, x: 50 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }} className="space-y-10">
-
-            {/* Certifications */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="space-y-10"
+          >
             <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-10 border border-yellow-500/40 shadow-2xl">
               <h3 className="text-3xl font-bold text-white mb-8 flex items-center gap-4">
                 <FaCertificate className="text-yellow-400 text-4xl" />
@@ -141,7 +140,6 @@ const Parcours = () => {
               </ul>
             </div>
 
-            {/* Associations */}
             <div className="bg-white/10 backdrop-blur-2xl rounded-3xl p-10 border border-pink-500/40 shadow-2xl">
               <h3 className="text-3xl font-bold text-white mb-8 flex items-center gap-4">
                 <FaUsers className="text-pink-400 text-4xl" />
@@ -156,11 +154,10 @@ const Parcours = () => {
               </ul>
             </div>
 
-            {/* Centres d’intérêt */}
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/30">
               <h4 className="text-2xl font-bold text-white mb-6">Centres d’intérêt</h4>
               <div className="flex flex-wrap gap-4">
-                {["Technologie & Programmation", "Projets personnels", "Compétitions / Challenges", "Pianiste", "Musique"].map((item) => (
+                {['Technologie & Programmation', 'Projets personnels', 'Compétitions / Challenges', 'Pianiste', 'Musique'].map((item) => (
                   <span key={item} className="px-6 py-3 bg-pink-600/30 rounded-full text-pink-200 font-medium">
                     {item}
                   </span>

@@ -23,20 +23,27 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
+    const sections = navItems
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean);
+
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id);
-        });
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible.length > 0) {
+          setActiveSection(visible[0].target.id);
+        }
       },
-      { threshold: 0.5 }
+      {
+        threshold: [0.25, 0.4, 0.6],
+        rootMargin: '-90px 0px -35% 0px',
+      }
     );
 
-    navItems.forEach((item) => {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    });
-
+    sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
   }, []);
 
@@ -47,7 +54,7 @@ const Navbar = () => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? 'bg-gray-900/90 backdrop-blur-2xl border-b border-pink-500/20'
-          : 'bg-transparent'
+          : 'bg-gray-900/70 backdrop-blur-xl'
       }`}
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -77,13 +84,12 @@ const Navbar = () => {
               <motion.a
                 key={item.id}
                 href={`#${item.id}`}
-                onClick={() => setActiveSection(item.id)}
                 whileHover={{ y: -3 }}
                 whileTap={{ scale: 0.95 }}
                 className={`relative px-6 py-3 rounded-2xl text-sm font-medium transition-all ${
                   activeSection === item.id
                     ? 'text-white'
-                    : 'text-gray-400 hover:text-pink-300'
+                    : 'text-gray-300 hover:text-pink-300'
                 }`}
               >
                 {activeSection === item.id && (
@@ -111,6 +117,7 @@ const Navbar = () => {
             </motion.div>
 
             <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
               className="lg:hidden p-3 rounded-xl bg-white/5 backdrop-blur-md border border-pink-500/20 text-gray-300 hover:text-pink-400"
             >

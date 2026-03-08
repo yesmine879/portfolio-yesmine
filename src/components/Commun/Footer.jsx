@@ -37,7 +37,7 @@ const Footer = () => {
               </a>
               <a href="mailto:cherifyesmine685@gmail.com" className="flex items-center gap-4 hover:text-[#1A3C5A] transition">
                 <FaEnvelope className="text-[#1A3C5A] text-xl" />
-                <span>cherifyesmine685@gmail.com</span>
+                <span>cherif.yesmine@iit.ens.tn</span>
               </a>
               <div className="flex items-center gap-4">
                 <FaMapMarkerAlt className="text-[#1A3C5A] text-xl" />
@@ -62,7 +62,7 @@ const Footer = () => {
                   <FaLinkedin />
                 </a>
                 <a 
-                  href="https://github.com/yesminecherif" 
+                  href="https://github.com/yesmine879" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-gray-600 hover:text-[#1A3C5A] transition transform hover:scale-125 duration-300"

@@ -1,20 +1,21 @@
-// src/components/Formulaire/ContactForm.jsx  (ou ContactForm.jsx)
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaUser, FaEnvelope, FaCommentDots, FaPaperPlane, FaCheckCircle, FaExclamationTriangle, FaPhone, FaMapMarkerAlt, FaLinkedin } from 'react-icons/fa';
+import {
+  FaUser,
+  FaEnvelope,
+  FaCommentDots,
+  FaPaperPlane,
+  FaCheckCircle,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaLinkedin,
+} from 'react-icons/fa';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
-    nom: "",
-    email: "",
-    message: "",
-  });
-
-  const [touched, setTouched] = useState({
-    nom: false,
-    email: false,
-    message: false,
+    nom: '',
+    email: '',
+    message: '',
   });
 
   const [sended, setSended] = useState(false);
@@ -28,30 +29,30 @@ const ContactForm = () => {
     e.preventDefault();
     setSending(true);
 
-    // Simulation d'envoi (2 secondes)
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     setSended(true);
     setSending(false);
 
-    // Réinitialisation
     setTimeout(() => {
       setSended(false);
-      setFormData({ nom: "", email: "", message: "" });
+      setFormData({ nom: '', email: '', message: '' });
     }, 5000);
   };
 
   return (
-    <section id="contact" className="relative py-24 lg:py-36 overflow-hidden">
-      {/* Fond violet magnifique comme tout ton site */}
+    <section id="contact" className="scroll-mt-24 relative py-24 lg:py-36 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900"></div>
       <div className="absolute top-10 left-10 w-96 h-96 bg-purple-600/40 rounded-full blur-3xl animate-pulse"></div>
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-pink-600/40 rounded-full blur-3xl animate-pulse delay-700"></div>
 
       <div className="relative max-w-6xl mx-auto px-6 lg:px-8 z-10">
-
-        {/* Titre */}
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
           <h2 className="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl">
             Contactez-moi
           </h2>
@@ -59,8 +60,6 @@ const ContactForm = () => {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-start">
-
-          {/* Formulaire */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -89,7 +88,6 @@ const ContactForm = () => {
                   name="nom"
                   value={formData.nom}
                   onChange={handleChange}
-                  onBlur={() => setTouched({ ...touched, nom: true })}
                   required
                   className="w-full px-6 py-4 bg-white/10 border-2 border-pink-500/40 rounded-2xl text-white placeholder-pink-300 focus:border-pink-400 focus:outline-none focus:ring-4 focus:ring-pink-500/20 transition-all"
                   placeholder="Yesmine Cherif"
@@ -105,7 +103,6 @@ const ContactForm = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  onBlur={() => setTouched({ ...touched, email: true })}
                   required
                   className="w-full px-6 py-4 bg-white/10 border-2 border-pink-500/40 rounded-2xl text-white placeholder-pink-300 focus:border-pink-400 focus:outline-none focus:ring-4 focus:ring-pink-500/20 transition-all"
                   placeholder="cherifyesmine685@gmail.com"
@@ -120,7 +117,6 @@ const ContactForm = () => {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
-                  onBlur={() => setTouched({ ...touched, message: true })}
                   required
                   rows="6"
                   className="w-full px-6 py-4 bg-white/10 border-2 border-pink-500/40 rounded-2xl text-white placeholder-pink-300 focus:border-pink-400 focus:outline-none focus:ring-4 focus:ring-pink-500/20 transition-all resize-none"
@@ -147,7 +143,6 @@ const ContactForm = () => {
             </form>
           </motion.div>
 
-          {/* Infos contact */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -163,7 +158,7 @@ const ContactForm = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <FaEnvelope className="text-pink-400 text-2xl" />
-                  <span>cherifyesmine685@gmail.com</span>
+                  <span>cherif.yesmine@iit.ens.tn</span>
                 </div>
                 <div className="flex items-center gap-4">
                   <FaMapMarkerAlt className="text-pink-400 text-2xl" />
@@ -171,7 +166,12 @@ const ContactForm = () => {
                 </div>
                 <div className="flex items-center gap-4">
                   <FaLinkedin className="text-cyan-400 text-2xl" />
-                  <a href="https://linkedin.com/in/yesmine-cherif" target="_blank" className="hover:text-pink-300 transition">
+                  <a
+                    href="https://linkedin.com/in/yesmine-cherif"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-pink-300 transition"
+                  >
                     linkedin.com/in/yesmine-cherif
                   </a>
                 </div>

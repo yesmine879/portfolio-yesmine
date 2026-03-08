@@ -7,7 +7,7 @@ const Hero = () => {
   return (
     <section
       id="accueil"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900"
+      className="scroll-mt-24 relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-pink-900 to-rose-900"
     >
       <div className="absolute inset-0 bg-black/50 backdrop-blur-3xl"></div>
 
