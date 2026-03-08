@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaTimes, FaBell, FaCode, FaGraduationCap } from 'react-icons/fa';
+import { FaBars, FaTimes, FaCode, FaGraduationCap } from 'react-icons/fa';
+import yesmineImg from '../../assets/images/yesmine.jpg';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,10 +31,12 @@ const Navbar = () => {
       },
       { threshold: 0.5 }
     );
+
     navItems.forEach((item) => {
       const el = document.getElementById(item.id);
       if (el) observer.observe(el);
     });
+
     return () => observer.disconnect();
   }, []);
 
@@ -42,12 +45,13 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? 'bg-gray-900/90 backdrop-blur-2xl border-b border-pink-500/20' : 'bg-transparent'
+        scrolled
+          ? 'bg-gray-900/90 backdrop-blur-2xl border-b border-pink-500/20'
+          : 'bg-transparent'
       }`}
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
-
           <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-4">
             <div className="relative">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 p-0.5">
@@ -77,7 +81,9 @@ const Navbar = () => {
                 whileHover={{ y: -3 }}
                 whileTap={{ scale: 0.95 }}
                 className={`relative px-6 py-3 rounded-2xl text-sm font-medium transition-all ${
-                  activeSection === item.id ? 'text-white' : 'text-gray-400 hover:text-pink-300'
+                  activeSection === item.id
+                    ? 'text-white'
+                    : 'text-gray-400 hover:text-pink-300'
                 }`}
               >
                 {activeSection === item.id && (
@@ -95,19 +101,9 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              className="relative p-3 rounded-xl bg-white/5 backdrop-blur-md border border-pink-500/20 text-gray-300 hover:text-pink-400"
-            >
-              <FaBell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 h-5 w-5 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center animate-pulse">
-                3
-              </span>
-            </motion.button>
-
             <motion.div whileHover={{ scale: 1.08 }} className="group relative">
               <img
-                src="src/assets/images/yesmine.jpg"
+                src={yesmineImg}
                 alt="Yesmine Cherif"
                 className="w-11 h-11 rounded-full ring-4 ring-purple-500/50 group-hover:ring-pink-500 transition-all duration-500 object-cover"
               />
@@ -127,20 +123,25 @@ const Navbar = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ x: "100%" }}
+            initial={{ x: '100%' }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 30 }}
-            className="fixed inset-y-0 right-0 w-80 bg-gray-900/95 backdrop-blur-3xl border-l border-pink-500/30 lg:hidden"
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', damping: 30 }}
+            className="fixed inset-y-0 right-0 w-80 bg-gray-900/95 backdrop-blur-3xl border-l border-pink-500/30 lg:hidden z-50"
           >
             <div className="p-8">
               <div className="flex items-center gap-4 mb-10">
-                <img src="/yesmine.jpg" alt="Yesmine" className="w-20 h-20 rounded-2xl ring-4 ring-pink-500/50" />
+                <img
+                  src={yesmineImg}
+                  alt="Yesmine Cherif"
+                  className="w-20 h-20 rounded-2xl ring-4 ring-pink-500/50 object-cover"
+                />
                 <div>
                   <h3 className="text-2xl font-bold text-white">Yesmine Cherif</h3>
                   <p className="text-pink-400">Étudiante en Informatique • IIT</p>
                 </div>
               </div>
+
               {navItems.map((item) => (
                 <motion.a
                   key={item.id}
@@ -156,7 +157,13 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      {isOpen && <div onClick={() => setIsOpen(false)} className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden" />}
+
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+        />
+      )}
     </motion.nav>
   );
 };
