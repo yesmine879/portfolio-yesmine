@@ -33,7 +33,7 @@ import hackvisionPdf from '../../assets/pdf/hackvision.pdf';
 import ibmPmPdf from '../../assets/pdf/ibm-project-management.pdf';
 import scrumPdf from '../../assets/pdf/scrum-fundamentals.pdf';
 import aticSpeakerPdf from '../../assets/pdf/atic-speaker.pdf';
-
+import math1Pdf from '../../assets/pdf/math1.pdf';
 const cvFile = '/yesmine cherif.pdf';
 
 const technicalSkills = [
@@ -105,12 +105,20 @@ const certificates = [
     accent: 'from-sky-500/15 to-indigo-500/15 border-sky-200',
   },
   {
+  title: 'Attestation de participation – Labyrinthe des Nombres',
+  category: 'Attestation',
+  description: 'Participation active à la journée mathématique "Labyrinthe des Nombres" à l’IIT Sfax.',
+  file: math1Pdf,
+  accent: 'from-pink-500/15 to-purple-500/15 border-pink-200',
+},
+  {
     title: 'Comité d’organisation – Job Fair 10',
     category: 'Attestation',
     description: 'Contribution à l’organisation de la 10ᵉ édition du Job Fair.',
     file: jobFairPdf,
     accent: 'from-orange-500/15 to-yellow-500/15 border-orange-200',
   },
+  
 ];
 
 const softBlocks = [
