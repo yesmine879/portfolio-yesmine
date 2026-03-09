@@ -4,9 +4,9 @@ import Footer from '../components/Commun/Footer';
 
 const Layout = ({ children }) => {
   return (
-    <div className="min-h-screen w-full">
+    <div className="min-h-screen w-full overflow-x-hidden">
       <Navbar />
-      <main className="w-full">{children}</main>
+      <main className="w-full overflow-x-hidden">{children}</main>
       <Footer />
     </div>
   );

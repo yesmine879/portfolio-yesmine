@@ -47,7 +47,7 @@ const Parcours = () => {
                   <FaPhone className="text-pink-400" /> 58 715 159
                 </div>
                 <div className="flex items-center gap-4">
-                  <FaEnvelope className="text-pink-400" /> cherifyesmine685@gmail.com
+                  <FaEnvelope className="text-pink-400" /> cherif.yesmine@iit.ens.tn
                 </div>
                 <div className="flex items-center gap-4">
                   <FaMapMarkerAlt className="text-pink-400" /> Hay L Ons 3021, Sfax, Tunisie
