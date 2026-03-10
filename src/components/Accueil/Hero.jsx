@@ -1,8 +1,7 @@
 import React from 'react';
 import { FaGithub, FaLinkedin, FaRocket, FaPaperPlane } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import yesmineImg from '../../assets/images/yesmine.jpg';
-
+import yesmineImg from "../../assets/images/yesmine cherif.jpg";
 const Hero = () => {
   const scrollToSection = (e, id) => {
     e.preventDefault();

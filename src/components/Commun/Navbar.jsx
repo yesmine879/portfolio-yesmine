@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars, FaTimes, FaCode, FaGraduationCap } from 'react-icons/fa';
-import yesmineImg from '../../assets/images/yesmine.jpg';
-
+import yesmineImg from "../../assets/images/yesmine cherif.jpg";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);

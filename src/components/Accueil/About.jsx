@@ -34,6 +34,8 @@ import ibmPmPdf from '../../assets/pdf/ibm-project-management.pdf';
 import scrumPdf from '../../assets/pdf/scrum-fundamentals.pdf';
 import aticSpeakerPdf from '../../assets/pdf/atic-speaker.pdf';
 import math1Pdf from '../../assets/pdf/math1.pdf';
+import pianoPdf  from '../../assets/pdf/piano.fr.pdf';
+
 const cvFile = '/yesmine cherif.pdf';
 
 const technicalSkills = [
@@ -118,6 +120,13 @@ const certificates = [
     file: jobFairPdf,
     accent: 'from-orange-500/15 to-yellow-500/15 border-orange-200',
   },
+  {
+  title: 'Festival National de Piano – 3e édition',
+  category: 'Certificat',
+  description: 'Certificat de participation au 3e Festival National de Piano.',
+  file: pianoPdf,
+  accent: 'from-fuchsia-500/15 to-rose-500/15 border-fuchsia-200',
+},
   
 ];
 

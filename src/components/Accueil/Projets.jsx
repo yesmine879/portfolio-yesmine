@@ -15,6 +15,7 @@ import {
   FaServer,
   FaGamepad,
   FaJava,
+  FaRobot,
 } from 'react-icons/fa';
 
 const getSortedMedia = (modules) =>
@@ -207,6 +208,21 @@ const categories = [
         github: 'https://github.com/yesmine879/flask-chatbot',
         description:
           "Application web chatbot développée avec Python et Flask pour expérimenter les interfaces conversationnelles et la logique backend.",
+        demo: { images: [], videos: [] },
+      },
+    ],
+  },
+  {
+    key: 'robotics',
+    title: 'Robotique / IoT',
+    icon: <FaRobot className="text-3xl text-sky-600" />,
+    projects: [
+      {
+        titre: 'Robot suiveur de ligne',
+        techno: 'Arduino • C/C++ • Capteurs IR • Robotique',
+        github: '#',
+        description:
+          "Projet de robot suiveur de ligne réalisé avec Arduino, utilisant des capteurs infrarouges pour détecter et suivre un trajet de manière autonome. Ce projet m’a permis de travailler sur la logique embarquée, l’interaction entre capteurs et moteurs, ainsi que le contrôle du déplacement du robot.",
         demo: { images: [], videos: [] },
       },
     ],
@@ -510,9 +526,9 @@ const ProjectCard = ({ projet, index }) => {
 const Projets = () => {
   return (
     <section
-  id="projets"
-  className="scroll-mt-32 relative py-24 lg:py-32 overflow-hidden bg-gray-50"
->
+      id="projets"
+      className="scroll-mt-32 relative py-24 lg:py-32 overflow-hidden bg-gray-50"
+    >
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50"></div>
 
       <div className="absolute top-20 left-10 w-96 h-96 bg-indigo-300/20 rounded-full blur-3xl animate-pulse"></div>
