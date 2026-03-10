@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars, FaTimes, FaCode, FaGraduationCap } from 'react-icons/fa';
-import yesmineImg from "../../assets/images/yesmine cherif.jpg";
+import yesmineImg from '../../assets/images/yesmine cherif.jpg';
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -35,7 +36,12 @@ const Navbar = () => {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
         if (visible.length > 0) {
-          setActiveSection(visible[0].target.id);
+          const currentId = visible[0].target.id;
+          setActiveSection(currentId);
+
+          if (window.location.hash !== `#${currentId}`) {
+            window.history.replaceState(null, '', `#${currentId}`);
+          }
         }
       },
       {
@@ -60,22 +66,43 @@ const Navbar = () => {
     };
   }, [isOpen]);
 
-  const handleNavClick = (e, id) => {
-    e.preventDefault();
-    const section = document.getElementById(id);
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (!hash) return;
 
-    if (section) {
-      const navbarOffset = 88;
-      const top = section.offsetTop - navbarOffset;
+    const section = document.getElementById(hash);
+    if (!section) return;
 
+    const navbarOffset = 88;
+    const top = section.offsetTop - navbarOffset;
+
+    setTimeout(() => {
       window.scrollTo({
         top,
         behavior: 'smooth',
       });
+      setActiveSection(hash);
+    }, 100);
+  }, []);
 
-      setActiveSection(id);
-      setIsOpen(false);
-    }
+  const handleNavClick = (e, id) => {
+    e.preventDefault();
+
+    const section = document.getElementById(id);
+    if (!section) return;
+
+    const navbarOffset = 88;
+    const top = section.offsetTop - navbarOffset;
+
+    window.scrollTo({
+      top,
+      behavior: 'smooth',
+    });
+
+    window.history.pushState(null, '', `#${id}`);
+
+    setActiveSection(id);
+    setIsOpen(false);
   };
 
   return (
@@ -159,7 +186,11 @@ const Navbar = () => {
               className="lg:hidden p-2.5 sm:p-3 rounded-xl bg-white/5 backdrop-blur-md border border-pink-500/20 text-gray-300 hover:text-pink-400 transition"
               aria-label="Ouvrir le menu"
             >
-              {isOpen ? <FaTimes className="w-5 h-5 sm:w-6 sm:h-6" /> : <FaBars className="w-5 h-5 sm:w-6 sm:h-6" />}
+              {isOpen ? (
+                <FaTimes className="w-5 h-5 sm:w-6 sm:h-6" />
+              ) : (
+                <FaBars className="w-5 h-5 sm:w-6 sm:h-6" />
+              )}
             </button>
           </div>
         </div>
