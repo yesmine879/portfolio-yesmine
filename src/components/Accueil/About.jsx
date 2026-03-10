@@ -34,9 +34,8 @@ import ibmPmPdf from '../../assets/pdf/ibm-project-management.pdf';
 import scrumPdf from '../../assets/pdf/scrum-fundamentals.pdf';
 import aticSpeakerPdf from '../../assets/pdf/atic-speaker.pdf';
 import math1Pdf from '../../assets/pdf/math1.pdf';
-import pianoPdf  from '../../assets/pdf/piano.fr.pdf';
-
-const cvFile = '/yesmine cherif.pdf';
+import pianoPdf from '../../assets/pdf/pianofr.pdf';
+const cvFile = '/CV.pdf';
 
 const technicalSkills = [
   { icon: <FaReact />, name: 'React / React Native', color: 'text-cyan-500' },
@@ -121,11 +120,11 @@ const certificates = [
     accent: 'from-orange-500/15 to-yellow-500/15 border-orange-200',
   },
   {
-  title: 'Festival National de Piano – 3e édition',
+  title: 'Certificat de participation – Festival National de Piano',
   category: 'Certificat',
-  description: 'Certificat de participation au 3e Festival National de Piano.',
+  description: 'Participation à la 3e édition du Festival National de Piano, mars 2022.',
   file: pianoPdf,
-  accent: 'from-fuchsia-500/15 to-rose-500/15 border-fuchsia-200',
+  accent: 'from-purple-500/15 to-pink-500/15 border-purple-200',
 },
   
 ];
