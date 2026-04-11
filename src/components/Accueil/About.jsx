@@ -35,7 +35,7 @@ import scrumPdf from '../../assets/pdf/scrum-fundamentals.pdf';
 import aticSpeakerPdf from '../../assets/pdf/atic-speaker.pdf';
 import math1Pdf from '../../assets/pdf/math1.pdf';
 import pianoPdf from '../../assets/pdf/pianofr.pdf';
-const cvFile = '/Cherif Yesmine CV.pdf';
+const cvFile = '/CV.pdf';
 
 const technicalSkills = [
   { icon: <FaReact />, name: 'React / React Native', color: 'text-cyan-500' },
