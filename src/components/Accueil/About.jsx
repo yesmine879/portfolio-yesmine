@@ -25,6 +25,7 @@ import {
   SiJavascript,
 } from 'react-icons/si';
 
+import codecore from '../../assets/pdf/codecore.pdf';
 import awsCloudPdf from '../../assets/pdf/aws-cloud-foundations.pdf';
 import jobFairPdf from '../../assets/pdf/job-fair-10.pdf';
 import odysseePdf from '../../assets/pdf/odyssee-des-genies.pdf';
@@ -56,6 +57,13 @@ const technicalSkills = [
 ];
 
 const certificates = [
+  {
+    title: 'CodeCore Challenge 2026',
+    category: 'Tech Event / Hackathon',
+    description: 'Contributed to organizing the CodeCore Challenge, ensuring a successful and engaging event.',
+    file: codecore,
+    accent: 'from-amber-500/15 to-orange-500/15 border-amber-200',
+  },
   {
     title: 'Scrum Fundamentals Certified',
     category: 'Certification',
