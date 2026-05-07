@@ -1,201 +1,348 @@
-import React from 'react';
-import {
-  FaGithub,
-  FaLinkedin,
-  FaRocket,
-  FaDownload,
-  FaMapMarkerAlt,
-} from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { FaGithub, FaLinkedin } from 'react-icons/fa';
+import { HiArrowDown, HiDownload } from 'react-icons/hi';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import yesmineImg from '../../assets/images/yesmine cherif.jpg';
 
+const STACK = ['Angular', 'Laravel', 'Python', 'Spring Boot', 'MySQL'];
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.75, delay, ease: [0.22, 1, 0.36, 1] },
+});
+
 const Hero = () => {
+  const containerRef = useRef(null);
+  const { scrollY } = useScroll();
+  const imgY = useTransform(scrollY, [0, 500], [0, 60]);
+
   const scrollToSection = (e, id) => {
     e.preventDefault();
-
     const el = document.getElementById(id);
     if (!el) return;
-
-    const navbarOffset = 88;
-    const elementPosition = el.getBoundingClientRect().top + window.pageYOffset;
-    const offsetPosition = elementPosition - navbarOffset;
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth',
-    });
+    const offsetPosition = el.getBoundingClientRect().top + window.pageYOffset - 88;
+    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
   };
 
   return (
     <section
       id="accueil"
-      className="scroll-mt-24 relative min-h-screen overflow-hidden bg-gradient-to-br from-purple-950 via-fuchsia-950 to-rose-950"
+      ref={containerRef}
+      className="scroll-mt-24 relative min-h-screen overflow-hidden"
+      style={{ background: '#0a0a0f' }}
     >
-      {/* Background layers */}
-      <div className="absolute inset-0 bg-black/40" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,0.25),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.22),transparent_30%)]" />
+      {/* ── Ambient background ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(ellipse 80% 60% at 70% 50%, rgba(168,85,247,0.13) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 40% at 20% 80%, rgba(236,72,153,0.10) 0%, transparent 55%),
+            radial-gradient(ellipse 40% 30% at 85% 10%, rgba(99,102,241,0.08) 0%, transparent 50%)
+          `,
+        }}
+      />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 lg:pt-36 pb-14 sm:pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[calc(100vh-96px)]">
-          {/* Left content */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-6 sm:space-y-8 text-white order-2 lg:order-1"
+      {/* ── Fine grid overlay ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
+          backgroundSize: '64px 64px',
+        }}
+      />
+
+      {/* ── Main layout ── */}
+      <div className="relative mx-auto max-w-7xl px-6 sm:px-10 lg:px-16 flex flex-col justify-center min-h-screen pb-16 pt-28">
+
+        {/* ── TOP BADGE ── */}
+        <motion.div {...fadeUp(0)} className="mb-10">
+          <span
+            className="inline-flex items-center gap-2 text-xs tracking-widest font-semibold uppercase px-4 py-2 rounded-full"
+            style={{
+              background: 'rgba(168,85,247,0.12)',
+              border: '1px solid rgba(168,85,247,0.25)',
+              color: '#c084fc',
+              letterSpacing: '0.12em',
+            }}
           >
-            {/* Badge */}
-            <div className="inline-flex max-w-full items-center gap-3 bg-white/10 border border-white/10 backdrop-blur-xl px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm shadow-lg shadow-pink-500/10">
-              <span className="flex items-center gap-2 truncate">
-                <FaMapMarkerAlt className="text-pink-300 shrink-0" />
-                <span className="truncate">
-                  Mobilité France • Alternance 2026 • Disponible immédiatement
-                </span>
-              </span>
-            </div>
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ background: '#a855f7' }}
+            />
+            Disponible • Alternance 2026 • Mobilité France
+          </span>
+        </motion.div>
 
-            {/* Title */}
-            <div className="space-y-3">
-              <motion.h1
-                initial={{ opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1, duration: 0.7 }}
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight"
-              >
-                Bonjour, je suis
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-fuchsia-300 to-purple-400">
-                  Yesmine Cherif
-                </span>
-              </motion.h1>
+        {/* ── GRID ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-16 lg:gap-24 items-center">
 
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25, duration: 0.7 }}
-                className="text-xl sm:text-2xl md:text-3xl font-medium text-pink-100"
-              >
-                Développeuse Full Stack | Data & IA
-              </motion.h2>
-            </div>
+          {/* ── LEFT CONTENT ── */}
+          <div className="space-y-8 max-w-2xl">
 
-            {/* Paragraph */}
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35, duration: 0.7 }}
-              className="max-w-2xl"
+            {/* Role label */}
+            <motion.p
+              {...fadeUp(0.08)}
+              className="text-sm font-medium tracking-widest uppercase"
+              style={{ color: '#a78bfa', letterSpacing: '0.18em' }}
             >
-              <p className="text-base sm:text-lg text-gray-200 leading-relaxed">
-                Étudiante en Génie Logiciel, spécialisée en développement{' '}
-                <strong className="text-white">Full Stack</strong> et en{' '}
-                <strong className="text-white">Intelligence Artificielle</strong>. J’ai
-                réalisé plusieurs projets concrets, notamment une plateforme de gestion
-                de la satisfaction client avec <strong className="text-white">Angular</strong>,{' '}
-                <strong className="text-white">Laravel</strong> et{' '}
-                <strong className="text-white">Keycloak</strong>, intégrant des
-                fonctionnalités d’analyse de données.
-              </p>
+              Full Stack Developer · Data & AI
+            </motion.p>
 
-              <p className="mt-4 text-base sm:text-lg text-gray-200 leading-relaxed">
-                Actuellement à la recherche d’une{' '}
-                <strong className="text-white">
-                  alternance en développement logiciel, data ou IA
-                </strong>{' '}
-                pour la rentrée 2026.
-              </p>
+            {/* Name */}
+            <motion.h1
+              {...fadeUp(0.15)}
+              className="font-extrabold leading-[1.04] tracking-tight"
+              style={{
+                fontSize: 'clamp(3rem, 7vw, 5.5rem)',
+                fontFamily: '"Syne", sans-serif',
+              }}
+            >
+              <span style={{ color: '#f1f0fb' }}>Yesmine</span>
+              <br />
+              <span
+                style={{
+                  background: 'linear-gradient(135deg, #e879f9 0%, #a855f7 45%, #818cf8 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Cherif
+              </span>
+            </motion.h1>
 
-              <p className="mt-5 text-sm sm:text-base text-pink-200">
-                <strong className="text-white">Tech Stack :</strong> Angular • Laravel •
-                Python • Spring Boot • MySQL
-              </p>
+            {/* Description */}
+            <motion.p
+              {...fadeUp(0.22)}
+              className="text-lg leading-relaxed"
+              style={{ color: '#94a3b8', maxWidth: '52ch' }}
+            >
+              Étudiante en Génie Logiciel passionnée par le{' '}
+              <strong style={{ color: '#e2e8f0', fontWeight: 600 }}>développement Full Stack</strong>{' '}
+              et l'<strong style={{ color: '#e2e8f0', fontWeight: 600 }}>Intelligence Artificielle</strong>.
+              J'ai conçu des plateformes métier intégrant Angular, Laravel et Keycloak,
+              avec des modules d'analyse de données.
+            </motion.p>
+
+            {/* Tech stack pills */}
+            <motion.div {...fadeUp(0.28)} className="flex flex-wrap gap-2.5">
+              {STACK.map((tech) => (
+                <span
+                  key={tech}
+                  className="text-xs font-semibold px-3.5 py-1.5 rounded-full"
+                  style={{
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.10)',
+                    color: '#cbd5e1',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  {tech}
+                </span>
+              ))}
             </motion.div>
 
-            {/* Buttons */}
+            {/* CTA buttons */}
             <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.7 }}
-              className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-5"
+              {...fadeUp(0.34)}
+              className="flex flex-col sm:flex-row gap-4 pt-2"
             >
+              {/* Primary */}
               <a
                 href="#projets"
                 onClick={(e) => scrollToSection(e, 'projets')}
-                className="justify-center sm:justify-start bg-gradient-to-r from-pink-500 to-purple-600 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-semibold flex items-center gap-3 hover:scale-[1.03] transition-all duration-300 shadow-2xl shadow-pink-500/20 text-sm sm:text-base"
+                className="group flex items-center justify-center gap-3 font-semibold text-sm px-8 py-4 rounded-2xl transition-all duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, #a855f7, #818cf8)',
+                  color: '#fff',
+                  boxShadow: '0 0 0 0 rgba(168,85,247,0)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(168,85,247,0.35)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.boxShadow = '0 0 0 0 rgba(168,85,247,0)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
-                <FaRocket className="text-lg sm:text-xl" />
                 Voir mes projets
+                <HiArrowDown className="text-base transition-transform duration-300 group-hover:translate-y-0.5" />
               </a>
 
+              {/* Secondary */}
               <a
                 href="/cv-yesmine-cherif.pdf"
                 download
-                className="justify-center sm:justify-start bg-white/10 backdrop-blur-md border border-pink-400/40 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-semibold flex items-center gap-3 hover:bg-white/15 hover:scale-[1.03] transition-all duration-300 text-sm sm:text-base"
+                className="flex items-center justify-center gap-3 font-semibold text-sm px-8 py-4 rounded-2xl transition-all duration-300"
+                style={{
+                  background: 'transparent',
+                  border: '1px solid rgba(168,85,247,0.35)',
+                  color: '#c4b5fd',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'rgba(168,85,247,0.08)';
+                  e.currentTarget.style.borderColor = 'rgba(168,85,247,0.55)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.borderColor = 'rgba(168,85,247,0.35)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
-                <FaDownload className="text-lg sm:text-xl" />
+                <HiDownload className="text-base" />
                 Télécharger mon CV
               </a>
             </motion.div>
 
-            {/* Note */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.55, duration: 0.7 }}
-              className="text-xs sm:text-sm text-gray-300"
-            >
-              Réponse rapide garantie • Ouverte aux opportunités en France
-            </motion.p>
-
-            {/* Social links */}
+            {/* Social links + tagline */}
             <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.7 }}
-              className="flex gap-4 sm:gap-5 pt-2"
+              {...fadeUp(0.40)}
+              className="flex items-center gap-5 pt-1"
             >
               <a
                 href="https://github.com/yesmine879"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub"
-                className="p-3 sm:p-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl hover:bg-white/20 transition-all duration-300 hover:scale-110"
+                className="transition-all duration-300"
+                style={{ color: '#64748b' }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#c4b5fd'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
-                <FaGithub className="text-xl sm:text-2xl text-white" />
+                <FaGithub className="text-2xl" />
               </a>
-
               <a
                 href="https://www.linkedin.com/in/yesmine-cherif/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
-                className="p-3 sm:p-4 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl hover:bg-white/20 transition-all duration-300 hover:scale-110"
+                className="transition-all duration-300"
+                style={{ color: '#64748b' }}
+                onMouseEnter={e => { e.currentTarget.style.color = '#c4b5fd'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.transform = 'translateY(0)'; }}
               >
-                <FaLinkedin className="text-xl sm:text-2xl text-white" />
+                <FaLinkedin className="text-2xl" />
               </a>
+
+              <span
+                className="text-xs ml-2"
+                style={{ color: '#475569', letterSpacing: '0.04em' }}
+              >
+                Réponse garantie · Ouverte aux opportunités en France
+              </span>
+            </motion.div>
+          </div>
+
+          {/* ── RIGHT IMAGE ── */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="hidden lg:flex justify-center"
+          >
+            <motion.div style={{ y: imgY }}>
+              <div className="relative">
+                {/* Glow ring */}
+                <div
+                  className="absolute -inset-4 rounded-[2.5rem] opacity-60 blur-2xl animate-pulse"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(168,85,247,0.4), rgba(236,72,153,0.25))',
+                    animationDuration: '3s',
+                  }}
+                />
+
+                {/* Outer frame */}
+                <div
+                  className="relative rounded-[2.25rem] p-[2px]"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(168,85,247,0.6), rgba(129,140,248,0.4), rgba(236,72,153,0.5))',
+                  }}
+                >
+                  {/* Inner glass */}
+                  <div
+                    className="rounded-[2.1rem] p-3"
+                    style={{ background: 'rgba(15,10,30,0.7)', backdropFilter: 'blur(12px)' }}
+                  >
+                    <img
+                      src={yesmineImg}
+                      alt="Yesmine Cherif — Développeuse Full Stack"
+                      className="rounded-[1.75rem] object-cover"
+                      style={{ width: '340px', height: '420px' }}
+                    />
+                  </div>
+                </div>
+
+                {/* Floating badge — experience */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute -right-6 top-10 flex items-center gap-3 px-4 py-3 rounded-2xl"
+                  style={{
+                    background: 'rgba(15,10,30,0.85)',
+                    border: '1px solid rgba(168,85,247,0.3)',
+                    backdropFilter: 'blur(16px)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                  }}
+                >
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-bold shrink-0"
+                    style={{ background: 'rgba(168,85,247,0.2)', color: '#c084fc' }}
+                  >
+                    🎓
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold" style={{ color: '#e2e8f0' }}>Génie Logiciel</p>
+                    <p className="text-xs" style={{ color: '#64748b' }}>Promotion 2026</p>
+                  </div>
+                </motion.div>
+
+                {/* Floating badge — open to work */}
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.85, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute -left-6 bottom-12 flex items-center gap-3 px-4 py-3 rounded-2xl"
+                  style={{
+                    background: 'rgba(15,10,30,0.85)',
+                    border: '1px solid rgba(74,222,128,0.25)',
+                    backdropFilter: 'blur(16px)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                  }}
+                >
+                  <span
+                    className="w-2 h-2 rounded-full shrink-0 animate-pulse"
+                    style={{ background: '#4ade80' }}
+                  />
+                  <p className="text-xs font-semibold" style={{ color: '#86efac' }}>Open to work</p>
+                </motion.div>
+              </div>
             </motion.div>
           </motion.div>
-
-          {/* Right image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.88 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.25 }}
-            className="relative flex justify-center order-1 lg:order-2"
-          >
-            <div className="absolute w-[260px] h-[320px] sm:w-[320px] sm:h-[400px] md:w-[390px] md:h-[470px] bg-gradient-to-tr from-pink-500/45 to-purple-600/45 rounded-[2rem] blur-3xl animate-pulse" />
-
-            <div className="relative rounded-[2rem] p-[6px] bg-gradient-to-br from-pink-400/80 via-fuchsia-500/70 to-purple-500/80 shadow-[0_20px_80px_rgba(236,72,153,0.22)]">
-              <div className="rounded-[1.7rem] bg-white/10 backdrop-blur-sm p-2 border border-white/10">
-                <img
-                  src={yesmineImg}
-                  alt="Yesmine Cherif"
-                  className="w-[240px] h-[300px] sm:w-[300px] sm:h-[380px] md:w-[360px] md:h-[430px] rounded-[1.5rem] object-cover"
-                />
-              </div>
-            </div>
-          </motion.div>
         </div>
+
+        {/* ── Scroll indicator ── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.1, duration: 0.8 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          style={{ color: '#334155' }}
+        >
+          <span className="text-xs tracking-widest uppercase" style={{ letterSpacing: '0.16em', fontSize: '0.65rem' }}>
+            Scroll
+          </span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+          >
+            <HiArrowDown className="text-base" />
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
