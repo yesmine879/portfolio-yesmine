@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react';
+// src/components/Hero.jsx
+import React, { useRef } from 'react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { HiArrowDown, HiDownload } from 'react-icons/hi';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -19,20 +20,27 @@ const Hero = () => {
 
   const scrollToSection = (e, id) => {
     e.preventDefault();
+
     const el = document.getElementById(id);
     if (!el) return;
-    const offsetPosition = el.getBoundingClientRect().top + window.pageYOffset - 88;
-    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+
+    const offsetPosition =
+      el.getBoundingClientRect().top + window.pageYOffset - 88;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth',
+    });
   };
 
   return (
     <section
-      id="accueil"
+      id="home"
       ref={containerRef}
       className="scroll-mt-24 relative min-h-screen overflow-hidden"
       style={{ background: '#0a0a0f' }}
     >
-      {/* ── Ambient background ── */}
+      {/* Ambient background */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -44,20 +52,21 @@ const Hero = () => {
         }}
       />
 
-      {/* ── Fine grid overlay ── */}
+      {/* Fine grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`,
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)
+          `,
           backgroundSize: '64px 64px',
         }}
       />
 
-      {/* ── Main layout ── */}
+      {/* Main layout */}
       <div className="relative mx-auto max-w-7xl px-6 sm:px-10 lg:px-16 flex flex-col justify-center min-h-screen pb-16 pt-28">
-
-        {/* ── TOP BADGE ── */}
+        {/* Top badge */}
         <motion.div {...fadeUp(0)} className="mb-10">
           <span
             className="inline-flex items-center gap-2 text-xs tracking-widest font-semibold uppercase px-4 py-2 rounded-full"
@@ -72,16 +81,14 @@ const Hero = () => {
               className="w-1.5 h-1.5 rounded-full animate-pulse"
               style={{ background: '#a855f7' }}
             />
-            Disponible • Alternance 2026 • Mobilité France
+            Available • Work-Study 2026 
           </span>
         </motion.div>
 
-        {/* ── GRID ── */}
+        {/* Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-16 lg:gap-24 items-center">
-
-          {/* ── LEFT CONTENT ── */}
+          {/* Left content */}
           <div className="space-y-8 max-w-2xl">
-
             {/* Role label */}
             <motion.p
               {...fadeUp(0.08)}
@@ -102,9 +109,11 @@ const Hero = () => {
             >
               <span style={{ color: '#f1f0fb' }}>Yesmine</span>
               <br />
+
               <span
                 style={{
-                  background: 'linear-gradient(135deg, #e879f9 0%, #a855f7 45%, #818cf8 100%)',
+                  background:
+                    'linear-gradient(135deg, #e879f9 0%, #a855f7 45%, #818cf8 100%)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -119,11 +128,16 @@ const Hero = () => {
               className="text-lg leading-relaxed"
               style={{ color: '#94a3b8', maxWidth: '52ch' }}
             >
-              Étudiante en Génie Logiciel passionnée par le{' '}
-              <strong style={{ color: '#e2e8f0', fontWeight: 600 }}>développement Full Stack</strong>{' '}
-              et l'<strong style={{ color: '#e2e8f0', fontWeight: 600 }}>Intelligence Artificielle</strong>.
-              J'ai conçu des plateformes métier intégrant Angular, Laravel et Keycloak,
-              avec des modules d'analyse de données.
+              Software Engineering student passionate about{' '}
+              <strong style={{ color: '#e2e8f0', fontWeight: 600 }}>
+                Full Stack Development
+              </strong>{' '}
+              and{' '}
+              <strong style={{ color: '#e2e8f0', fontWeight: 600 }}>
+                Artificial Intelligence
+              </strong>
+              . I have designed business-oriented platforms using Angular,
+              Laravel, and Keycloak, with integrated data analysis modules.
             </motion.p>
 
             {/* Tech stack pills */}
@@ -149,30 +163,30 @@ const Hero = () => {
               {...fadeUp(0.34)}
               className="flex flex-col sm:flex-row gap-4 pt-2"
             >
-              {/* Primary */}
               <a
-                href="#projets"
-                onClick={(e) => scrollToSection(e, 'projets')}
+                href="#projects"
+                onClick={(e) => scrollToSection(e, 'projects')}
                 className="group flex items-center justify-center gap-3 font-semibold text-sm px-8 py-4 rounded-2xl transition-all duration-300"
                 style={{
                   background: 'linear-gradient(135deg, #a855f7, #818cf8)',
                   color: '#fff',
                   boxShadow: '0 0 0 0 rgba(168,85,247,0)',
                 }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.boxShadow = '0 8px 32px rgba(168,85,247,0.35)';
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow =
+                    '0 8px 32px rgba(168,85,247,0.35)';
                   e.currentTarget.style.transform = 'translateY(-2px)';
                 }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.boxShadow = '0 0 0 0 rgba(168,85,247,0)';
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow =
+                    '0 0 0 0 rgba(168,85,247,0)';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                Voir mes projets
+                View My Projects
                 <HiArrowDown className="text-base transition-transform duration-300 group-hover:translate-y-0.5" />
               </a>
 
-              {/* Secondary */}
               <a
                 href="/cv-yesmine-cherif.pdf"
                 download
@@ -182,27 +196,24 @@ const Hero = () => {
                   border: '1px solid rgba(168,85,247,0.35)',
                   color: '#c4b5fd',
                 }}
-                onMouseEnter={e => {
+                onMouseEnter={(e) => {
                   e.currentTarget.style.background = 'rgba(168,85,247,0.08)';
                   e.currentTarget.style.borderColor = 'rgba(168,85,247,0.55)';
                   e.currentTarget.style.transform = 'translateY(-2px)';
                 }}
-                onMouseLeave={e => {
+                onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent';
                   e.currentTarget.style.borderColor = 'rgba(168,85,247,0.35)';
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
                 <HiDownload className="text-base" />
-                Télécharger mon CV
+                Download My CV
               </a>
             </motion.div>
 
             {/* Social links + tagline */}
-            <motion.div
-              {...fadeUp(0.40)}
-              className="flex items-center gap-5 pt-1"
-            >
+            <motion.div {...fadeUp(0.4)} className="flex items-center gap-5 pt-1">
               <a
                 href="https://github.com/yesmine879"
                 target="_blank"
@@ -210,11 +221,18 @@ const Hero = () => {
                 aria-label="GitHub"
                 className="transition-all duration-300"
                 style={{ color: '#64748b' }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#c4b5fd'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#c4b5fd';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#64748b';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
                 <FaGithub className="text-2xl" />
               </a>
+
               <a
                 href="https://www.linkedin.com/in/yesmine-cherif/"
                 target="_blank"
@@ -222,8 +240,14 @@ const Hero = () => {
                 aria-label="LinkedIn"
                 className="transition-all duration-300"
                 style={{ color: '#64748b' }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#c4b5fd'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#c4b5fd';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = '#64748b';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
               >
                 <FaLinkedin className="text-2xl" />
               </a>
@@ -232,16 +256,20 @@ const Hero = () => {
                 className="text-xs ml-2"
                 style={{ color: '#475569', letterSpacing: '0.04em' }}
               >
-                Réponse garantie · Ouverte aux opportunités en France
+                Guaranteed response · Open to opportunities in France
               </span>
             </motion.div>
           </div>
 
-          {/* ── RIGHT IMAGE ── */}
+          {/* Right image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: 1,
+              delay: 0.2,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="hidden lg:flex justify-center"
           >
             <motion.div style={{ y: imgY }}>
@@ -250,7 +278,8 @@ const Hero = () => {
                 <div
                   className="absolute -inset-4 rounded-[2.5rem] opacity-60 blur-2xl animate-pulse"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(168,85,247,0.4), rgba(236,72,153,0.25))',
+                    background:
+                      'linear-gradient(135deg, rgba(168,85,247,0.4), rgba(236,72,153,0.25))',
                     animationDuration: '3s',
                   }}
                 />
@@ -259,28 +288,36 @@ const Hero = () => {
                 <div
                   className="relative rounded-[2.25rem] p-[2px]"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(168,85,247,0.6), rgba(129,140,248,0.4), rgba(236,72,153,0.5))',
+                    background:
+                      'linear-gradient(135deg, rgba(168,85,247,0.6), rgba(129,140,248,0.4), rgba(236,72,153,0.5))',
                   }}
                 >
                   {/* Inner glass */}
                   <div
                     className="rounded-[2.1rem] p-3"
-                    style={{ background: 'rgba(15,10,30,0.7)', backdropFilter: 'blur(12px)' }}
+                    style={{
+                      background: 'rgba(15,10,30,0.7)',
+                      backdropFilter: 'blur(12px)',
+                    }}
                   >
                     <img
                       src={yesmineImg}
-                      alt="Yesmine Cherif — Développeuse Full Stack"
+                      alt="Yesmine Cherif — Full Stack Developer"
                       className="rounded-[1.75rem] object-cover"
                       style={{ width: '340px', height: '420px' }}
                     />
                   </div>
                 </div>
 
-                {/* Floating badge — experience */}
+                {/* Floating badge — education */}
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.7, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{
+                    delay: 0.7,
+                    duration: 0.6,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                   className="absolute -right-6 top-10 flex items-center gap-3 px-4 py-3 rounded-2xl"
                   style={{
                     background: 'rgba(15,10,30,0.85)',
@@ -291,13 +328,25 @@ const Hero = () => {
                 >
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center text-lg font-bold shrink-0"
-                    style={{ background: 'rgba(168,85,247,0.2)', color: '#c084fc' }}
+                    style={{
+                      background: 'rgba(168,85,247,0.2)',
+                      color: '#c084fc',
+                    }}
                   >
                     🎓
                   </div>
+
                   <div>
-                    <p className="text-xs font-semibold" style={{ color: '#e2e8f0' }}>Génie Logiciel</p>
-                    <p className="text-xs" style={{ color: '#64748b' }}>Promotion 2026</p>
+                    <p
+                      className="text-xs font-semibold"
+                      style={{ color: '#e2e8f0' }}
+                    >
+                      Software Engineering
+                    </p>
+
+                    <p className="text-xs" style={{ color: '#64748b' }}>
+                      Class of 2026
+                    </p>
                   </div>
                 </motion.div>
 
@@ -305,7 +354,11 @@ const Hero = () => {
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.85, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{
+                    delay: 0.85,
+                    duration: 0.6,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                   className="absolute -left-6 bottom-12 flex items-center gap-3 px-4 py-3 rounded-2xl"
                   style={{
                     background: 'rgba(15,10,30,0.85)',
@@ -318,14 +371,20 @@ const Hero = () => {
                     className="w-2 h-2 rounded-full shrink-0 animate-pulse"
                     style={{ background: '#4ade80' }}
                   />
-                  <p className="text-xs font-semibold" style={{ color: '#86efac' }}>Open to work</p>
+
+                  <p
+                    className="text-xs font-semibold"
+                    style={{ color: '#86efac' }}
+                  >
+                    Open to Work
+                  </p>
                 </motion.div>
               </div>
             </motion.div>
           </motion.div>
         </div>
 
-        {/* ── Scroll indicator ── */}
+        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -333,12 +392,20 @@ const Hero = () => {
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           style={{ color: '#334155' }}
         >
-          <span className="text-xs tracking-widest uppercase" style={{ letterSpacing: '0.16em', fontSize: '0.65rem' }}>
+          <span
+            className="text-xs tracking-widest uppercase"
+            style={{ letterSpacing: '0.16em', fontSize: '0.65rem' }}
+          >
             Scroll
           </span>
+
           <motion.div
             animate={{ y: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+            transition={{
+              repeat: Infinity,
+              duration: 1.6,
+              ease: 'easeInOut',
+            }}
           >
             <HiArrowDown className="text-base" />
           </motion.div>

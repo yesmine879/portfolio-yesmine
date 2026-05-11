@@ -1,3 +1,4 @@
+// src/components/Projets.jsx
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import {
@@ -93,8 +94,8 @@ const techColors = {
   Flask: 'bg-gray-100 text-gray-800 border-gray-200',
   Arduino: 'bg-teal-100 text-teal-700 border-teal-200',
   'C/C++': 'bg-blue-100 text-blue-800 border-blue-200',
-  'Capteurs IR': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  Robotique: 'bg-sky-100 text-sky-800 border-sky-200',
+  'IR Sensors': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  Robotics: 'bg-sky-100 text-sky-800 border-sky-200',
   'ASP.NET': 'bg-purple-100 text-purple-800 border-purple-200',
   'C#': 'bg-violet-100 text-violet-800 border-violet-200',
   Unity: 'bg-gray-100 text-gray-800 border-gray-200',
@@ -272,20 +273,20 @@ const AnimatedCounter = ({ target, suffix = '' }) => {
 const categoryKeys = ['all', 'web', 'ml', 'mobile', 'backend', 'robotics', 'csharp', 'java'];
 
 const categoryLabels = {
-  all: 'Tous',
+  all: 'All',
   web: 'Web',
-  ml: 'IA / ML',
+  ml: 'AI / ML',
   mobile: 'Mobile',
   backend: 'Backend',
   robotics: 'IoT',
-  csharp: 'C# / Jeux',
+  csharp: 'C# / Games',
   java: 'Java',
 };
 
 const categories = [
   {
     key: 'web',
-    title: 'Projets Web',
+    title: 'Web Projects',
     icon: <FaGlobe className="text-3xl text-indigo-600" />,
     projects: [
       {
@@ -293,7 +294,7 @@ const categories = [
         techno: 'React • Vite',
         github: 'https://github.com/yesmine879/portfolio-yesmine',
         description:
-          "Portfolio personnel développé avec React et Vite pour présenter mon profil, mes compétences, mes projets, mes certifications et mes liens professionnels dans une interface moderne, responsive et animée.",
+          'Personal portfolio developed with React and Vite to present my profile, skills, projects, certifications, and professional links through a modern, responsive, and animated interface.',
         demo: { images: portfolioImages, videos: [] },
       },
       {
@@ -301,7 +302,7 @@ const categories = [
         techno: 'HTML • CSS • JavaScript',
         github: 'https://github.com/yesmine879/burger-house-website',
         description:
-          "Site web responsive conçu avec HTML, CSS et JavaScript autour d'un concept Burger House. Le projet met l'accent sur le design visuel, la mise en page, la présentation du contenu et l'adaptation aux écrans mobiles.",
+          'Responsive website built with HTML, CSS, and JavaScript around a Burger House concept. The project focuses on visual design, layout, content presentation, and mobile responsiveness.',
         demo: { images: burgerImages, videos: [] },
       },
       {
@@ -309,7 +310,7 @@ const categories = [
         techno: 'Laravel • Angular • Node.js • MySQL',
         github: 'https://github.com/yesmine879/event-management-system',
         description:
-          "Application web full-stack de gestion d'événements avec gestion des événements, participation, pages d'interface, logique administrative et expérience utilisateur moderne.",
+          'Full-stack event management web application including event management, participation features, user interface pages, administrative logic, and a modern user experience.',
         demo: { images: pfaImages, videos: pfaVideos },
       },
       {
@@ -317,7 +318,7 @@ const categories = [
         techno: 'Laravel • Angular • MySQL',
         github: 'https://github.com/yesmine879/material-management-system',
         description:
-          "Application web full-stack de gestion de matériel avec interface d'administration, organisation des données, opérations CRUD et structuration backend/frontend.",
+          'Full-stack material management web application with an admin interface, data organization, CRUD operations, and structured backend/frontend architecture.',
         demo: { images: gestionMaterielImages, videos: [] },
       },
       {
@@ -325,14 +326,14 @@ const categories = [
         techno: 'PHP • CRUD',
         github: 'https://github.com/yesmine879/WebProject',
         description:
-          "Projet web simple autour des opérations CRUD pour manipuler des données, organiser les traitements et mettre en pratique les bases du développement web dynamique.",
+          'Simple dynamic web project focused on CRUD operations, data manipulation, processing logic, and the fundamentals of web application development.',
         demo: { images: [], videos: [] },
       },
     ],
   },
   {
     key: 'ml',
-    title: 'Projets IA / Machine Learning',
+    title: 'AI / Machine Learning Projects',
     icon: <FaBrain className="text-3xl text-pink-600" />,
     projects: [
       {
@@ -340,7 +341,7 @@ const categories = [
         techno: 'Python • Jupyter Notebook • Data Science',
         github: 'https://github.com/yesmine879/machine-learning-labs',
         description:
-          "Travaux pratiques, notebooks et exercices en machine learning et data science couvrant différents algorithmes, la préparation des données et l'expérimentation sur plusieurs datasets.",
+          'Practical labs, notebooks, and exercises in machine learning and data science covering different algorithms, data preparation, and experiments on multiple datasets.',
         demo: { images: [], videos: [] },
       },
       {
@@ -348,7 +349,7 @@ const categories = [
         techno: 'Python • Classification',
         github: 'https://github.com/yesmine879/heart-disease-prediction',
         description:
-          "Projet de classification pour la prédiction des maladies cardiaques à partir de données médicales, avec entraînement de modèles et analyse des résultats.",
+          'Classification project for predicting heart disease from medical data, including model training and result analysis.',
         demo: { images: [], videos: [] },
       },
       {
@@ -356,7 +357,7 @@ const categories = [
         techno: 'Python • Classification',
         github: 'https://github.com/yesmine879/diabetes-prediction-ml',
         description:
-          "Modèle de prédiction du diabète à partir de données médicales, avec traitement des données, apprentissage supervisé et évaluation des performances.",
+          'Diabetes prediction model based on medical data, including data processing, supervised learning, and performance evaluation.',
         demo: { images: [], videos: [] },
       },
       {
@@ -364,7 +365,7 @@ const categories = [
         techno: 'Python • NLP • Classification',
         github: 'https://github.com/yesmine879/spam-classification',
         description:
-          "Projet de classification de messages spam avec traitement de texte, vectorisation, entraînement de modèle et analyse de performance.",
+          'Spam message classification project using text processing, vectorization, model training, and performance analysis.',
         demo: { images: [], videos: [] },
       },
       {
@@ -372,7 +373,7 @@ const categories = [
         techno: 'Python • Data Mining',
         github: 'https://github.com/yesmine879/market-basket-optimization',
         description:
-          "Analyse des associations de produits en data mining à travers les règles d'association pour identifier des comportements d'achat fréquents.",
+          'Data mining project using association rules to identify frequent purchasing patterns and product relationships.',
         demo: { images: [], videos: [] },
       },
       {
@@ -380,7 +381,7 @@ const categories = [
         techno: 'Python • Clustering',
         github: 'https://github.com/yesmine879/mall-customers-segmentation',
         description:
-          "Projet de segmentation de clients à l'aide d'algorithmes de clustering pour distinguer différents profils de consommateurs.",
+          'Customer segmentation project using clustering algorithms to identify and analyze different consumer profiles.',
         demo: { images: [], videos: [] },
       },
       {
@@ -388,14 +389,14 @@ const categories = [
         techno: 'Python • Classification',
         github: 'https://github.com/yesmine879/titanic-ml-project',
         description:
-          "Projet de prédiction de survie sur le dataset Titanic avec préparation des données, sélection de variables et modèles de classification.",
+          'Survival prediction project on the Titanic dataset, including data preparation, feature selection, and classification models.',
         demo: { images: [], videos: [] },
       },
     ],
   },
   {
     key: 'mobile',
-    title: 'Projets Mobile',
+    title: 'Mobile Projects',
     icon: <FaMobileAlt className="text-3xl text-cyan-600" />,
     projects: [
       {
@@ -403,7 +404,7 @@ const categories = [
         techno: 'Flutter',
         github: 'https://github.com/yesmine879/cookmate',
         description:
-          "Application mobile Flutter dédiée aux recettes de cuisine avec interfaces modernes, navigation entre écrans et expérience utilisateur fluide.",
+          'Flutter mobile application dedicated to cooking recipes, with modern interfaces, screen navigation, and a smooth user experience.',
         demo: { images: cookmateImages, videos: [] },
       },
     ],
@@ -418,7 +419,7 @@ const categories = [
         techno: 'Spring Boot • Microservices • Java',
         github: 'https://github.com/yesmine879/order-management-microservices',
         description:
-          "Système de gestion de commandes basé sur Spring Boot et les microservices, avec séparation des services, logique distribuée et organisation modulaire.",
+          'Order management system based on Spring Boot and microservices, with service separation, distributed logic, and modular organization.',
         demo: { images: [], videos: [] },
       },
       {
@@ -426,29 +427,29 @@ const categories = [
         techno: 'Python • Flask',
         github: 'https://github.com/yesmine879/flask-chatbot',
         description:
-          "Application web chatbot développée avec Python et Flask pour expérimenter les interfaces conversationnelles et la logique backend.",
+          'Chatbot web application developed with Python and Flask to explore conversational interfaces and backend logic.',
         demo: { images: [], videos: [] },
       },
     ],
   },
   {
     key: 'robotics',
-    title: 'Robotique / IoT',
+    title: 'Robotics / IoT',
     icon: <FaRobot className="text-3xl text-sky-600" />,
     projects: [
       {
-        titre: 'Robot suiveur de ligne',
-        techno: 'Arduino • C/C++ • Capteurs IR • Robotique',
+        titre: 'Line-Follower Robot',
+        techno: 'Arduino • C/C++ • IR Sensors • Robotics',
         github: '#',
         description:
-          "Projet de robot suiveur de ligne réalisé avec Arduino, utilisant des capteurs infrarouges pour détecter et suivre un trajet de manière autonome. Ce projet m'a permis de travailler sur la logique embarquée, l'interaction entre capteurs et moteurs, ainsi que le contrôle du déplacement du robot.",
+          'Line-follower robot project built with Arduino, using infrared sensors to detect and follow a path autonomously. This project helped me work on embedded logic, sensor-motor interaction, and robot movement control.',
         demo: { images: [], videos: [] },
       },
     ],
   },
   {
     key: 'csharp',
-    title: 'Projets C# / Jeux',
+    title: 'C# / Game Projects',
     icon: <FaGamepad className="text-3xl text-violet-600" />,
     projects: [
       {
@@ -456,7 +457,7 @@ const categories = [
         techno: 'ASP.NET • C#',
         github: 'https://github.com/yesmine879/pharmacy-management',
         description:
-          "Application de gestion de pharmacie développée en ASP.NET et C# avec organisation des modules métiers et gestion des données.",
+          'Pharmacy management application developed with ASP.NET and C#, including business module organization and data management.',
         demo: { images: [], videos: [] },
       },
       {
@@ -464,14 +465,14 @@ const categories = [
         techno: 'Unity • C#',
         github: 'https://github.com/yesmine879/angry-birds',
         description:
-          "Jeu 2D inspiré d'Angry Birds, développé avec Unity et C#, intégrant logique de gameplay et interactions physiques.",
+          '2D game inspired by Angry Birds, developed with Unity and C#, including gameplay logic and physics-based interactions.',
         demo: { images: [], videos: [] },
       },
     ],
   },
   {
     key: 'java',
-    title: 'Projets Java',
+    title: 'Java Projects',
     icon: <FaJava className="text-3xl text-orange-600" />,
     projects: [
       {
@@ -479,7 +480,7 @@ const categories = [
         techno: 'Java',
         github: 'https://github.com/yesmine879/CRUD',
         description:
-          "Application CRUD simple réalisée en Java pour mettre en pratique les opérations de base, la structuration du code et la logique applicative.",
+          'Simple CRUD application developed in Java to practice basic operations, code structure, and application logic.',
         demo: { images: [], videos: [] },
       },
     ],
@@ -622,7 +623,7 @@ const ProjectCard = ({ projet, index }) => {
               onClick={openGithub}
               disabled={!hasGithub}
               variant="dark"
-              title={hasGithub ? 'Voir le code source' : 'Code non disponible'}
+              title={hasGithub ? 'View source code' : 'Code not available'}
             >
               <FaGithub className="text-base" />
               <span>Code</span>
@@ -631,7 +632,7 @@ const ProjectCard = ({ projet, index }) => {
             <ShimmerButton
               onClick={() => setDescriptionOpen(true)}
               variant="light"
-              title="Voir la description"
+              title="View description"
             >
               <FaInfoCircle className="text-base" />
               <span>Description</span>
@@ -641,7 +642,7 @@ const ProjectCard = ({ projet, index }) => {
               onClick={() => hasDemo && setDemoOpen(true)}
               disabled={!hasDemo}
               variant="gradient"
-              title={hasDemo ? 'Voir la démo' : 'Démo non disponible'}
+              title={hasDemo ? 'View demo' : 'Demo not available'}
             >
               <FaExternalLinkAlt className="text-base" />
               <span>Demo</span>
@@ -655,7 +656,7 @@ const ProjectCard = ({ projet, index }) => {
         {descriptionOpen && (
           <>
             <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
+              className="fixed inset-0 bg-black/55 backdrop-blur-sm z-[100]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -667,18 +668,22 @@ const ProjectCard = ({ projet, index }) => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-              className="fixed inset-0 z-[110] flex items-center justify-center p-4 overflow-y-auto"
+              className="fixed inset-0 z-[110] flex items-center justify-center p-4 pt-28 overflow-y-auto"
             >
-              <button
-                type="button"
-                onClick={closeModals}
-                className="fixed top-6 right-6 z-[120] p-3 rounded-full bg-white shadow-xl border border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition-all duration-200"
-              >
-                <FaTimes className="text-gray-700 text-xl" />
-              </button>
+              <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden max-h-[82vh] flex flex-col my-auto">
+                {/* CLOSE BUTTON */}
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  aria-label="Close popup"
+                  className="absolute top-4 right-4 z-[99999] w-12 h-12 rounded-2xl bg-white text-red-600 shadow-2xl border-2 border-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white hover:scale-105 active:scale-95 transition-all"
+                >
+                  <span className="text-4xl font-black leading-none">
+                    ×
+                  </span>
+                </button>
 
-              <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden max-h-[90vh] flex flex-col my-auto">
-                <div className="relative px-7 py-6 border-b border-gray-100 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 overflow-hidden">
+                <div className="relative px-7 py-6 pr-24 border-b border-gray-100 bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 overflow-hidden">
                   <motion.div
                     className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-indigo-100 opacity-60"
                     animate={{ scale: [1, 1.1, 1] }}
@@ -687,7 +692,8 @@ const ProjectCard = ({ projet, index }) => {
 
                   <div className="flex items-center gap-3 mb-2 relative">
                     <FaCode className="text-indigo-500 text-lg" />
-                    <h3 className="text-2xl font-bold text-gray-900">
+
+                    <h3 className="text-2xl font-bold text-gray-900 pr-10">
                       {projet.titre}
                     </h3>
                   </div>
@@ -711,7 +717,7 @@ const ProjectCard = ({ projet, index }) => {
                       variant="dark"
                     >
                       <FaGithub />
-                      <span>Voir le code</span>
+                      <span>View Code</span>
                     </ShimmerButton>
 
                     <ShimmerButton
@@ -723,7 +729,7 @@ const ProjectCard = ({ projet, index }) => {
                       variant="gradient"
                     >
                       <FaImages />
-                      <span>Voir la démo</span>
+                      <span>View Demo</span>
                     </ShimmerButton>
                   </div>
                 </div>
@@ -750,24 +756,29 @@ const ProjectCard = ({ projet, index }) => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-              className="fixed inset-0 z-[110] flex items-center justify-center p-4 overflow-y-auto"
+              className="fixed inset-0 z-[110] flex items-center justify-center p-4 pt-28 overflow-y-auto"
             >
-              <button
-                type="button"
-                onClick={closeModals}
-                className="fixed top-6 right-6 z-[120] p-3 rounded-full bg-white shadow-xl border border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-500 transition-all duration-200"
-              >
-                <FaTimes className="text-gray-700 text-xl" />
-              </button>
+              <div className="relative w-full max-w-6xl bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden max-h-[82vh] flex flex-col my-auto">
+                {/* CLOSE BUTTON */}
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  aria-label="Close popup"
+                  className="absolute top-4 right-4 z-[99999] w-12 h-12 rounded-2xl bg-white text-red-600 shadow-2xl border-2 border-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white hover:scale-105 active:scale-95 transition-all"
+                >
+                  <span className="text-4xl font-black leading-none">
+                    ×
+                  </span>
+                </button>
 
-              <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden max-h-[92vh] flex flex-col my-auto">
-                <div className="relative px-7 py-5 border-b border-gray-100 bg-gradient-to-r from-orange-50 via-pink-50 to-purple-50">
+                <div className="relative px-7 py-5 pr-24 border-b border-gray-100 bg-gradient-to-r from-orange-50 via-pink-50 to-purple-50">
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <FaImages className="text-orange-500" />
-                        <h3 className="text-2xl font-bold text-gray-900">
-                          Démo — {projet.titre}
+
+                        <h3 className="text-2xl font-bold text-gray-900 pr-10">
+                          Demo — {projet.titre}
                         </h3>
                       </div>
 
@@ -775,7 +786,7 @@ const ProjectCard = ({ projet, index }) => {
                     </div>
 
                     {media.length > 0 && (
-                      <span className="text-sm font-semibold text-gray-400 tabular-nums whitespace-nowrap">
+                      <span className="hidden sm:inline-block text-sm font-semibold text-gray-400 tabular-nums whitespace-nowrap mr-12">
                         {selectedMediaIndex + 1} / {media.length}
                       </span>
                     )}
@@ -805,7 +816,7 @@ const ProjectCard = ({ projet, index }) => {
                       <FaPlayCircle className="mx-auto text-5xl text-gray-300 mb-4" />
 
                       <p className="text-xl text-gray-500">
-                        Aucune image ou vidéo disponible pour ce projet.
+                        No image or video is available for this project.
                       </p>
                     </motion.div>
                   ) : (
@@ -824,13 +835,13 @@ const ProjectCard = ({ projet, index }) => {
                               <video
                                 src={media[selectedMediaIndex].src}
                                 controls
-                                className="w-full max-h-[65vh] object-contain"
+                                className="w-full max-h-[58vh] object-contain"
                               />
                             ) : (
                               <img
                                 src={media[selectedMediaIndex]?.src}
                                 alt={`demo-${selectedMediaIndex + 1}`}
-                                className="w-full max-h-[65vh] object-contain"
+                                className="w-full max-h-[58vh] object-contain"
                               />
                             )}
                           </motion.div>
@@ -841,6 +852,7 @@ const ProjectCard = ({ projet, index }) => {
                             <button
                               type="button"
                               onClick={prevMedia}
+                              aria-label="Previous media"
                               className="absolute left-3 top-1/2 -translate-y-1/2 p-3.5 rounded-full bg-white/90 hover:bg-white shadow-lg transition hover:scale-110 active:scale-95"
                             >
                               <FaChevronLeft className="text-gray-700" />
@@ -849,6 +861,7 @@ const ProjectCard = ({ projet, index }) => {
                             <button
                               type="button"
                               onClick={nextMedia}
+                              aria-label="Next media"
                               className="absolute right-3 top-1/2 -translate-y-1/2 p-3.5 rounded-full bg-white/90 hover:bg-white shadow-lg transition hover:scale-110 active:scale-95"
                             >
                               <FaChevronRight className="text-gray-700" />
@@ -927,7 +940,7 @@ const CategoryHeader = ({ category }) => (
 
       <p className="text-sm text-gray-400 font-medium mt-0.5 flex items-center gap-1.5">
         <FaLayerGroup className="text-xs" />
-        <AnimatedCounter target={category.projects.length} /> projet
+        <AnimatedCounter target={category.projects.length} /> project
         {category.projects.length > 1 ? 's' : ''}
       </p>
     </div>
@@ -951,13 +964,13 @@ const StatsBar = () => {
       className="flex flex-wrap justify-center gap-8 mb-14"
     >
       {[
-        { label: 'Projets au total', value: totalProjects, suffix: '+' },
-        { label: 'Domaines couverts', value: totalCategories, suffix: '' },
-        { label: 'Avec démo visuelle', value: withDemo, suffix: '' },
+        { label: 'Total Projects', value: totalProjects, suffix: '+' },
+        { label: 'Fields Covered', value: totalCategories, suffix: '' },
+        { label: 'With Visual Demo', value: withDemo, suffix: '' },
       ].map(({ label, value, suffix }) => (
         <div
           key={label}
-          className="text-center bg-white/60 backdrop-blur-xl border border-indigo-100 rounded-3xl px-7 py-5 shadow-sm"
+          className="text-center bg-white/80 backdrop-blur-xl border border-slate-200 rounded-3xl px-7 py-5 shadow-sm"
         >
           <div className="text-4xl font-black text-indigo-600 tabular-nums">
             <AnimatedCounter target={value} suffix={suffix} />
@@ -1022,7 +1035,7 @@ const SearchBar = ({ searchTerm, setSearchTerm }) => (
         type="text"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        placeholder="Rechercher un projet, une technologie..."
+        placeholder="Search for a project or technology..."
         className="w-full rounded-3xl bg-white/90 backdrop-blur-xl border border-indigo-100 pl-12 pr-12 py-4 text-gray-700 placeholder-gray-400 shadow-sm outline-none transition-all duration-300 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
       />
 
@@ -1051,12 +1064,12 @@ const EmptyState = ({ searchTerm }) => (
     </div>
 
     <p className="text-xl font-bold text-gray-800 mb-2">
-      Aucun projet trouvé
+      No project found
     </p>
 
     <p className="text-gray-500">
-      Aucun résultat pour <span className="font-semibold text-indigo-600">"{searchTerm}"</span>.
-      Essaie avec un autre mot-clé ou une technologie.
+      No result for <span className="font-semibold text-indigo-600">"{searchTerm}"</span>.
+      Try another keyword or technology.
     </p>
   </motion.div>
 );
@@ -1090,14 +1103,26 @@ const Projets = () => {
 
   return (
     <section
-      id="projets"
-      className="scroll-mt-32 relative py-24 lg:py-32 overflow-hidden bg-gray-50"
+      id="projects"
+      className="scroll-mt-32 relative py-24 lg:py-32 overflow-hidden bg-[#eef3fb]"
     >
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" />
-      <div className="absolute top-20 left-10 w-96 h-96 bg-indigo-300/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-80 h-80 bg-orange-300/20 rounded-full blur-3xl animate-pulse delay-1000" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-200/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Background grid */}
+      <div
+        className="absolute inset-0 opacity-70"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(148,163,184,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.18) 1px, transparent 1px)',
+          backgroundSize: '68px 68px',
+        }}
+      />
+
+      {/* Soft white layer */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/45 via-transparent to-white/25" />
+
+      {/* Soft glow */}
+      <div className="absolute top-20 left-10 w-96 h-96 bg-violet-300/15 rounded-full blur-3xl animate-pulse" />
+      <div className="absolute bottom-20 right-10 w-80 h-80 bg-pink-300/15 rounded-full blur-3xl animate-pulse delay-1000" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-200/10 rounded-full blur-3xl pointer-events-none" />
 
       <Particles />
 
@@ -1113,17 +1138,17 @@ const Projets = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-sm font-semibold mb-5 border border-indigo-200"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/85 text-indigo-700 text-sm font-semibold mb-5 border border-indigo-200 shadow-sm"
           >
             <FaCode className="text-xs" />
-            Portfolio de projets
+            Project Portfolio
           </motion.span>
 
           <h2 className="text-5xl md:text-7xl font-bold text-gray-900 mb-5">
-            Mes{' '}
+            My{' '}
             <span className="relative inline-block">
               <span className="relative z-10 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Projets
+                Projects
               </span>
 
               <motion.span
@@ -1137,8 +1162,8 @@ const Projets = () => {
           </h2>
 
           <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
-            Des projets classés par domaine, avec accès au code, à la description
-            et aux démonstrations disponibles.
+            Projects organized by field, with access to source code, descriptions,
+            and available demos.
           </p>
         </motion.div>
 

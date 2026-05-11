@@ -18,12 +18,12 @@ import {
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
-    nom: '',
+    name: '',
     email: '',
     message: '',
   });
 
-  const [sended, setSended] = useState(false);
+  const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
 
   const particles = useMemo(
@@ -52,13 +52,13 @@ const ContactForm = () => {
 
     await new Promise((resolve) => setTimeout(resolve, 1800));
 
-    setSended(true);
+    setSent(true);
     setSending(false);
 
     setTimeout(() => {
-      setSended(false);
+      setSent(false);
       setFormData({
-        nom: '',
+        name: '',
         email: '',
         message: '',
       });
@@ -73,7 +73,7 @@ const ContactForm = () => {
       id="contact"
       className="scroll-mt-28 relative py-24 lg:py-32 overflow-hidden bg-[#050816]"
     >
-      {/* Background principal */}
+      {/* Main background */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(168,85,247,0.20),transparent_28%),radial-gradient(circle_at_82%_70%,rgba(236,72,153,0.16),transparent_26%),linear-gradient(to_bottom,#09111f,#050816_45%,#040612)]" />
 
       {/* Grid background */}
@@ -86,7 +86,7 @@ const ContactForm = () => {
         }}
       />
 
-      {/* Glow */}
+      {/* Glow effects */}
       <div className="absolute top-20 left-10 w-80 h-80 bg-fuchsia-600/20 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl" />
       <div className="absolute top-1/2 left-1/2 w-[34rem] h-[34rem] -translate-x-1/2 -translate-y-1/2 bg-pink-500/10 rounded-full blur-3xl" />
@@ -129,24 +129,24 @@ const ContactForm = () => {
         >
           <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-fuchsia-500/25 bg-fuchsia-500/10 text-fuchsia-300 text-xs md:text-sm font-bold tracking-[0.18em] uppercase mb-6">
             <FaEnvelope className="text-xs" />
-            Restons en contact
+            Let’s Stay in Touch
           </span>
 
           <h2 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight">
-            Contactez-
+            Contact{' '}
             <span className="bg-gradient-to-r from-fuchsia-400 via-violet-400 to-pink-400 bg-clip-text text-transparent">
-              moi
+              Me
             </span>
           </h2>
 
           <p className="max-w-3xl mx-auto text-lg md:text-xl text-slate-300 leading-relaxed">
-            Vous avez une opportunité, un stage, une alternance ou un projet ?
-            Envoyez-moi un message et je vous répondrai rapidement.
+            Do you have an opportunity, internship, work-study program, or project?
+            Send me a message and I will get back to you as soon as possible.
           </p>
         </motion.div>
 
         <div className="grid lg:grid-cols-[1.12fr_0.88fr] gap-10 items-start">
-          {/* Formulaire */}
+          {/* Form */}
           <motion.div
             initial={{ opacity: 0, x: -45 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -165,15 +165,15 @@ const ContactForm = () => {
 
                 <div>
                   <h3 className="text-2xl md:text-3xl font-black text-white">
-                    Envoyez-moi un message
+                    Send Me a Message
                   </h3>
                   <p className="text-slate-400 text-sm mt-1">
-                    Réponse garantie · Ouverte aux opportunités
+                    Quick response · Open to opportunities
                   </p>
                 </div>
               </div>
 
-              {sended && (
+              {sent && (
                 <motion.div
                   initial={{ opacity: 0, y: -18 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -183,10 +183,10 @@ const ContactForm = () => {
                     <FaCheckCircle className="text-emerald-400 text-2xl mt-1 shrink-0" />
                     <div>
                       <h4 className="text-white font-bold text-lg">
-                        Message envoyé avec succès
+                        Message sent successfully
                       </h4>
                       <p className="text-slate-300 text-sm leading-relaxed">
-                        Merci pour votre message. Je vous répondrai dans les plus brefs délais.
+                        Thank you for your message. I will reply as soon as possible.
                       </p>
                     </div>
                   </div>
@@ -197,13 +197,13 @@ const ContactForm = () => {
                 <div>
                   <label className="flex items-center gap-2 text-slate-200 font-semibold mb-3">
                     <FaUser className="text-fuchsia-400" />
-                    Nom complet
+                    Full Name
                   </label>
 
                   <input
                     type="text"
-                    name="nom"
-                    value={formData.nom}
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
                     required
                     placeholder="Yesmine Cherif"
@@ -214,7 +214,7 @@ const ContactForm = () => {
                 <div>
                   <label className="flex items-center gap-2 text-slate-200 font-semibold mb-3">
                     <FaEnvelope className="text-fuchsia-400" />
-                    Adresse email
+                    Email Address
                   </label>
 
                   <input
@@ -231,7 +231,7 @@ const ContactForm = () => {
                 <div>
                   <label className="flex items-center gap-2 text-slate-200 font-semibold mb-3">
                     <FaCommentDots className="text-fuchsia-400" />
-                    Votre message
+                    Your Message
                   </label>
 
                   <textarea
@@ -240,7 +240,7 @@ const ContactForm = () => {
                     onChange={handleChange}
                     required
                     rows="6"
-                    placeholder="Parlez-moi de votre projet, stage, alternance ou collaboration..."
+                    placeholder="Tell me about your project, internship, work-study program, or collaboration..."
                     className={`${inputClass} resize-none`}
                   />
                 </div>
@@ -255,12 +255,12 @@ const ContactForm = () => {
                   {sending ? (
                     <>
                       <span className="w-6 h-6 rounded-full border-2 border-white/80 border-t-transparent animate-spin" />
-                      Envoi en cours...
+                      Sending...
                     </>
                   ) : (
                     <>
                       <FaPaperPlane />
-                      Envoyer le message
+                      Send Message
                     </>
                   )}
                 </motion.button>
@@ -268,7 +268,7 @@ const ContactForm = () => {
             </div>
           </motion.div>
 
-          {/* Colonne droite */}
+          {/* Right column */}
           <motion.div
             initial={{ opacity: 0, x: 45 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -276,7 +276,7 @@ const ContactForm = () => {
             transition={{ duration: 0.7 }}
             className="space-y-6"
           >
-            {/* Carte coordonnées */}
+            {/* Contact details card */}
             <div className="relative rounded-[30px] border border-white/10 bg-white/[0.055] backdrop-blur-2xl p-7 md:p-8 shadow-[0_25px_90px_rgba(0,0,0,0.32)] overflow-hidden">
               <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-violet-400/60 to-transparent" />
 
@@ -286,8 +286,8 @@ const ContactForm = () => {
                 </div>
 
                 <div>
-                  <h3 className="text-2xl font-black text-white">Mes coordonnées</h3>
-                  <p className="text-slate-400 text-sm">Informations de contact</p>
+                  <h3 className="text-2xl font-black text-white">Contact Details</h3>
+                  <p className="text-slate-400 text-sm">Contact information</p>
                 </div>
               </div>
 
@@ -298,7 +298,7 @@ const ContactForm = () => {
                   </div>
 
                   <div>
-                    <p className="text-slate-400 text-sm">Téléphone</p>
+                    <p className="text-slate-400 text-sm">Phone</p>
                     <p className="text-white font-semibold">58 715 159</p>
                   </div>
                 </div>
@@ -322,8 +322,8 @@ const ContactForm = () => {
                   </div>
 
                   <div>
-                    <p className="text-slate-400 text-sm">Localisation</p>
-                    <p className="text-white font-semibold">Sfax, Tunisie</p>
+                    <p className="text-slate-400 text-sm">Location</p>
+                    <p className="text-white font-semibold">Sfax, Tunisia</p>
                   </div>
                 </div>
 
@@ -365,7 +365,7 @@ const ContactForm = () => {
               </div>
             </div>
 
-            {/* Carte disponibilité */}
+            {/* Availability card */}
             <div className="relative rounded-[30px] border border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-500/12 via-violet-500/10 to-transparent backdrop-blur-2xl p-7 md:p-8 shadow-[0_25px_90px_rgba(0,0,0,0.32)] overflow-hidden">
               <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-fuchsia-500/15 blur-2xl" />
 
@@ -376,13 +376,18 @@ const ContactForm = () => {
                   </div>
 
                   <div>
-                    <h4 className="text-2xl font-black text-white">Disponible pour</h4>
-                    <p className="text-slate-400 text-sm">Opportunités 2026</p>
+                    <h4 className="text-2xl font-black text-white">Available For</h4>
+                    <p className="text-slate-400 text-sm">Opportunities 2026</p>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-3 mb-6">
-                  {['Stage PFE', 'Alternance', 'Freelance', 'Collaboration'].map((item) => (
+                  {[
+                    'Final-Year Internship',
+                    'Work-Study Program',
+                    'Freelance',
+                    'Collaboration',
+                  ].map((item) => (
                     <span
                       key={item}
                       className="px-4 py-2 rounded-full border border-white/10 bg-white/5 text-slate-200 text-sm font-semibold"
@@ -393,8 +398,8 @@ const ContactForm = () => {
                 </div>
 
                 <p className="text-slate-300 leading-relaxed mb-6">
-                  Je suis ouverte aux opportunités en développement Full Stack,
-                  Data / IA et projets web modernes.
+                  I am open to opportunities in Full Stack development, Data / AI,
+                  and modern web projects.
                 </p>
 
                 <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/[0.04] border border-white/5 mb-5">
@@ -403,8 +408,10 @@ const ContactForm = () => {
                   </div>
 
                   <div>
-                    <p className="text-white font-semibold">Génie Logiciel</p>
-                    <p className="text-slate-400 text-sm">Licence Informatique · IIT</p>
+                    <p className="text-white font-semibold">Software Engineering</p>
+                    <p className="text-slate-400 text-sm">
+                      Computer Science Bachelor · IIT
+                    </p>
                   </div>
                 </div>
 
@@ -412,7 +419,7 @@ const ContactForm = () => {
                   href="mailto:cherif.yesmine@iit.ens.tn"
                   className="inline-flex items-center gap-2 text-fuchsia-300 hover:text-fuchsia-200 font-bold transition"
                 >
-                  Me contacter directement
+                  Contact me directly
                   <FaArrowRight className="text-sm" />
                 </a>
               </div>

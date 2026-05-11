@@ -1,10 +1,9 @@
-// src/components/Navbar.jsx
+// src/components/Commun/Navbar.jsx
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaBars,
   FaTimes,
-  FaCode,
   FaGraduationCap,
   FaUser,
   FaFolderOpen,
@@ -18,13 +17,13 @@ import yesmineImg from '../../assets/images/yesmine cherif.jpg';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState('accueil');
+  const [activeSection, setActiveSection] = useState('home');
 
   const navItems = [
-    { id: 'accueil', label: 'Accueil', icon: <FaHome /> },
-    { id: 'about', label: 'À propos', icon: <FaUser /> },
-    { id: 'parcours', label: 'Parcours', icon: <FaRoute /> },
-    { id: 'projets', label: 'Projets', icon: <FaFolderOpen /> },
+    { id: 'home', label: 'Home', icon: <FaHome /> },
+    { id: 'about', label: 'About', icon: <FaUser /> },
+    { id: 'journey', label: 'Journey', icon: <FaRoute /> },
+    { id: 'projects', label: 'Projects', icon: <FaFolderOpen /> },
     { id: 'contact', label: 'Contact', icon: <FaEnvelope /> },
   ];
 
@@ -55,10 +54,6 @@ const Navbar = () => {
         if (visibleSections.length > 0) {
           const currentId = visibleSections[0].target.id;
           setActiveSection(currentId);
-
-          if (window.location.hash !== `#${currentId}`) {
-            window.history.replaceState(null, '', `#${currentId}`);
-          }
         }
       },
       {
@@ -87,8 +82,9 @@ const Navbar = () => {
     const section = document.getElementById(hash);
     if (!section) return;
 
-    const navbarOffset = 90;
-    const top = section.offsetTop - navbarOffset;
+    const navbarOffset = 95;
+    const top =
+      section.getBoundingClientRect().top + window.scrollY - navbarOffset;
 
     setTimeout(() => {
       window.scrollTo({
@@ -104,10 +100,15 @@ const Navbar = () => {
     e.preventDefault();
 
     const section = document.getElementById(id);
-    if (!section) return;
 
-    const navbarOffset = 90;
-    const top = section.offsetTop - navbarOffset;
+    if (!section) {
+      console.log(`Section not found: ${id}`);
+      return;
+    }
+
+    const navbarOffset = 95;
+    const top =
+      section.getBoundingClientRect().top + window.scrollY - navbarOffset;
 
     window.scrollTo({
       top,
@@ -130,15 +131,14 @@ const Navbar = () => {
           : 'bg-[#071226]/72 backdrop-blur-xl border-b border-white/5'
       }`}
     >
-      {/* Glow top */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-fuchsia-400/60 to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between gap-4">
           {/* Brand */}
           <motion.a
-            href="#accueil"
-            onClick={(e) => handleNavClick(e, 'accueil')}
+            href="#home"
+            onClick={(e) => handleNavClick(e, 'home')}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="group flex min-w-0 items-center gap-4"
@@ -162,12 +162,12 @@ const Navbar = () => {
 
               <p className="mt-2 text-[11px] lg:text-xs text-fuchsia-300 font-semibold flex items-center gap-1.5">
                 <FaGraduationCap />
-                3ᵉ Licence Informatique · IIT
+                3rd Year Computer Science Bachelor · IIT
               </p>
             </div>
           </motion.a>
 
-          {/* Desktop nav */}
+          {/* Desktop navigation */}
           <div className="hidden lg:flex items-center justify-center gap-2 rounded-3xl border border-white/8 bg-white/[0.035] p-2 backdrop-blur-2xl">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
@@ -211,15 +211,13 @@ const Navbar = () => {
             })}
           </div>
 
-          {/* Right side */}
+          {/* Mobile button */}
           <div className="flex items-center gap-3 shrink-0">
-            
-
             <button
               type="button"
               onClick={() => setIsOpen(true)}
               className="lg:hidden h-11 w-11 rounded-2xl bg-white/[0.06] backdrop-blur-xl border border-white/10 text-slate-200 hover:text-white hover:border-fuchsia-400/35 hover:bg-fuchsia-500/10 transition flex items-center justify-center"
-              aria-label="Ouvrir le menu"
+              aria-label="Open menu"
             >
               <FaBars className="w-5 h-5" />
             </button>
@@ -246,7 +244,6 @@ const Navbar = () => {
               transition={{ type: 'spring', damping: 32, stiffness: 260 }}
               className="fixed inset-y-0 right-0 z-50 w-[86%] max-w-[360px] bg-[#071226]/96 backdrop-blur-3xl border-l border-fuchsia-500/25 lg:hidden overflow-hidden"
             >
-              {/* Mobile bg */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(236,72,153,0.18),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(124,58,237,0.16),transparent_30%)]" />
 
               <div className="relative z-10 flex h-full flex-col p-6">
@@ -276,13 +273,13 @@ const Navbar = () => {
                     type="button"
                     onClick={() => setIsOpen(false)}
                     className="h-11 w-11 rounded-2xl bg-white/[0.06] border border-white/10 text-slate-200 hover:text-white hover:bg-fuchsia-500/10 transition flex items-center justify-center shrink-0"
-                    aria-label="Fermer le menu"
+                    aria-label="Close menu"
                   >
                     <FaTimes className="w-5 h-5" />
                   </button>
                 </div>
 
-                {/* Mobile nav */}
+                {/* Mobile navigation */}
                 <div className="flex flex-col gap-3">
                   {navItems.map((item) => {
                     const isActive = activeSection === item.id;
@@ -324,11 +321,12 @@ const Navbar = () => {
                 <div className="mt-auto pt-8">
                   <div className="rounded-3xl border border-white/10 bg-white/[0.045] p-5">
                     <p className="text-white font-bold mb-2">
-                      Disponible · Opportunités 2026
+                      Available · Opportunities 2026
                     </p>
 
                     <p className="text-slate-400 text-sm leading-relaxed">
-                      Stage PFE, alternance, collaboration ou projet full stack.
+                      Final-year internship, work-study program, collaboration,
+                      or full-stack project.
                     </p>
                   </div>
                 </div>
