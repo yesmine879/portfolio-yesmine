@@ -1,6 +1,6 @@
-// src/components/Commun/Navbar.jsx
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
 import {
   FaBars,
   FaTimes,
@@ -10,180 +10,403 @@ import {
   FaEnvelope,
   FaRoute,
   FaHome,
+  FaUsers,
 } from 'react-icons/fa';
 
 import yesmineImg from '../../assets/images/yesmine cherif.jpg';
+import { useLanguage } from '../../context/LanguageContext.jsx';
+
+/* =========================================================
+   NAVIGATION ITEMS
+   =========================================================
+   Toutes les entrées sont des SECTIONS de la Home.
+========================================================= */
+
+const navItems = [
+  {
+    id: 'home',
+    icon: <FaHome />,
+    type: 'section',
+  },
+  {
+    id: 'about',
+    icon: <FaUser />,
+    type: 'section',
+  },
+  {
+    id: 'journey',
+    icon: <FaRoute />,
+    type: 'section',
+  },
+  {
+    id: 'activities',
+    icon: <FaUsers />,
+    type: 'section',
+  },
+  {
+    id: 'projects',
+    icon: <FaFolderOpen />,
+    type: 'section',
+  },
+  {
+    id: 'contact',
+    icon: <FaEnvelope />,
+    type: 'section',
+  },
+];
+
+const NAVBAR_OFFSET = 95;
 
 const Navbar = () => {
+  const { language, setLanguage, t } = useLanguage();
+
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
 
-  const navItems = [
-    { id: 'home', label: 'Home', icon: <FaHome /> },
-    { id: 'about', label: 'About', icon: <FaUser /> },
-    { id: 'journey', label: 'Journey', icon: <FaRoute /> },
-    { id: 'projects', label: 'Projects', icon: <FaFolderOpen /> },
-    { id: 'contact', label: 'Contact', icon: <FaEnvelope /> },
-  ];
+  /* =========================================================
+     DETECT SCROLL + ACTIVE SECTION
+  ========================================================= */
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 15);
+    let ticking = false;
+    let frameId = null;
+    let sectionOffsets = [];
+
+    const measureSections = () => {
+      sectionOffsets = navItems
+        .map((item) => {
+          const section = document.getElementById(item.id);
+          return section ? { id: item.id, top: section.offsetTop } : null;
+        })
+        .filter(Boolean);
     };
 
-    handleScroll();
-    window.addEventListener('scroll', handleScroll);
+    const updateScrollState = () => {
+      const scrollY = window.scrollY;
 
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      setScrolled((previous) => {
+        const next = scrollY > 15;
+        return previous === next ? previous : next;
+      });
 
-  useEffect(() => {
-    const sections = navItems
-      .map((item) => document.getElementById(item.id))
-      .filter(Boolean);
+      let currentSection = 'home';
 
-    if (!sections.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleSections = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-
-        if (visibleSections.length > 0) {
-          const currentId = visibleSections[0].target.id;
-          setActiveSection(currentId);
+      sectionOffsets.forEach((section) => {
+        if (scrollY + NAVBAR_OFFSET + 40 >= section.top) {
+          currentSection = section.id;
         }
-      },
-      {
-        threshold: [0.18, 0.3, 0.45],
-        rootMargin: '-110px 0px -38% 0px',
+      });
+
+      setActiveSection((previous) =>
+        previous === currentSection ? previous : currentSection
+      );
+
+      ticking = false;
+      frameId = null;
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        frameId = window.requestAnimationFrame(updateScrollState);
+        ticking = true;
       }
-    );
+    };
 
-    sections.forEach((section) => observer.observe(section));
+    const handleResize = () => {
+      measureSections();
+      handleScroll();
+    };
 
-    return () => observer.disconnect();
+    measureSections();
+    updateScrollState();
+
+    window.addEventListener('scroll', handleScroll, {
+      passive: true,
+    });
+
+    window.addEventListener('resize', handleResize, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
   }, []);
 
+  /* =========================================================
+     LOCK BODY SCROLL WHEN MOBILE MENU IS OPEN
+  ========================================================= */
+
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+
     document.body.style.overflow = isOpen ? 'hidden' : '';
 
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
     };
   }, [isOpen]);
 
+  /* =========================================================
+     CLOSE MOBILE MENU WITH ESCAPE
+  ========================================================= */
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
+
+  /* =========================================================
+     HANDLE INITIAL URL HASH
+  ========================================================= */
+
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
+
     if (!hash) return;
 
     const section = document.getElementById(hash);
+
     if (!section) return;
 
-    const navbarOffset = 95;
-    const top =
-      section.getBoundingClientRect().top + window.scrollY - navbarOffset;
+    const timer = setTimeout(() => {
+      const top =
+        section.getBoundingClientRect().top +
+        window.scrollY -
+        NAVBAR_OFFSET;
 
-    setTimeout(() => {
       window.scrollTo({
-        top,
-        behavior: 'smooth',
+        top: Math.max(0, top),
+        behavior: 'auto',
       });
 
       setActiveSection(hash);
-    }, 100);
+    }, 200);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
-  const handleNavClick = (e, id) => {
-    e.preventDefault();
+  /* =========================================================
+     NAVIGATION CLICK
+  ========================================================= */
 
-    const section = document.getElementById(id);
+  const handleNavClick = (event, item) => {
+    event.preventDefault();
 
+    const section = document.getElementById(item.id);
+
+    /*
+      Si la section n'existe pas sur la page actuelle,
+      on retourne à la Home avec le bon hash.
+    */
     if (!section) {
-      console.log(`Section not found: ${id}`);
+      if (window.location.pathname !== '/') {
+        window.location.href = `/#${item.id}`;
+        return;
+      }
+
+      console.warn(
+        `Section "${item.id}" not found in the page.`
+      );
+
       return;
     }
 
-    const navbarOffset = 95;
+    /*
+      Calcul de la position en tenant compte
+      de la hauteur de la navbar.
+    */
     const top =
-      section.getBoundingClientRect().top + window.scrollY - navbarOffset;
+      section.getBoundingClientRect().top +
+      window.scrollY -
+      NAVBAR_OFFSET;
 
+    /*
+      Scroll fluide vers la section.
+    */
     window.scrollTo({
-      top,
+      top: Math.max(0, top),
       behavior: 'smooth',
     });
 
-    window.history.pushState(null, '', `#${id}`);
-    setActiveSection(id);
+    /*
+      Met immédiatement le bouton en actif.
+    */
+    setActiveSection(item.id);
+
+    /*
+      Met à jour l'URL sans recharger la page.
+    */
+    window.history.pushState(
+      null,
+      '',
+      `#${item.id}`
+    );
+
+    /*
+      Ferme le menu mobile.
+    */
     setIsOpen(false);
   };
+
+  /* =========================================================
+     GO HOME
+  ========================================================= */
+
+  const handleBrandClick = (event) => {
+    event.preventDefault();
+
+    const homeSection = document.getElementById('home');
+
+    if (!homeSection) {
+      window.location.href = '/';
+      return;
+    }
+
+    const top =
+      homeSection.getBoundingClientRect().top +
+      window.scrollY -
+      NAVBAR_OFFSET;
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: 'smooth',
+    });
+
+    setActiveSection('home');
+
+    window.history.pushState(
+      null,
+      '',
+      '#home'
+    );
+
+    setIsOpen(false);
+  };
+
+  /* =========================================================
+     GET NAV LABEL
+  ========================================================= */
+
+  const getNavLabel = (item) => {
+    return t(`nav.${item.id}`);
+  };
+
+  /* =========================================================
+     RENDER
+  ========================================================= */
 
   return (
     <motion.nav
       initial={{ y: -90, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.55, ease: 'easeOut' }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      transition={{
+        duration: 0.55,
+        ease: 'easeOut',
+      }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 ${
         scrolled
-          ? 'bg-[#071226]/90 backdrop-blur-2xl border-b border-fuchsia-500/20 shadow-[0_18px_55px_rgba(0,0,0,0.35)]'
-          : 'bg-[#071226]/72 backdrop-blur-xl border-b border-white/5'
+          ? 'bg-[#071226]/95 border-b border-fuchsia-500/20 shadow-[0_12px_32px_rgba(0,0,0,0.28)]'
+          : 'bg-[#071226]/92 border-b border-white/5'
       }`}
     >
+      {/* =====================================================
+          TOP GLOW LINE
+      ===================================================== */}
+
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-fuchsia-400/60 to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between gap-4">
-          {/* Brand */}
+
+          {/* =================================================
+              BRAND
+          ================================================= */}
+
           <motion.a
             href="#home"
-            onClick={(e) => handleNavClick(e, 'home')}
+            onClick={handleBrandClick}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="group flex min-w-0 items-center gap-4"
+            className="group flex min-w-0 shrink-0 items-center gap-4 rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071226]"
+            aria-label={t('goHome')}
           >
+            {/* Logo */}
+
             <div className="relative shrink-0">
               <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-500 p-[2px] shadow-lg shadow-fuchsia-500/25">
                 <div className="flex h-full w-full items-center justify-center rounded-2xl bg-[#071226]">
-                  <span className="text-xl font-black bg-gradient-to-br from-fuchsia-300 to-violet-300 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-br from-fuchsia-300 to-violet-300 bg-clip-text text-xl font-black text-transparent">
                     YC
                   </span>
                 </div>
               </div>
 
-              <div className="absolute -inset-2 rounded-3xl bg-gradient-to-br from-violet-600 to-fuchsia-600 opacity-30 blur-xl -z-10 group-hover:opacity-55 transition-opacity duration-500" />
+              <div className="absolute -inset-2 -z-10 rounded-3xl bg-gradient-to-br from-violet-600 to-fuchsia-600 opacity-30 blur-xl transition-opacity duration-500 group-hover:opacity-55" />
             </div>
 
-            <div className="hidden sm:block min-w-0">
-              <h1 className="truncate text-2xl lg:text-3xl font-black text-white leading-none tracking-tight">
+            {/* Name */}
+
+            <div className="hidden min-w-0 sm:block">
+              <h1 className="truncate text-2xl font-black leading-none tracking-tight text-white lg:text-3xl">
                 Yesmine Cherif
               </h1>
 
-              <p className="mt-2 text-[11px] lg:text-xs text-fuchsia-300 font-semibold flex items-center gap-1.5">
+              <p className="mt-2 flex items-center gap-1.5 text-[11px] font-semibold text-fuchsia-300 lg:text-xs">
                 <FaGraduationCap />
-                3rd Year Computer Science Bachelor · IIT
+
+                {t('engineeringCycle')}
               </p>
             </div>
           </motion.a>
 
-          {/* Desktop navigation */}
-          <div className="hidden lg:flex items-center justify-center gap-2 rounded-3xl border border-white/8 bg-white/[0.035] p-2 backdrop-blur-2xl">
+          {/* =================================================
+              DESKTOP NAVIGATION
+          ================================================= */}
+
+          <div className="hidden items-center justify-center gap-2 rounded-3xl border border-white/10 bg-white/[0.035] p-2 lg:flex">
+
             {navItems.map((item) => {
-              const isActive = activeSection === item.id;
+              const isActive =
+                activeSection === item.id;
 
               return (
                 <motion.a
                   key={item.id}
                   href={`#${item.id}`}
-                  onClick={(e) => handleNavClick(e, item.id)}
+                  onClick={(event) =>
+                    handleNavClick(event, item)
+                  }
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.96 }}
+                  aria-current={
+                    isActive ? 'page' : undefined
+                  }
+                  className="relative overflow-hidden rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 xl:px-5"
                   style={{
-                    color: isActive ? '#FFFFFF' : '#CBD5E1',
+                    color: isActive
+                      ? '#FFFFFF'
+                      : '#CBD5E1',
                   }}
-                  className="relative overflow-hidden px-4 xl:px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-300"
                 >
+                  {/* Active background */}
+
                   {isActive && (
                     <motion.span
                       layoutId="activeNavPill"
@@ -196,61 +419,134 @@ const Navbar = () => {
                     />
                   )}
 
+                  {/* Hover background */}
+
                   {!isActive && (
-                    <span className="absolute inset-0 rounded-2xl bg-white/0 hover:bg-white/[0.06] transition-colors duration-300" />
+                    <span className="absolute inset-0 rounded-2xl bg-white/0 transition-colors duration-300 hover:bg-white/[0.06]" />
                   )}
 
+                  {/* Content */}
+
                   <span className="relative z-10 flex items-center gap-2 whitespace-nowrap">
-                    <span className={isActive ? 'text-white' : 'text-fuchsia-300'}>
+
+                    <span
+                      className={
+                        isActive
+                          ? 'text-white'
+                          : 'text-fuchsia-300'
+                      }
+                    >
                       {item.icon}
                     </span>
-                    {item.label}
+
+                    {getNavLabel(item)}
+
                   </span>
                 </motion.a>
               );
             })}
           </div>
 
-          {/* Mobile button */}
-          <div className="flex items-center gap-3 shrink-0">
+          {/* =================================================
+              LANGUAGE + MOBILE BUTTON
+          ================================================= */}
+
+          <div className="flex shrink-0 items-center gap-3">
+
+            {/* Language */}
+
+            <div
+              className="flex items-center rounded-xl border border-white/10 bg-white/[0.06] p-1 text-xs font-black text-slate-300"
+              role="group"
+              aria-label={t('language')}
+            >
+              {['en', 'fr'].map((code) => (
+                <button
+                  key={code}
+                  type="button"
+                  onClick={() => setLanguage(code)}
+                  aria-pressed={language === code}
+                  className={`rounded-lg px-2.5 py-1.5 transition ${
+                    language === code
+                      ? 'bg-fuchsia-500 text-white shadow-sm'
+                      : 'hover:text-white'
+                  }`}
+                >
+                  {code.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            {/* Mobile button */}
+
             <button
               type="button"
               onClick={() => setIsOpen(true)}
-              className="lg:hidden h-11 w-11 rounded-2xl bg-white/[0.06] backdrop-blur-xl border border-white/10 text-slate-200 hover:text-white hover:border-fuchsia-400/35 hover:bg-fuchsia-500/10 transition flex items-center justify-center"
-              aria-label="Open menu"
+              aria-label={t('openNavigation')}
+              aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] text-slate-200 backdrop-blur-xl transition hover:border-fuchsia-400/35 hover:bg-fuchsia-500/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 lg:hidden"
             >
-              <FaBars className="w-5 h-5" />
+              <FaBars className="h-5 w-5" />
             </button>
+
           </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* =====================================================
+          MOBILE MENU
+      ===================================================== */}
+
       <AnimatePresence>
         {isOpen && (
           <>
+            {/* Overlay */}
+
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 lg:hidden"
+              aria-hidden="true"
+              className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
             />
 
+            {/* Sidebar */}
+
             <motion.aside
+              id="mobile-navigation"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 32, stiffness: 260 }}
-              className="fixed inset-y-0 right-0 z-50 w-[86%] max-w-[360px] bg-[#071226]/96 backdrop-blur-3xl border-l border-fuchsia-500/25 lg:hidden overflow-hidden"
+              transition={{
+                type: 'spring',
+                damping: 32,
+                stiffness: 260,
+              }}
+              role="dialog"
+              aria-modal="true"
+              aria-label={t('mobileNavigation')}
+              className="fixed inset-y-0 right-0 z-50 w-[86%] max-w-[360px] overflow-hidden border-l border-fuchsia-500/25 bg-[#071226]/96 backdrop-blur-3xl lg:hidden"
             >
+
+              {/* Background glow */}
+
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(236,72,153,0.18),transparent_32%),radial-gradient(circle_at_bottom_left,rgba(124,58,237,0.16),transparent_30%)]" />
 
               <div className="relative z-10 flex h-full flex-col p-6">
-                {/* Mobile header */}
-                <div className="flex items-start justify-between gap-4 mb-8">
-                  <div className="flex items-center gap-4 min-w-0">
-                    <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-500 p-[2px] shadow-lg shadow-fuchsia-500/25 shrink-0">
+
+                {/* =================================================
+                    MOBILE HEADER
+                ================================================= */}
+
+                <div className="mb-8 flex items-start justify-between gap-4">
+
+                  <div className="flex min-w-0 items-center gap-4">
+
+                    {/* Profile */}
+
+                    <div className="h-16 w-16 shrink-0 rounded-2xl bg-gradient-to-br from-violet-600 via-fuchsia-600 to-pink-500 p-[2px] shadow-lg shadow-fuchsia-500/25">
                       <img
                         src={yesmineImg}
                         alt="Yesmine Cherif"
@@ -258,51 +554,76 @@ const Navbar = () => {
                       />
                     </div>
 
+                    {/* Name */}
+
                     <div className="min-w-0">
-                      <h3 className="text-xl font-black text-white leading-tight">
+
+                      <h3 className="text-xl font-black leading-tight text-white">
                         Yesmine Cherif
                       </h3>
 
-                      <p className="text-sm text-fuchsia-300 mt-1">
-                        Full Stack · Data & AI
+                      <p className="mt-1 text-sm text-fuchsia-300">
+                        {t('profileRole')}
                       </p>
+
                     </div>
+
                   </div>
+
+                  {/* Close */}
 
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="h-11 w-11 rounded-2xl bg-white/[0.06] border border-white/10 text-slate-200 hover:text-white hover:bg-fuchsia-500/10 transition flex items-center justify-center shrink-0"
-                    aria-label="Close menu"
+                    aria-label={t('closeNavigation')}
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] text-slate-200 transition hover:bg-fuchsia-500/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
                   >
-                    <FaTimes className="w-5 h-5" />
+                    <FaTimes className="h-5 w-5" />
                   </button>
+
                 </div>
 
-                {/* Mobile navigation */}
+                {/* =================================================
+                    MOBILE NAVIGATION
+                ================================================= */}
+
                 <div className="flex flex-col gap-3">
+
                   {navItems.map((item) => {
-                    const isActive = activeSection === item.id;
+                    const isActive =
+                      activeSection === item.id;
 
                     return (
                       <motion.a
                         key={item.id}
                         href={`#${item.id}`}
-                        onClick={(e) => handleNavClick(e, item.id)}
+                        onClick={(event) =>
+                          handleNavClick(event, item)
+                        }
                         whileTap={{ scale: 0.98 }}
+                        aria-current={
+                          isActive
+                            ? 'page'
+                            : undefined
+                        }
                         style={{
                           background: isActive
                             ? 'linear-gradient(135deg, rgba(124,58,237,0.42), rgba(236,72,153,0.36))'
                             : 'rgba(255,255,255,0.045)',
-                          color: isActive ? '#FFFFFF' : '#CBD5E1',
+
+                          color: isActive
+                            ? '#FFFFFF'
+                            : '#CBD5E1',
+
                           border: isActive
                             ? '1px solid rgba(236,72,153,0.35)'
                             : '1px solid rgba(255,255,255,0.08)',
                         }}
-                        className="flex items-center gap-4 rounded-2xl px-5 py-4 text-base font-bold transition-all"
+                        className="flex items-center gap-4 rounded-2xl px-5 py-4 text-base font-bold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
                       >
+
                         <span
-                          className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          className={`flex h-10 w-10 items-center justify-center rounded-xl ${
                             isActive
                               ? 'bg-white/15 text-white'
                               : 'bg-white/[0.04] text-fuchsia-300'
@@ -311,25 +632,34 @@ const Navbar = () => {
                           {item.icon}
                         </span>
 
-                        {item.label}
+                        {getNavLabel(item)}
+
                       </motion.a>
                     );
                   })}
+
                 </div>
 
-                {/* Mobile bottom */}
+                {/* =================================================
+                    MOBILE BOTTOM
+                ================================================= */}
+
                 <div className="mt-auto pt-8">
+
                   <div className="rounded-3xl border border-white/10 bg-white/[0.045] p-5">
-                    <p className="text-white font-bold mb-2">
-                      Available · Opportunities 2026
+
+                    <p className="mb-2 font-bold text-white">
+                      {t('academicStatus')}
                     </p>
 
-                    <p className="text-slate-400 text-sm leading-relaxed">
-                      Final-year internship, work-study program, collaboration,
-                      or full-stack project.
+                    <p className="text-sm leading-relaxed text-slate-400">
+                      {t('engineeringCycle')}
                     </p>
+
                   </div>
+
                 </div>
+
               </div>
             </motion.aside>
           </>

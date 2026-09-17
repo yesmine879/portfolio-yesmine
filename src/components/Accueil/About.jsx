@@ -1,14 +1,51 @@
 // src/components/About.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
-  FaReact, FaAngular, FaLaravel, FaPython, FaNodeJs,
-  FaCertificate, FaUsers, FaGraduationCap,
-  FaExternalLinkAlt, FaDownload, FaJava, FaPhp,
-  FaGitAlt, FaDatabase, FaMicrochip, FaArrowRight,
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useInView,
+  useMotionValue,
+  useSpring,
+  useReducedMotion,
+} from 'framer-motion';
+import {
+  FaReact,
+  FaAngular,
+  FaLaravel,
+  FaPython,
+  FaNodeJs,
+  FaJava,
+  FaPhp,
+  FaGitAlt,
+  FaDatabase,
+  FaDocker,
+  FaLinux,
+  FaHtml5,
+  FaCss3Alt,
+  FaGraduationCap,
+  FaDownload,
+  FaExpand,
+  FaExternalLinkAlt,
+  FaTimes,
+  FaSearch,
+  FaCheck,
+  FaLink,
+  FaChevronLeft,
+  FaChevronRight,
+  FaAward,
+  FaTrophy,
+  FaUsers,
 } from 'react-icons/fa';
+import { useLanguage } from '../../context/LanguageContext.jsx';
 import {
-  SiSpringboot, SiFlutter, SiMysql, SiArduino, SiJavascript,
+  SiSpringboot,
+  SiFlutter,
+  SiMysql,
+  SiPostgresql,
+  SiJavascript,
+  SiTailwindcss,
 } from 'react-icons/si';
 
 import codecore from '../../assets/pdf/codecore.pdf';
@@ -23,10 +60,308 @@ import aticSpeakerPdf from '../../assets/pdf/atic-speaker.pdf';
 import math1Pdf from '../../assets/pdf/math1.pdf';
 import pianoPdf from '../../assets/pdf/pianofr.pdf';
 import nvidia from '../../assets/pdf/my_learning_nvidia.pdf';
+import delfB2Pdf from '../../assets/pdf/delf-b2-nau.pdf';
+import projectsValleyPdf from '../../assets/pdf/projects-valley.pdf';
 
-const cvFile = '/CV.pdf';
+const cvFile = '/cv-yesmine-cherif.pdf';
 
-/* ─── Animated Counter ──────────────────────────────────────── */
+const NAVBAR_OFFSET = 95;
+
+/* ─── Shared palette ─────────────────────────────────────────── */
+const C = {
+  bg: 'rgba(10,10,15,0.90)',
+  head: '#f1f0fb',
+  text: '#e2e8f0',
+  muted: '#94a3b8',
+  dim: '#64748b',
+  violet: '#a855f7',
+  violetSoft: '#c084fc',
+  lilac: '#c4b5fd',
+  indigo: '#818cf8',
+};
+
+const frenchSkillGroups = {
+  'Frontend Development': ['Développement front-end', 'Interfaces web et applications métier'],
+  'Backend Development': ['Développement back-end', 'API REST, microservices, authentification'],
+  'Programming Languages': ['Langages de programmation', 'Fondamentaux algorithmiques et orientés objet'],
+  Databases: ['Bases de données', 'Modélisation, requêtes et ORM'],
+  'Data & Artificial Intelligence': ['Data et intelligence artificielle', 'Analyse, modèles et visualisation'],
+  'Tools, DevOps & Mobile': ['Outils, DevOps et mobile', 'Versionnement, conteneurs et applications mobiles'],
+};
+
+/* ─── UI strings not covered by the global t() dictionary ─────
+   These are small, component-local labels (aria-labels, tooltips,
+   modal chrome, category badges). Kept here—rather than forcing
+   them into LanguageContext—so this file stays self-contained.
+   If you'd rather centralize them in LanguageContext.jsx, just
+   move this object's contents into your translation JSON under
+   an "aboutContent.ui" namespace and swap UI_TEXT[language] below
+   for t('aboutContent.ui'). */
+const UI_TEXT = {
+  en: {
+    viewCertificateLabel: (title) => `View ${title} certificate`,
+    viewCertificateHint: 'View certificate',
+    linkCopiedLabel: 'Certificate link copied',
+    copyLinkLabel: 'Copy certificate link',
+    linkCopiedTitle: 'Link copied',
+    copyLinkTitle: 'Copy link',
+    viewPdf: 'View PDF',
+    download: 'Download',
+    closeViewer: 'Close certificate viewer',
+    previewUnavailable: "Inline preview isn't available on this device.",
+    openPdf: 'Open the PDF',
+    previous: 'Previous',
+    next: 'Next',
+    navHint: 'Arrow keys to navigate · Esc to close',
+    categories: {
+      Certification: 'Certification',
+      Hackathon: 'Hackathon',
+      Participation: 'Participation',
+    },
+  },
+  fr: {
+    viewCertificateLabel: (title) => `Voir le certificat ${title}`,
+    viewCertificateHint: 'Voir le certificat',
+    linkCopiedLabel: 'Lien du certificat copié',
+    copyLinkLabel: 'Copier le lien du certificat',
+    linkCopiedTitle: 'Lien copié',
+    copyLinkTitle: 'Copier le lien',
+    viewPdf: 'Voir le PDF',
+    download: 'Télécharger',
+    closeViewer: 'Fermer la visionneuse de certificats',
+    previewUnavailable: "L'aperçu intégré n'est pas disponible sur cet appareil.",
+    openPdf: 'Ouvrir le PDF',
+    previous: 'Précédent',
+    next: 'Suivant',
+    navHint: 'Flèches pour naviguer · Échap pour fermer',
+    categories: {
+      Certification: 'Certification',
+      Hackathon: 'Hackathon',
+      Participation: 'Participation',
+    },
+  },
+};
+
+const ORBS = [
+  {
+    size: 540,
+    top: '-6%',
+    left: '66%',
+    color: 'rgba(168,85,247,0.16)',
+    path: { x: [0, -40, 0], y: [0, 30, 0] },
+    duration: 18,
+  },
+  {
+    size: 420,
+    top: '38%',
+    left: '-10%',
+    color: 'rgba(236,72,153,0.12)',
+    path: { x: [0, 35, 0], y: [0, -25, 0] },
+    duration: 22,
+  },
+  {
+    size: 360,
+    top: '78%',
+    left: '58%',
+    color: 'rgba(99,102,241,0.14)',
+    path: { x: [0, 25, 0], y: [0, 40, 0] },
+    duration: 26,
+  },
+];
+
+/* ─── Animated particle constellation ───────────────────────── */
+const ParticleNetwork = ({ prefersReducedMotion }) => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const parent = canvas.parentElement;
+    if (!parent) return;
+
+    let width = 0;
+    let height = 0;
+    let particles = [];
+    let rafId = 0;
+    let elapsed = 0;
+
+    const DENSITY = 9000;
+    const MAX_DIST = 140;
+    const MAX_DPR = 2;
+
+    const LAYERS = [
+      {
+        share: 0.5,
+        speed: [0.16, 0.32],
+        radius: [0.5, 1.0],
+        alpha: [0.25, 0.45],
+      },
+      {
+        share: 0.32,
+        speed: [0.32, 0.55],
+        radius: [0.9, 1.6],
+        alpha: [0.4, 0.62],
+      },
+      {
+        share: 0.18,
+        speed: [0.55, 0.85],
+        radius: [1.4, 2.3],
+        alpha: [0.55, 0.85],
+      },
+    ];
+
+    const rand = (a, b) => a + Math.random() * (b - a);
+
+    const spawn = (layer, y) => ({
+      x: Math.random() * width,
+      y: y != null ? y : rand(-40, height),
+      vx: rand(-0.12, 0.12),
+      vy: rand(layer.speed[0], layer.speed[1]),
+      r: rand(layer.radius[0], layer.radius[1]),
+      baseAlpha: rand(layer.alpha[0], layer.alpha[1]),
+      twinkleSpeed: rand(0.6, 1.6),
+      twinklePhase: rand(0, Math.PI * 2),
+      depth:
+        layer === LAYERS[2]
+          ? 2
+          : layer === LAYERS[1]
+            ? 1
+            : 0,
+    });
+
+    const resize = () => {
+      const rect = parent.getBoundingClientRect();
+
+      width = Math.max(1, Math.floor(rect.width));
+      height = Math.max(1, Math.floor(rect.height));
+
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const total = Math.max(
+        40,
+        Math.min(150, Math.floor((width * height) / DENSITY))
+      );
+
+      particles = [];
+
+      LAYERS.forEach((layer) => {
+        const count = Math.round(total * layer.share);
+
+        for (let i = 0; i < count; i += 1) {
+          particles.push(spawn(layer));
+        }
+      });
+    };
+
+    const step = (t) => {
+      elapsed = t || 0;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.shadowBlur = 0;
+
+      /* Connections */
+      for (let i = 0; i < particles.length; i += 1) {
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const a = particles[i];
+          const b = particles[j];
+
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const distanceSquared = dx * dx + dy * dy;
+
+          if (distanceSquared < MAX_DIST * MAX_DIST) {
+            const distance = Math.sqrt(distanceSquared);
+            const proximity = 1 - distance / MAX_DIST;
+
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgba(168,85,247,${0.16 * proximity})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      /* Particles */
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.y > height + 20) {
+          p.y = -20;
+          p.x = Math.random() * width;
+        }
+
+        if (p.x < -20) p.x = width + 20;
+        if (p.x > width + 20) p.x = -20;
+
+        const twinkle =
+          0.75 +
+          0.25 *
+            Math.sin(
+              elapsed * 0.0016 * p.twinkleSpeed + p.twinklePhase
+            );
+
+        const alpha = p.baseAlpha * twinkle;
+
+        if (p.depth === 2) {
+          ctx.save();
+          ctx.shadowColor = 'rgba(196,181,253,0.9)';
+          ctx.shadowBlur = 6;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(196,181,253,${alpha})`;
+        ctx.fill();
+
+        if (p.depth === 2) {
+          ctx.restore();
+        }
+      }
+
+      rafId = requestAnimationFrame(step);
+    };
+
+    resize();
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(parent);
+
+    rafId = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      resizeObserver.disconnect();
+    };
+  }, [prefersReducedMotion]);
+
+  if (prefersReducedMotion) return null;
+
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="absolute inset-0 pointer-events-none"
+    />
+  );
+};
+
+/* ─── Counter ────────────────────────────────────────────────── */
 const AnimatedCounter = ({ value, label }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -35,917 +370,1608 @@ const AnimatedCounter = ({ value, label }) => {
   useEffect(() => {
     if (!inView) return;
 
-    let start = 0;
     const end = parseInt(value, 10);
-    const duration = 1800;
-    const step = duration / end;
+
+    if (!Number.isFinite(end) || end <= 0) {
+      setCount(end || 0);
+      return undefined;
+    }
+
+    let start = 0;
 
     const timer = setInterval(() => {
       start += 1;
       setCount(start);
 
-      if (start >= end) clearInterval(timer);
-    }, step);
+      if (start >= end) {
+        clearInterval(timer);
+      }
+    }, 1500 / end);
 
     return () => clearInterval(timer);
   }, [inView, value]);
 
   return (
     <div ref={ref} className="text-center">
-      <div className="text-4xl md:text-5xl font-black text-indigo-600 tabular-nums">
+      <div
+        className="text-4xl md:text-5xl font-black tabular-nums"
+        style={{
+          background:
+            'linear-gradient(135deg, #e879f9 0%, #a855f7 45%, #818cf8 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}
+      >
         {count}
-        <span className="text-indigo-400">+</span>
       </div>
 
-      <div className="text-sm font-semibold text-gray-500 uppercase tracking-widest mt-1">
+      <div
+        className="text-xs font-semibold mt-1"
+        style={{
+          color: C.dim,
+          letterSpacing: '0.14em',
+        }}
+      >
         {label}
       </div>
     </div>
   );
 };
 
-/* ─── SVG Certificate Preview ───────────────────────────────── */
-const CertPreview = ({ title, issuer, date, accent, bg1, bg2, logo }) => {
-  const id = issuer.replace(/\s/g, '-');
-  const shortTitle = title.length > 30 ? title.substring(0, 28) + '…' : title;
-  const titlePart2 =
-    title.length > 30
-      ? title.substring(28, 56) + (title.length > 56 ? '…' : '')
-      : '';
+/* ─── Monogram for technologies without a dedicated icon ────── */
+const Mono = ({ children, color }) => (
+  <span
+    className="inline-flex items-center justify-center rounded-md font-black shrink-0"
+    style={{
+      width: 18,
+      height: 18,
+      fontSize: 9,
+      color,
+      background: `${color}22`,
+      letterSpacing: '-0.02em',
+    }}
+  >
+    {children}
+  </span>
+);
+
+/* ─── Skills ─────────────────────────────────────────────────── */
+const skillGroups = [
+  {
+    group: 'Frontend Development',
+    note: 'Web interfaces and business applications',
+    items: [
+      { icon: <FaAngular />, name: 'Angular', color: '#f87171' },
+      { icon: <FaReact />, name: 'React / React Native', color: '#22d3ee' },
+      { icon: <Mono color="#e2e8f0">N</Mono>, name: 'Next.js', color: '#e2e8f0' },
+      { icon: <SiJavascript />, name: 'JavaScript', color: '#fbbf24' },
+      { icon: <SiTailwindcss />, name: 'Tailwind CSS', color: '#38bdf8' },
+      { icon: <FaHtml5 />, name: 'HTML5', color: '#fb923c' },
+      { icon: <FaCss3Alt />, name: 'CSS3', color: '#60a5fa' },
+    ],
+  },
+  {
+    group: 'Backend Development',
+    note: 'REST APIs, microservices, authentication',
+    items: [
+      { icon: <FaLaravel />, name: 'Laravel', color: '#fb7185' },
+      { icon: <FaNodeJs />, name: 'Node.js', color: '#4ade80' },
+      { icon: <Mono color="#f472b6">Ne</Mono>, name: 'NestJS', color: '#f472b6' },
+      { icon: <SiSpringboot />, name: 'Spring Boot', color: '#34d399' },
+      { icon: <FaPhp />, name: 'PHP', color: '#a5b4fc' },
+      { icon: <Mono color="#c4b5fd">{'{}'}</Mono>, name: 'REST APIs', color: '#c4b5fd' },
+      { icon: <Mono color="#38bdf8">Kc</Mono>, name: 'Keycloak', color: '#38bdf8' },
+    ],
+  },
+  {
+    group: 'Programming Languages',
+    note: 'Algorithmic and object-oriented foundations',
+    items: [
+      { icon: <FaPython />, name: 'Python', color: '#fcd34d' },
+      { icon: <FaJava />, name: 'Java', color: '#fb923c' },
+      { icon: <Mono color="#c084fc">C#</Mono>, name: 'C#', color: '#c084fc' },
+      { icon: <Mono color="#93c5fd">C+</Mono>, name: 'C++', color: '#93c5fd' },
+      { icon: <Mono color="#a5b4fc">C</Mono>, name: 'C', color: '#a5b4fc' },
+      { icon: <Mono color="#c4b5fd">.N</Mono>, name: '.NET', color: '#c4b5fd' },
+    ],
+  },
+  {
+    group: 'Databases',
+    note: 'Modeling, queries, and ORM',
+    items: [
+      { icon: <SiMysql />, name: 'MySQL', color: '#22d3ee' },
+      { icon: <SiPostgresql />, name: 'PostgreSQL', color: '#60a5fa' },
+      { icon: <Mono color="#e2e8f0">Pr</Mono>, name: 'Prisma', color: '#e2e8f0' },
+      { icon: <FaDatabase />, name: 'SQL', color: '#93c5fd' },
+    ],
+  },
+  {
+    group: 'Data & Artificial Intelligence',
+    note: 'Analysis, models, and visualization',
+    items: [
+      { icon: <Mono color="#fbbf24">ML</Mono>, name: 'Machine Learning', color: '#fbbf24' },
+      { icon: <Mono color="#f472b6">DA</Mono>, name: 'Data Analysis', color: '#f472b6' },
+      { icon: <Mono color="#facc15">BI</Mono>, name: 'Power BI', color: '#facc15' },
+      { icon: <FaPython />, name: 'Python (Data)', color: '#fcd34d' },
+    ],
+  },
+  {
+    group: 'Tools, DevOps & Mobile',
+    note: 'Versioning, containers, and mobile apps',
+    items: [
+      { icon: <FaGitAlt />, name: 'Git', color: '#fb923c' },
+      { icon: <Mono color="#e2e8f0">GH</Mono>, name: 'GitHub', color: '#e2e8f0' },
+      { icon: <Mono color="#fb923c">GL</Mono>, name: 'GitLab', color: '#fb923c' },
+      { icon: <FaDocker />, name: 'Docker', color: '#38bdf8' },
+      { icon: <FaLinux />, name: 'Linux', color: '#e2e8f0' },
+      { icon: <Mono color="#c084fc">UML</Mono>, name: 'UML', color: '#c084fc' },
+      { icon: <SiFlutter />, name: 'Flutter', color: '#22d3ee' },
+    ],
+  },
+];
+
+/* Languages: name + proficiency level, translated per UI language.
+   Rendered via languages.map(...) below using lang.name[language]
+   and lang.level[language]. */
+const languages = [
+  {
+    name: { en: 'Arabic', fr: 'Arabe' },
+    level: { en: 'Native language', fr: 'Langue maternelle' },
+  },
+  {
+    name: { en: 'French', fr: 'Français' },
+    level: {
+      en: 'Fluent · DELF B2 in preparation',
+      fr: 'Courant · Préparation DELF B2',
+    },
+  },
+  {
+    name: { en: 'English', fr: 'Anglais' },
+    level: {
+      en: 'Professional working proficiency',
+      fr: 'Niveau professionnel',
+    },
+  },
+];
+
+/* ─── Certificates ───────────────────────────────────────────── */
+/* Each entry's title/issuer/tags are language maps; `category` stays
+   a fixed English key used internally for filtering and icon lookup
+   (its display label is translated separately via UI_TEXT.categories). */
+const certificates = [
+  {
+    title: {
+      en: 'AWS Academy Graduate — Cloud Foundations',
+      fr: 'Diplômée AWS Academy — Cloud Foundations',
+    },
+    issuer: { en: 'AWS Academy', fr: 'AWS Academy' },
+    category: 'Certification',
+    date: '2024',
+    tags: {
+      en: ['Cloud', 'AWS'],
+      fr: ['Cloud', 'AWS'],
+    },
+    file: awsCloudPdf,
+    accent: '#f59e0b',
+  },
+  {
+    title: {
+      en: 'Getting Started with Deep Learning',
+      fr: 'Introduction au Deep Learning',
+    },
+    issuer: { en: 'NVIDIA', fr: 'NVIDIA' },
+    category: 'Certification',
+    date: '2024',
+    tags: {
+      en: ['Deep Learning', 'AI'],
+      fr: ['Deep Learning', 'IA'],
+    },
+    file: nvidia,
+    accent: '#4ade80',
+  },
+  {
+    title: {
+      en: 'Scrum Fundamentals Certified',
+      fr: 'Certification Scrum Fundamentals',
+    },
+    issuer: { en: 'ScrumStudy', fr: 'ScrumStudy' },
+    category: 'Certification',
+    date: '2024',
+    tags: {
+      en: ['Scrum', 'Agile'],
+      fr: ['Scrum', 'Agile'],
+    },
+    file: scrumPdf,
+    accent: '#818cf8',
+  },
+  {
+    title: {
+      en: 'Project Management Fundamentals',
+      fr: 'Fondamentaux de la gestion de projet',
+    },
+    issuer: { en: 'IBM SkillsBuild', fr: 'IBM SkillsBuild' },
+    category: 'Certification',
+    date: '2024',
+    tags: {
+      en: ['Project Management'],
+      fr: ['Gestion de projet'],
+    },
+    file: ibmPmPdf,
+    accent: '#38bdf8',
+  },
+  {
+    title: {
+      en: 'DELF B2 Preparation Training Certificate',
+      fr: 'Attestation de formation — Préparation DELF B2',
+    },
+    issuer: { en: 'NAU', fr: 'NAU' },
+    category: 'Certification',
+    date: '2026',
+    tags: {
+      en: ['French', 'DELF B2'],
+      fr: ['Français', 'DELF B2'],
+    },
+    file: delfB2Pdf,
+    accent: '#34d399',
+  },
+  {
+    title: {
+      en: 'CodeCore Challenge',
+      fr: 'Défi CodeCore',
+    },
+    issuer: { en: 'CodeCore', fr: 'CodeCore' },
+    category: 'Hackathon',
+    date: '2026',
+    tags: {
+      en: ['Hackathon', 'Organization'],
+      fr: ['Hackathon', 'Organisation'],
+    },
+    file: codecore,
+    accent: '#fbbf24',
+  },
+  {
+    title: {
+      en: 'HACKVISION Hackathon',
+      fr: 'Hackathon HACKVISION',
+    },
+    issuer: { en: 'HackVision', fr: 'HackVision' },
+    category: 'Hackathon',
+    date: '2023',
+    tags: {
+      en: ['Hackathon', 'Innovation'],
+      fr: ['Hackathon', 'Innovation'],
+    },
+    file: hackvisionPdf,
+    accent: '#a855f7',
+  },
+  {
+    title: {
+      en: 'Arduino Hackathon — Line-Following Robot',
+      fr: 'Hackathon Arduino — Robot suiveur de ligne',
+    },
+    issuer: { en: 'IIT Sfax', fr: 'IIT Sfax' },
+    category: 'Hackathon',
+    date: '2023',
+    tags: {
+      en: ['Arduino', 'Robotics'],
+      fr: ['Arduino', 'Robotique'],
+    },
+    file: arduinoHackathonPdf,
+    accent: '#2dd4bf',
+  },
+  {
+    title: {
+      en: 'Speaker — ATIC Bootcamp',
+      fr: 'Intervenante — Bootcamp ATIC',
+    },
+    issuer: { en: 'ATIC Congress', fr: 'Congrès ATIC' },
+    category: 'Participation',
+    date: '2024',
+    tags: {
+      en: ['Speaker', 'Tech'],
+      fr: ['Intervenante', 'Tech'],
+    },
+    file: aticSpeakerPdf,
+    accent: '#f472b6',
+  },
+  {
+    title: {
+      en: 'Organizer — Job Fair 10',
+      fr: 'Organisatrice — Job Fair 10',
+    },
+    issuer: { en: 'IIT Sfax', fr: 'IIT Sfax' },
+    category: 'Participation',
+    date: '2023',
+    tags: {
+      en: ['Organization', 'Career'],
+      fr: ['Organisation', 'Carrière'],
+    },
+    file: jobFairPdf,
+    accent: '#fb923c',
+  },
+  {
+    title: {
+      en: 'Participant — Projects Valley',
+      fr: 'Participante — Projects Valley',
+    },
+    issuer: { en: 'Projects Valley', fr: 'Projects Valley' },
+    category: 'Participation',
+    date: '2024',
+    tags: {
+      en: ['Participation'],
+      fr: ['Participation'],
+    },
+    file: projectsValleyPdf,
+    accent: '#f97316',
+  },
+  {
+    title: {
+      en: 'L\u2019Odyssée des Génies',
+      fr: 'L\u2019Odyssée des Génies',
+    },
+    issuer: { en: 'National Competition', fr: 'Compétition nationale' },
+    category: 'Participation',
+    date: '2023',
+    tags: {
+      en: ['Competition', 'Sciences'],
+      fr: ['Compétition', 'Sciences'],
+    },
+    file: odysseePdf,
+    accent: '#60a5fa',
+  },
+  {
+    title: {
+      en: 'Labyrinthe des Nombres',
+      fr: 'Labyrinthe des Nombres',
+    },
+    issuer: { en: 'IIT Sfax — Mathematics', fr: 'IIT Sfax — Mathématiques' },
+    category: 'Participation',
+    date: '2023',
+    tags: {
+      en: ['Mathematics'],
+      fr: ['Mathématiques'],
+    },
+    file: math1Pdf,
+    accent: '#e879f9',
+  },
+  {
+    title: {
+      en: '3rd National Piano Festival',
+      fr: '3ᵉ Festival national de piano',
+    },
+    issuer: { en: 'National Festival', fr: 'Festival national' },
+    category: 'Participation',
+    date: 'March 2022',
+    tags: {
+      en: ['Piano', 'Music'],
+      fr: ['Piano', 'Musique'],
+    },
+    file: pianoPdf,
+    accent: '#c084fc',
+  },
+];
+
+const FILTERS = [
+  'All',
+  'Certification',
+  'Hackathon',
+  'Participation',
+];
+
+const CATEGORY_ICON = {
+  Certification: <FaAward />,
+  Hackathon: <FaTrophy />,
+  Participation: <FaUsers />,
+};
+
+/* ─── Certificate Card ───────────────────────────────────────── */
+const CertCard = ({ item, index, onExpand, language }) => {
+  const [copied, setCopied] = useState(false);
+  const copyTimerRef = useRef(null);
+  const ui = UI_TEXT[language] || UI_TEXT.en;
+
+  const title = item.title[language] ?? item.title.en;
+  const issuer = item.issuer[language] ?? item.issuer.en;
+  const tags = item.tags[language] ?? item.tags.en;
+  const categoryLabel = ui.categories[item.category] ?? item.category;
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+    };
+  }, []);
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        new URL(item.file, window.location.origin).href
+      );
+
+      setCopied(true);
+
+      copyTimerRef.current = setTimeout(() => {
+        setCopied(false);
+      }, 1800);
+    } catch {
+      window.open(item.file, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   return (
-    <svg
-      viewBox="0 0 320 200"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ width: '100%', height: '100%', display: 'block' }}
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{
+        delay: (index % 3) * 0.06,
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="group relative rounded-2xl overflow-hidden flex flex-col"
+      style={{
+        background: 'rgba(255,255,255,0.035)',
+        border: '1px solid rgba(255,255,255,0.09)',
+        backdropFilter: 'blur(12px)',
+      }}
     >
-      <defs>
-        <linearGradient id={`bg-${id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={bg1} />
-          <stop offset="100%" stopColor={bg2} />
-        </linearGradient>
-      </defs>
-
-      <rect width="320" height="200" fill={`url(#bg-${id})`} />
-      <rect x="8" y="8" width="304" height="184" fill="none" stroke={accent} strokeWidth="2" rx="6" opacity="0.55" />
-      <rect x="14" y="14" width="292" height="172" fill="none" stroke={accent} strokeWidth="0.8" rx="3" opacity="0.3" />
-
-      <circle cx="14" cy="14" r="3.5" fill={accent} opacity="0.5" />
-      <circle cx="306" cy="14" r="3.5" fill={accent} opacity="0.5" />
-      <circle cx="14" cy="186" r="3.5" fill={accent} opacity="0.5" />
-      <circle cx="306" cy="186" r="3.5" fill={accent} opacity="0.5" />
-
-      <line x1="40" y1="30" x2="280" y2="30" stroke={accent} strokeWidth="0.7" opacity="0.35" />
-      <rect x="100" y="20" width="120" height="17" rx="8.5" fill={accent} opacity="0.12" />
-
-      <text
-        x="160"
-        y="31.5"
-        textAnchor="middle"
-        fill={accent}
-        fontSize="6.5"
-        fontWeight="800"
-        fontFamily="'Courier New', monospace"
-        letterSpacing="2"
+      <button
+        type="button"
+        onClick={onExpand}
+        aria-label={ui.viewCertificateLabel(title)}
+        className="relative w-full cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-inset"
+        style={{
+          aspectRatio: '16 / 9',
+          background: `
+            radial-gradient(circle at 30% 20%, ${item.accent}30 0%, transparent 55%),
+            radial-gradient(circle at 80% 85%, ${item.accent}1a 0%, transparent 60%),
+            #14101f
+          `,
+          borderBottom: '1px solid rgba(255,255,255,0.07)',
+          display: 'block',
+        }}
       >
-        {issuer.length > 18 ? issuer.substring(0, 17) + '…' : issuer}
-      </text>
+        <div
+          className="absolute inset-0"
+          aria-hidden="true"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
+            `,
+            backgroundSize: '22px 22px',
+          }}
+        />
 
-      <circle cx="160" cy="90" r="32" fill="white" opacity="0.5" />
-      <circle cx="160" cy="90" r="32" fill="none" stroke={accent} strokeWidth="1.8" opacity="0.65" />
-      <circle cx="160" cy="90" r="24" fill="none" stroke={accent} strokeWidth="0.7" strokeDasharray="3,2" opacity="0.45" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5">
+          <div
+            className="flex items-center justify-center rounded-2xl transition-transform group-hover:scale-105"
+            style={{
+              width: 52,
+              height: 52,
+              color: item.accent,
+              background: `${item.accent}1c`,
+              border: `1px solid ${item.accent}45`,
+              fontSize: 20,
+            }}
+          >
+            {CATEGORY_ICON[item.category] || <FaAward />}
+          </div>
 
-      <text x="160" y="97" textAnchor="middle" fontSize="22" fontFamily="serif" fill={accent} opacity="0.9">
-        {logo}
-      </text>
+          <p
+            className="text-[11px] font-bold text-center px-4"
+            style={{
+              color: item.accent,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {issuer}
+          </p>
+        </div>
 
-      <text
-        x="160"
-        y="143"
-        textAnchor="middle"
-        fill="#1e1b4b"
-        fontSize="7.5"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontStyle="italic"
-        opacity="0.5"
-        letterSpacing="1"
-      >
-        This certifies that
-      </text>
+        <span
+          className="pointer-events-none absolute top-3 left-3 text-[10px] font-semibold px-2.5 py-1 rounded-full"
+          style={{
+            color: item.accent,
+            background: 'rgba(10,10,15,0.72)',
+            border: `1px solid ${item.accent}55`,
+          }}
+        >
+          {categoryLabel}
+        </span>
 
-      <text x="160" y="155" textAnchor="middle" fill="#1e1b4b" fontSize="11" fontFamily="Georgia, 'Times New Roman', serif" fontWeight="700">
-        Yesmine Cherif
-      </text>
+        <span
+          className="pointer-events-none absolute bottom-3 right-3 inline-flex items-center gap-1.5 text-[10px] font-semibold px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{
+            color: C.lilac,
+            background: 'rgba(10,10,15,0.75)',
+          }}
+        >
+          <FaExpand style={{ fontSize: 9 }} />
+          {ui.viewCertificateHint}
+        </span>
+      </button>
 
-      <text x="160" y="168" textAnchor="middle" fill="#374151" fontSize="8" fontFamily="Georgia, serif" opacity="0.85">
-        {shortTitle}
-      </text>
+      <div className="px-5 pt-4 pb-5 flex flex-col flex-1">
+        <p
+          className="text-[11px] font-bold tracking-widest mb-1.5"
+          style={{ color: item.accent }}
+        >
+          {issuer}
+        </p>
 
-      {titlePart2 && (
-        <text x="160" y="178" textAnchor="middle" fill="#374151" fontSize="7.5" fontFamily="Georgia, serif" opacity="0.7">
-          {titlePart2}
-        </text>
-      )}
+        <h4
+          className="text-[15px] font-bold leading-snug mb-1"
+          style={{ color: C.text }}
+        >
+          {title}
+        </h4>
 
-      <text x="160" y="192" textAnchor="middle" fill={accent} fontSize="6.5" fontFamily="monospace" letterSpacing="0.8" opacity="0.75">
-        {date}
-      </text>
+        <p className="text-xs mb-3" style={{ color: C.dim }}>
+          {item.date}
+        </p>
 
-      <line x1="40" y1="184" x2="280" y2="184" stroke={accent} strokeWidth="0.7" opacity="0.35" />
-    </svg>
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="text-[10px] px-2 py-0.5 rounded-full"
+              style={{
+                color: '#cbd5e1',
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.10)',
+              }}
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-auto flex items-center gap-2">
+          <a
+            href={item.file}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 inline-flex items-center justify-center gap-2 text-xs font-semibold py-2.5 rounded-xl text-white transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+            style={{
+              background: `linear-gradient(135deg, ${item.accent}, ${item.accent}bb)`,
+            }}
+          >
+            <FaExternalLinkAlt style={{ fontSize: 10 }} />
+            {ui.viewPdf}
+          </a>
+
+          <a
+            href={item.file}
+            download
+            className="inline-flex items-center justify-center gap-2 text-xs font-semibold px-3.5 py-2.5 rounded-xl transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+            style={{
+              color: C.lilac,
+              border: '1px solid rgba(168,85,247,0.35)',
+            }}
+          >
+            <FaDownload style={{ fontSize: 10 }} />
+            {ui.download}
+          </a>
+
+          <button
+            type="button"
+            onClick={copyLink}
+            aria-label={copied ? ui.linkCopiedLabel : ui.copyLinkLabel}
+            title={copied ? ui.linkCopiedTitle : ui.copyLinkTitle}
+            className="inline-flex items-center justify-center rounded-xl transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+            style={{
+              width: 38,
+              height: 38,
+              color: copied ? '#4ade80' : C.muted,
+              border: '1px solid rgba(255,255,255,0.12)',
+            }}
+          >
+            {copied ? (
+              <FaCheck style={{ fontSize: 11 }} />
+            ) : (
+              <FaLink style={{ fontSize: 11 }} />
+            )}
+          </button>
+        </div>
+      </div>
+    </motion.article>
   );
 };
 
-/* ─── Data ──────────────────────────────────────────────────── */
-const certificates = [
-  {
-    title: 'CodeCore Challenge 2026',
-    issuer: 'CODECORE',
-    category: 'Hackathon',
-    date: '2026',
-    tags: ['Hackathon', 'Organization', 'Tech'],
-    file: codecore,
-    accent: '#d97706',
-    bg1: '#fffbeb',
-    bg2: '#fef3c7',
-    logo: '🏆',
-  },
-  {
-    title: 'Scrum Fundamentals Certified',
-    issuer: 'SCRUMSTUDY',
-    category: 'Certification',
-    date: '2024',
-    tags: ['Scrum', 'Agile', 'Project'],
-    file: scrumPdf,
-    accent: '#4f46e5',
-    bg1: '#eef2ff',
-    bg2: '#e0e7ff',
-    logo: '✦',
-  },
-  {
-    title: 'Project Management Fundamentals',
-    issuer: 'IBM SKILLSBUILD',
-    category: 'Certification',
-    date: '2024',
-    tags: ['IBM', 'Management', 'Planning'],
-    file: ibmPmPdf,
-    accent: '#0369a1',
-    bg1: '#f0f9ff',
-    bg2: '#e0f2fe',
-    logo: '◈',
-  },
-  {
-    title: 'AWS Cloud Foundations',
-    issuer: 'AWS ACADEMY',
-    category: 'Certification',
-    date: '2024',
-    tags: ['AWS', 'Cloud', 'Infrastructure'],
-    file: awsCloudPdf,
-    accent: '#ea580c',
-    bg1: '#fff7ed',
-    bg2: '#ffedd5',
-    logo: '☁',
-  },
-  {
-    title: 'Getting Started with Deep Learning',
-    issuer: 'NVIDIA',
-    category: 'Certification',
-    date: '2024',
-    tags: ['Deep Learning', 'AI', 'Neural Nets'],
-    file: nvidia,
-    accent: '#16a34a',
-    bg1: '#f0fdf4',
-    bg2: '#dcfce7',
-    logo: '⬡',
-  },
-  {
-    title: 'Speaker – ATIC AfroTech Congress',
-    issuer: 'ATIC CONGRESS',
-    category: 'Certificate',
-    date: '2024',
-    tags: ['Speaker', 'Tech', 'AfroTech'],
-    file: aticSpeakerPdf,
-    accent: '#db2777',
-    bg1: '#fdf2f8',
-    bg2: '#fce7f3',
-    logo: '🎤',
-  },
-  {
-    title: 'Hackathon HACKVISION',
-    issuer: 'HACKVISION',
-    category: 'Certificate',
-    date: '2023',
-    tags: ['Hackathon', 'Innovation', 'Dev'],
-    file: hackvisionPdf,
-    accent: '#7c3aed',
-    bg1: '#faf5ff',
-    bg2: '#ede9fe',
-    logo: '◉',
-  },
-  {
-    title: 'Arduino Hackathon & Line-Follower Robot',
-    issuer: 'IIT SFAX',
-    category: 'Certificate',
-    date: '2023',
-    tags: ['Arduino', 'IoT', 'Robotics'],
-    file: arduinoHackathonPdf,
-    accent: '#0d9488',
-    bg1: '#f0fdfa',
-    bg2: '#ccfbf1',
-    logo: '⚙',
-  },
-  {
-    title: "L'Odyssée des Génies",
-    issuer: 'COMPETITION',
-    category: 'Certificate',
-    date: '2023',
-    tags: ['Competition', 'Science', 'Innovation'],
-    file: odysseePdf,
-    accent: '#0284c7',
-    bg1: '#f0f9ff',
-    bg2: '#dbeafe',
-    logo: '★',
-  },
-  {
-    title: 'Labyrinthe des Nombres',
-    issuer: 'IIT SFAX MATH',
-    category: 'Certificate',
-    date: '2023',
-    tags: ['Mathematics', 'Contest', 'IIT'],
-    file: math1Pdf,
-    accent: '#c026d3',
-    bg1: '#fdf4ff',
-    bg2: '#fae8ff',
-    logo: '∑',
-  },
-  {
-    title: 'Organizing Committee – Job Fair 10',
-    issuer: 'IIT SFAX',
-    category: 'Certificate',
-    date: '2023',
-    tags: ['Organization', 'Career', 'Event'],
-    file: jobFairPdf,
-    accent: '#b45309',
-    bg1: '#fffbeb',
-    bg2: '#fef9c3',
-    logo: '◆',
-  },
-  {
-    title: 'National Piano Festival',
-    issuer: 'NATIONAL FESTIVAL',
-    category: 'Certificate',
-    date: 'March 2022',
-    tags: ['Piano', 'Music', 'Art'],
-    file: pianoPdf,
-    accent: '#6d28d9',
-    bg1: '#f5f3ff',
-    bg2: '#ede9fe',
-    logo: '♪',
-  },
-];
+/* ─── Full-screen PDF viewer ────────────────────────────────── */
+const PdfViewer = ({
+  item,
+  onClose,
+  onPrev,
+  onNext,
+  position,
+  total,
+  language,
+}) => {
+  const ui = UI_TEXT[language] || UI_TEXT.en;
+  const title = item.title[language] ?? item.title.en;
+  const issuer = item.issuer[language] ?? item.issuer.en;
 
-const technicalSkills = [
-  { icon: <FaReact />, name: 'React / React Native', color: 'text-cyan-500', level: 90 },
-  { icon: <FaAngular />, name: 'Angular', color: 'text-red-600', level: 80 },
-  { icon: <FaLaravel />, name: 'Laravel', color: 'text-rose-600', level: 85 },
-  { icon: <FaNodeJs />, name: 'Node.js', color: 'text-green-600', level: 82 },
-  { icon: <FaPython />, name: 'Python / Flask', color: 'text-yellow-500', level: 78 },
-  { icon: <SiFlutter />, name: 'Flutter', color: 'text-sky-500', level: 70 },
-  { icon: <FaJava />, name: 'Java / OOP', color: 'text-orange-600', level: 75 },
-  { icon: <SiSpringboot />, name: 'Spring Boot', color: 'text-emerald-600', level: 72 },
-  { icon: <FaPhp />, name: 'PHP', color: 'text-indigo-500', level: 80 },
-  { icon: <FaDatabase />, name: 'SQL / Databases', color: 'text-blue-600', level: 85 },
-  { icon: <SiMysql />, name: 'MySQL', color: 'text-cyan-700', level: 83 },
-  { icon: <SiJavascript />, name: 'JavaScript', color: 'text-amber-500', level: 88 },
-  { icon: <FaGitAlt />, name: 'Git / GitHub', color: 'text-orange-500', level: 87 },
-  { icon: <FaMicrochip />, name: 'IoT / Embedded Systems', color: 'text-violet-600', level: 65 },
-  { icon: <SiArduino />, name: 'Arduino', color: 'text-teal-600', level: 68 },
-];
+  const handleKey = useCallback(
+    (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
 
-const softBlocks = [
-  {
-    icon: <FaCertificate />,
-    title: 'Certifications',
-    text: 'Scrum, project management, cloud foundations, and continuous skills development.',
-    color: 'text-indigo-600',
-    bg: 'from-indigo-500/10 to-purple-500/10 border-indigo-200',
-    stat: '12',
-  },
-  {
-    icon: <FaUsers />,
-    title: 'Associative Experience',
-    text: 'IEEE Student Branch IIT Sfax, event organization, and active participation in the student tech ecosystem.',
-    color: 'text-orange-600',
-    bg: 'from-orange-500/10 to-pink-500/10 border-orange-200',
-    stat: '5+',
-  },
-];
+      if (e.key === 'ArrowLeft') {
+        onPrev();
+      }
 
-const CERTS_PER_PAGE = 4;
+      if (e.key === 'ArrowRight') {
+        onNext();
+      }
+    },
+    [onClose, onPrev, onNext]
+  );
 
-/* ─── Skill Card ────────────────────────────────────────────── */
-const SkillCard = ({ skill, index }) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', handleKey);
+
+    return () => {
+      document.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [handleKey]);
 
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.05, type: 'spring', stiffness: 200, damping: 20 }}
-      whileHover={{ y: -8, scale: 1.03 }}
-      className="relative bg-white rounded-2xl p-5 md:p-6 text-center border border-gray-200 hover:border-indigo-400 hover:shadow-2xl transition-all duration-300 group overflow-hidden min-h-[170px] flex flex-col items-center justify-center"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-6"
+      style={{
+        background: 'rgba(5,3,12,0.92)',
+        backdropFilter: 'blur(10px)',
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="certificate-viewer-title"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 to-purple-50/0 group-hover:from-indigo-50/80 group-hover:to-purple-50/60 transition-all duration-500 rounded-2xl" />
+      <motion.div
+        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, y: 22, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 14, scale: 0.98 }}
+        transition={{
+          duration: 0.28,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="relative flex flex-col w-full rounded-2xl overflow-hidden"
+        style={{
+          maxWidth: 1100,
+          height: '94vh',
+          background: 'rgba(15,10,30,0.96)',
+          border: `1px solid ${item.accent}55`,
+          boxShadow: '0 30px 90px rgba(0,0,0,0.65)',
+        }}
+      >
+        <div
+          className="flex items-center gap-3 px-4 sm:px-5 py-3 shrink-0"
+          style={{
+            borderBottom: '1px solid rgba(255,255,255,0.09)',
+          }}
+        >
+          <div className="min-w-0 flex-1">
+            <p
+              id="certificate-viewer-title"
+              className="text-sm font-bold truncate"
+              style={{ color: C.text }}
+            >
+              {title}
+            </p>
 
-      <div className={`relative ${skill.color} text-4xl md:text-5xl mb-3 group-hover:scale-110 transition-transform duration-300`}>
-        {skill.icon}
-      </div>
+            <p
+              className="text-xs truncate"
+              style={{ color: C.dim }}
+            >
+              {issuer} · {item.date} · {position}/{total}
+            </p>
+          </div>
 
-      <p className="relative text-sm md:text-base font-bold text-gray-800 group-hover:text-indigo-600 transition leading-snug mb-3">
-        {skill.name}
-      </p>
+          <a
+            href={item.file}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+            style={{
+              color: C.lilac,
+              border: '1px solid rgba(168,85,247,0.35)',
+            }}
+          >
+            <FaExternalLinkAlt style={{ fontSize: 10 }} />
+            {ui.viewPdf}
+          </a>
 
-      <div className="relative w-full h-1 bg-gray-100 rounded-full overflow-hidden">
-        <motion.div
-          className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"
-          initial={{ width: 0 }}
-          animate={inView ? { width: `${skill.level}%` } : { width: 0 }}
-          transition={{ duration: 1.2, delay: index * 0.05 + 0.3, ease: 'easeOut' }}
-        />
-      </div>
+          <a
+            href={item.file}
+            download
+            className="inline-flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-xl text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+            style={{
+              background:
+                'linear-gradient(135deg, #a855f7, #818cf8)',
+            }}
+          >
+            <FaDownload style={{ fontSize: 10 }} />
+            <span className="hidden sm:inline">{ui.download}</span>
+          </a>
 
-      <p className="relative text-[10px] font-bold text-gray-300 mt-1">
-        {skill.level}%
-      </p>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={ui.closeViewer}
+            className="inline-flex items-center justify-center rounded-xl shrink-0 transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+            style={{
+              width: 38,
+              height: 38,
+              color: C.muted,
+              border: '1px solid rgba(255,255,255,0.12)',
+            }}
+          >
+            <FaTimes />
+          </button>
+        </div>
+
+        <div
+          className="relative flex-1 min-h-0"
+          style={{ background: '#1e1b2e' }}
+        >
+          <object
+            data={`${item.file}#view=FitH&toolbar=1&navpanes=0`}
+            type="application/pdf"
+            className="w-full h-full"
+            aria-label={`${ui.viewPdf}: ${title}`}
+          >
+            <div className="flex flex-col items-center justify-center h-full gap-4 px-6 text-center">
+              <p
+                className="text-sm"
+                style={{ color: C.muted }}
+              >
+                {ui.previewUnavailable}
+              </p>
+
+              <a
+                href={item.file}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-3 rounded-xl font-semibold text-sm text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+                style={{
+                  background:
+                    'linear-gradient(135deg, #a855f7, #818cf8)',
+                }}
+              >
+                {ui.openPdf}
+              </a>
+            </div>
+          </object>
+        </div>
+
+        <div
+          className="flex items-center justify-between px-4 sm:px-5 py-2.5 shrink-0"
+          style={{
+            borderTop: '1px solid rgba(255,255,255,0.09)',
+          }}
+        >
+          <button
+            type="button"
+            onClick={onPrev}
+            className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+            style={{ color: C.muted }}
+          >
+            <FaChevronLeft style={{ fontSize: 10 }} />
+            {ui.previous}
+          </button>
+
+          <span
+            className="hidden sm:block text-[11px]"
+            style={{ color: C.dim }}
+          >
+            {ui.navHint}
+          </span>
+
+          <button
+            type="button"
+            onClick={onNext}
+            className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-lg transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+            style={{ color: C.muted }}
+          >
+            {ui.next}
+            <FaChevronRight style={{ fontSize: 10 }} />
+          </button>
+        </div>
+      </motion.div>
     </motion.div>
   );
 };
 
-/* ─── CertCard ──────────────────────────────────────────────── */
-const CertCard = ({ item, isActive, onClick }) => (
-  <motion.div
-    onClick={onClick}
-    whileHover={{ y: -8, scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
-    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-    className="relative cursor-pointer rounded-2xl overflow-hidden group"
-    style={{
-      border: `2px solid ${isActive ? item.accent : item.accent + '44'}`,
-      boxShadow: isActive
-        ? `0 20px 60px ${item.accent}40`
-        : '0 2px 12px rgba(0,0,0,0.07)',
-      background: 'white',
-    }}
-  >
-    <div className="relative w-full" style={{ aspectRatio: '320 / 200' }}>
-      <CertPreview
-        title={item.title}
-        issuer={item.issuer}
-        date={item.date}
-        accent={item.accent}
-        bg1={item.bg1}
-        bg2={item.bg2}
-        logo={item.logo}
-      />
-
-      {isActive && (
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center shadow-lg z-20"
-          style={{ backgroundColor: item.accent }}
-        >
-          <svg viewBox="0 0 20 20" fill="white" className="w-4 h-4">
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-            />
-          </svg>
-        </motion.div>
-      )}
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
-        transition={{ duration: 0.2 }}
-        className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-10"
-        style={{ background: `${item.accent}e8` }}
-      >
-        <a
-          href={item.file}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className="flex items-center gap-2 bg-white rounded-xl px-5 py-2.5 font-bold text-sm shadow-xl hover:scale-105 transition-transform"
-          style={{ color: item.accent }}
-        >
-          <FaExternalLinkAlt className="text-xs" />
-          View PDF
-        </a>
-
-        <a
-          href={item.file}
-          download
-          onClick={(e) => e.stopPropagation()}
-          className="flex items-center gap-2 border-2 border-white rounded-xl px-5 py-2.5 font-bold text-sm text-white hover:bg-white/20 transition"
-        >
-          <FaDownload className="text-xs" />
-          Download
-        </a>
-      </motion.div>
-    </div>
-
-    <div className="bg-white px-5 pt-4 pb-5">
-      <p className="text-xs font-black tracking-widest uppercase mb-1" style={{ color: item.accent }}>
-        {item.issuer}
-      </p>
-
-      <h4 className="text-[15px] font-bold text-gray-900 leading-snug mb-1 line-clamp-2">
-        {item.title}
-      </h4>
-
-      <p className="text-xs font-semibold text-gray-400 mb-3">
-        {item.date}
-      </p>
-
-      <div className="flex flex-wrap gap-1.5 mb-4">
-        {item.tags.map((tag, ti) => (
-          <span
-            key={ti}
-            className="text-xs px-2.5 py-0.5 rounded-full border font-medium"
-            style={{
-              color: item.accent,
-              borderColor: item.accent + '55',
-              backgroundColor: item.accent + '10',
-            }}
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      <a
-        href={item.file}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={(e) => e.stopPropagation()}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-white text-sm transition hover:opacity-90 hover:shadow-md"
-        style={{ backgroundColor: item.accent }}
-      >
-        MORE DETAILS
-        <FaArrowRight className="text-xs" />
-      </a>
-    </div>
-  </motion.div>
-);
-
-/* ─── Floating Orb ──────────────────────────────────────────── */
-const FloatingOrb = ({ className, delay = 0 }) => (
-  <motion.div
-    className={`absolute rounded-full blur-3xl pointer-events-none ${className}`}
-    animate={{ y: [0, -30, 0], x: [0, 15, 0], scale: [1, 1.08, 1] }}
-    transition={{ duration: 8 + delay, repeat: Infinity, ease: 'easeInOut', delay }}
-  />
-);
-
 /* ─── About ─────────────────────────────────────────────────── */
 const About = () => {
-  const [activePage, setActivePage] = useState(0);
-  const [activeCard, setActiveCard] = useState(-1);
-
+  const { language, t } = useLanguage();
+  const ui = UI_TEXT[language] || UI_TEXT.en;
+  const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef(null);
+
+  const [filter, setFilter] = useState('All');
+  const [query, setQuery] = useState('');
+  const [openIndex, setOpenIndex] = useState(-1);
+
+  const visibleCerts = useMemo(() => {
+    const q = query.trim().toLowerCase();
+
+    return certificates.filter((certificate) => {
+      const matchFilter =
+        filter === 'All' || certificate.category === filter;
+
+      const title = (certificate.title[language] ?? certificate.title.en).toLowerCase();
+      const issuer = (certificate.issuer[language] ?? certificate.issuer.en).toLowerCase();
+      const tags = certificate.tags[language] ?? certificate.tags.en;
+
+      const matchQuery =
+        !q ||
+        title.includes(q) ||
+        issuer.includes(q) ||
+        tags.some((tag) => tag.toLowerCase().includes(q));
+
+      return matchFilter && matchQuery;
+    });
+  }, [filter, query, language]);
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
 
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
-
-  const totalPages = Math.ceil(certificates.length / CERTS_PER_PAGE);
-  const visibleCerts = certificates.slice(
-    activePage * CERTS_PER_PAGE,
-    activePage * CERTS_PER_PAGE + CERTS_PER_PAGE
+  const bgY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ['0%', '14%']
   );
 
-  const handlePage = (pi) => {
-    setActivePage(pi);
-    setActiveCard(-1);
+  const spotX = useMotionValue(50);
+  const spotY = useMotionValue(30);
+
+  const sx = useSpring(spotX, {
+    stiffness: 60,
+    damping: 20,
+  });
+
+  const sy = useSpring(spotY, {
+    stiffness: 60,
+    damping: 20,
+  });
+
+  const spotlight = useTransform(
+    [sx, sy],
+    ([x, y]) =>
+      `radial-gradient(circle 500px at ${x}% ${y}%, rgba(168,85,247,0.08), transparent 70%)`
+  );
+
+  const handleMove = (e) => {
+    if (prefersReducedMotion) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    if (!rect.width || !rect.height) return;
+
+    spotX.set(
+      ((e.clientX - rect.left) / rect.width) * 100
+    );
+
+    spotY.set(
+      ((e.clientY - rect.top) / rect.height) * 100
+    );
   };
 
   const scrollToContact = (e) => {
     e.preventDefault();
 
-    const el = document.getElementById('contact');
+    const element = document.getElementById('contact');
 
-    if (el) {
-      window.scrollTo({
-        top: el.getBoundingClientRect().top + window.pageYOffset - 96,
-        behavior: 'smooth',
-      });
-    }
+    if (!element) return;
+
+    window.scrollTo({
+      top:
+        element.getBoundingClientRect().top +
+        window.pageYOffset -
+        NAVBAR_OFFSET,
+      behavior: 'smooth',
+    });
+  };
+
+  const move = (direction) => {
+    if (visibleCerts.length === 0) return;
+
+    setOpenIndex(
+      (current) =>
+        (current + direction + visibleCerts.length) %
+        visibleCerts.length
+    );
   };
 
   return (
     <section
       ref={sectionRef}
       id="about"
-      className="scroll-mt-32 relative py-24 lg:py-32 overflow-hidden bg-[#eef3fb]"
+      onMouseMove={handleMove}
+      className="scroll-mt-24 relative overflow-hidden py-24 lg:py-32"
+      style={{ background: C.bg }}
     >
-      {/* Layered background */}
-      <motion.div className="absolute inset-0" style={{ y: bgY }}>
-        <div className="absolute inset-0 bg-[#eef3fb]" />
-
+      {/* Background */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        style={{ y: bgY }}
+      >
         <div
-          className="absolute inset-0 opacity-70"
+          className="absolute inset-0"
           style={{
-            backgroundImage:
-              'linear-gradient(rgba(148,163,184,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.18) 1px, transparent 1px)',
-            backgroundSize: '68px 68px',
+            background: `
+              radial-gradient(ellipse 80% 55% at 70% 18%, rgba(168,85,247,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse 55% 45% at 12% 72%, rgba(236,72,153,0.09) 0%, transparent 55%),
+              radial-gradient(ellipse 45% 40% at 85% 92%, rgba(99,102,241,0.10) 0%, transparent 55%)
+            `,
           }}
         />
-
-        <div className="absolute inset-0 bg-gradient-to-b from-white/45 via-transparent to-white/25" />
       </motion.div>
 
-      {/* Animated floating orbs */}
-      <FloatingOrb className="top-20 left-10 w-96 h-96 bg-gradient-to-br from-indigo-300/20 to-purple-300/10" delay={0} />
-      <FloatingOrb className="bottom-20 right-10 w-80 h-80 bg-gradient-to-tr from-pink-300/20 to-orange-300/15" delay={2.5} />
-      <FloatingOrb className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-200/10" delay={5} />
+      {!prefersReducedMotion &&
+        ORBS.map((orb, index) => (
+          <motion.div
+            key={index}
+            aria-hidden="true"
+            className="absolute pointer-events-none"
+            style={{
+              width: orb.size,
+              height: orb.size,
+              top: orb.top,
+              left: orb.left,
+              borderRadius: '9999px',
+              background: `radial-gradient(circle, ${orb.color} 0%, transparent 70%)`,
+              filter: 'blur(20px)',
+            }}
+            animate={orb.path}
+            transition={{
+              duration: orb.duration,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+        ))}
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 z-10">
+      <ParticleNetwork prefersReducedMotion />
+
+      {!prefersReducedMotion && (
+        <motion.div
+          aria-hidden="true"
+          className="absolute left-0 right-0 pointer-events-none"
+          style={{
+            height: 1,
+            background:
+              'linear-gradient(90deg, transparent 0%, rgba(196,181,253,0.6) 50%, transparent 100%)',
+            boxShadow:
+              '0 0 12px 1px rgba(168,85,247,0.45)',
+          }}
+          animate={{
+            top: ['0%', '100%'],
+          }}
+          transition={{
+            duration: 9,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        />
+      )}
+
+      {!prefersReducedMotion && (
+        <motion.div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: spotlight }}
+        />
+      )}
+
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)
+          `,
+          backgroundSize: '64px 64px',
+        }}
+        animate={
+          prefersReducedMotion
+            ? undefined
+            : { opacity: [0.6, 1, 0.6] }
+        }
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
+
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 70% 60% at 35% 45%, rgba(10,10,15,0.35) 0%, transparent 60%)',
+        }}
+      />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={
+            prefersReducedMotion
+              ? false
+              : { opacity: 0, y: 30 }
+          }
+          whileInView={
+            prefersReducedMotion
+              ? undefined
+              : { opacity: 1, y: 0 }
+          }
           viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: 'easeOut' }}
-          className="text-center mb-16"
+          transition={{
+            duration: 0.8,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          className="max-w-3xl mb-16"
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 bg-white/85 border border-indigo-200 text-indigo-700 text-xs font-black tracking-[0.3em] uppercase px-5 py-2 rounded-full mb-6 shadow-sm"
+          <span
+            className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-full mb-7"
+            style={{
+              background: 'rgba(168,85,247,0.12)',
+              border: '1px solid rgba(168,85,247,0.25)',
+              color: C.violetSoft,
+              letterSpacing: '0.12em',
+            }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-            Full-Stack Developer
-          </motion.div>
+            <span
+              className="w-1.5 h-1.5 rounded-full animate-pulse"
+              style={{ background: C.violet }}
+            />
+            {t('about')}
+          </span>
 
-          <h2 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            About{' '}
-            <span className="relative inline-block">
-              <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">
-                Me
-              </span>
-
-              <motion.span
-                className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full"
-                initial={{ width: 0 }}
-                whileInView={{ width: '100%' }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.6, duration: 0.8 }}
-              />
+          <h2
+            className="font-extrabold leading-[1.06] tracking-tight mb-6"
+            style={{
+              fontSize: 'clamp(2.5rem, 5.5vw, 4.25rem)',
+              fontFamily: '"Syne", sans-serif',
+              color: C.head,
+            }}
+          >
+            {t('aboutContent.titleLead')}{' '}
+            <span
+              style={{
+                background:
+                  'linear-gradient(135deg, #e879f9 0%, #a855f7 45%, #818cf8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              {t('aboutContent.titleAccent')}
             </span>
           </h2>
 
-          <p className="text-xl md:text-2xl text-gray-600 font-medium max-w-4xl mx-auto leading-relaxed">
-            Software Engineering and Information Systems student, passionate about web development,
-            mobile applications, backend solutions, and impactful technical projects.
+          <p
+            className="text-lg leading-relaxed"
+            style={{
+              color: C.muted,
+              maxWidth: '62ch',
+            }}
+          >
+            {t('aboutContent.intro')}
           </p>
         </motion.div>
 
-        {/* Stats row */}
+        {/* Stats */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={
+            prefersReducedMotion
+              ? false
+              : { opacity: 0, y: 24 }
+          }
+          whileInView={
+            prefersReducedMotion
+              ? undefined
+              : { opacity: 1, y: 0 }
+          }
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="grid grid-cols-3 gap-6 max-w-2xl mx-auto mb-20"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20"
         >
           {[
-            { value: 12, label: 'Certificates' },
-            { value: 15, label: 'Technologies' },
-            { value: 8, label: 'Projects' },
-          ].map((stat, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white/80 backdrop-blur rounded-2xl p-5 border border-gray-200 shadow-sm hover:shadow-lg hover:border-indigo-300 transition-all"
+            { value: 14, label: t('aboutContent.certificates') },
+            { value: 20, label: t('projectCount') },
+            { value: 6, label: t('aboutContent.experiences') },
+            { value: 3, label: t('aboutContent.languages') },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-2xl p-5"
+              style={{
+                background: 'rgba(255,255,255,0.035)',
+                border:
+                  '1px solid rgba(255,255,255,0.09)',
+                backdropFilter: 'blur(12px)',
+              }}
             >
-              <AnimatedCounter value={stat.value} label={stat.label} />
-            </motion.div>
+              <AnimatedCounter
+                value={stat.value}
+                label={stat.label}
+              />
+            </div>
           ))}
         </motion.div>
 
-        {/* Bio */}
+        {/* Bio + Languages */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="max-w-4xl mx-auto mb-16"
-        >
-          <motion.div
-            whileHover={{ boxShadow: '0 30px 80px rgba(79,70,229,0.12)' }}
-            transition={{ duration: 0.3 }}
-            className="bg-white/90 backdrop-blur-2xl rounded-3xl p-8 md:p-10 border border-gray-200 shadow-xl"
-          >
-            <h3 className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-4">
-              <motion.div
-                animate={{ rotate: [0, 10, -5, 0] }}
-                transition={{ duration: 2, repeat: Infinity, repeatDelay: 4 }}
-              >
-                <FaGraduationCap className="text-indigo-600 text-4xl" />
-              </motion.div>
-              Yesmine Cherif
-            </h3>
-
-            <div className="space-y-6 text-base md:text-lg text-gray-700 leading-relaxed">
-              <p>
-                Currently in my{' '}
-                <span className="text-indigo-600 font-bold text-xl">
-                  3rd year of Software Engineering and Information Systems
-                </span>
-                <br />
-                at <span className="text-indigo-600 font-bold">IIT Sfax</span>.
-              </p>
-
-              <p>
-                I am a full-stack developer in training, with a strong interest in modern
-                interfaces, robust web applications, well-structured backend solutions,
-                and scalable technical environments.
-              </p>
-
-              <p>
-                Through my internships and academic projects, I have worked on CRUD applications,
-                admin dashboards, Laravel + Angular + Node.js projects, Python automation,
-                as well as machine learning, mobile, and embedded systems projects.
-              </p>
-
-              <p>
-                My goal is to build useful, well-designed, high-performing, and visually polished
-                solutions while continuously improving my skills with modern and professional technologies.
-              </p>
-            </div>
-
-            <div className="mt-8 h-0.5 w-full bg-gradient-to-r from-indigo-200 via-purple-200 to-transparent rounded-full" />
-          </motion.div>
-        </motion.div>
-
-        {/* Skills */}
-        <motion.div
-          initial={{ opacity: 0, y: 35 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="mb-16"
-        >
-          <div className="text-center mb-12">
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="text-xs font-black tracking-[0.3em] uppercase text-indigo-400 mb-3"
-            >
-              03 / Stack
-            </motion.p>
-
-            <h3 className="text-4xl md:text-5xl font-bold text-gray-900">
-              Technologies & Skills
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-5 md:gap-6">
-            {technicalSkills.map((skill, i) => (
-              <SkillCard key={i} skill={skill} index={i} />
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Soft blocks */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={
+            prefersReducedMotion
+              ? false
+              : { opacity: 0, y: 24 }
+          }
+          whileInView={
+            prefersReducedMotion
+              ? undefined
+              : { opacity: 1, y: 0 }
+          }
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="mb-20"
+          className="rounded-3xl p-8 md:p-10 mb-24 grid grid-cols-1 md:grid-cols-[1.4fr_1fr] gap-10"
+          style={{
+            background: 'rgba(255,255,255,0.035)',
+            border:
+              '1px solid rgba(255,255,255,0.09)',
+            backdropFilter: 'blur(14px)',
+          }}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {softBlocks.map((block, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: i === 0 ? -30 : 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, type: 'spring', stiffness: 160 }}
-                whileHover={{ scale: 1.02, boxShadow: '0 20px 60px rgba(0,0,0,0.1)' }}
-                className={`bg-gradient-to-br ${block.bg} backdrop-blur-xl rounded-2xl p-7 border flex items-start gap-5 transition-all duration-300`}
+          <div>
+            <div className="flex items-center gap-4 mb-6">
+              <FaGraduationCap
+                style={{
+                  color: C.violetSoft,
+                  fontSize: 30,
+                }}
+              />
+
+              <h3
+                className="text-2xl font-bold"
+                style={{
+                  color: C.text,
+                  fontFamily: '"Syne", sans-serif',
+                }}
               >
-                <motion.div
-                  className={`${block.color} text-4xl flex-shrink-0 mt-1`}
-                  animate={{ rotateY: [0, 360] }}
-                  transition={{ duration: 4, repeat: Infinity, repeatDelay: 6, delay: i * 2 }}
-                >
-                  {block.icon}
-                </motion.div>
-
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <h4 className="text-xl font-bold text-gray-900">
-                      {block.title}
-                    </h4>
-
-                    <span
-                      className="text-2xl font-black"
-                      style={{ color: i === 0 ? '#4f46e5' : '#ea580c' }}
-                    >
-                      {block.stat}
-                    </span>
-                  </div>
-
-                  <p className="text-gray-600 text-base leading-relaxed">
-                    {block.text}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Certifications */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex items-start justify-between mb-10 flex-wrap gap-6">
-            <div>
-              <p className="text-xs font-black tracking-[0.35em] uppercase text-gray-400 mb-2">
-                04 / CERTS
-              </p>
-
-              <h3 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                Certificates
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-500">
-                  & Achievements
-                </span>
+                Yesmine Cherif
               </h3>
-
-              <p className="text-sm text-gray-500 mt-3 max-w-sm leading-relaxed">
-                Certifications, participation certificates, and academic or associative achievements —
-                available to view directly.
-              </p>
             </div>
 
-            <div className="flex items-center gap-2 pt-2">
-              {Array.from({ length: totalPages }).map((_, pi) => (
-                <motion.button
-                  key={pi}
-                  onClick={() => handlePage(pi)}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`w-12 h-12 rounded-lg font-bold text-base border-2 transition-all duration-200 ${
-                    activePage === pi
-                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg shadow-indigo-200'
-                      : 'bg-white border-gray-300 text-gray-600 hover:border-indigo-400 hover:text-indigo-600'
-                  }`}
+            <div
+              className="space-y-5 text-base leading-relaxed"
+              style={{ color: C.muted }}
+            >
+              <p>
+                {t('aboutContent.bio1')}
+              </p>
+
+              <p>
+                {t('aboutContent.bio2')}
+              </p>
+
+              <p>
+                {t('aboutContent.bio3')}
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <p
+              className="text-sm font-bold mb-4"
+              style={{ color: C.lilac }}
+            >
+              {t('aboutContent.languages')}
+            </p>
+
+            <div className="space-y-2.5">
+              {languages.map((lang) => (
+                <div
+                  key={lang.name.en}
+                  className="flex items-baseline justify-between gap-4"
                 >
-                  {pi + 1}
-                </motion.button>
+                  <span
+                    className="text-sm font-semibold"
+                    style={{ color: C.text }}
+                  >
+                    {lang.name[language] ?? lang.name.en}
+                  </span>
+
+                  <span
+                    className="text-xs text-right"
+                    style={{ color: C.dim }}
+                  >
+                    {lang.level[language] ?? lang.level.en}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
+        </motion.div>
 
-          <div className="flex gap-4 items-stretch">
-            <div className="hidden lg:flex items-center justify-center select-none flex-shrink-0 pr-2">
-              <span
-                className="font-black uppercase text-gray-200 tracking-[0.18em]"
+        {/* Skills */}
+        <div className="mb-24">
+          <h3
+            className="text-3xl md:text-4xl font-bold mb-10"
+            style={{
+              color: C.head,
+              fontFamily: '"Syne", sans-serif',
+            }}
+          >
+            {t('aboutContent.technologies')}
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {skillGroups.map((group, groupIndex) => {
+              const [groupLabel, groupNote] = language === 'fr'
+                ? frenchSkillGroups[group.group]
+                : [group.group, group.note];
+
+              return (
+              <motion.div
+                key={group.group}
+                initial={
+                  prefersReducedMotion
+                    ? false
+                    : { opacity: 0, y: 24 }
+                }
+                whileInView={
+                  prefersReducedMotion
+                    ? undefined
+                    : { opacity: 1, y: 0 }
+                }
+                viewport={{ once: true }}
+                transition={{
+                  delay: (groupIndex % 2) * 0.06,
+                  duration: 0.55,
+                }}
+                className="rounded-2xl p-6"
                 style={{
-                  writingMode: 'vertical-rl',
-                  transform: 'rotate(180deg)',
-                  fontSize: '3.8rem',
-                  lineHeight: 1,
+                  background: 'rgba(255,255,255,0.035)',
+                  border:
+                    '1px solid rgba(255,255,255,0.09)',
+                  backdropFilter: 'blur(12px)',
                 }}
               >
-                CERTIFIED
-              </span>
+                <p
+                  className="text-sm font-bold"
+                  style={{ color: C.lilac }}
+                >
+                  {groupLabel}
+                </p>
+
+                <p
+                  className="text-xs mt-1 mb-5"
+                  style={{ color: C.dim }}
+                >
+                  {groupNote}
+                </p>
+
+                <div className="flex flex-wrap gap-2.5">
+                  {group.items.map((skill) => (
+                    <span
+                      key={skill.name}
+                      className="inline-flex items-center gap-2 text-sm font-medium px-3.5 py-2 rounded-xl"
+                      style={{
+                        color: '#cbd5e1',
+                        background:
+                          'rgba(255,255,255,0.04)',
+                        border:
+                          '1px solid rgba(255,255,255,0.08)',
+                      }}
+                    >
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          color: skill.color,
+                          fontSize: 16,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        {skill.icon}
+                      </span>
+
+                      {skill.name}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Certificates */}
+        <div>
+          <div className="flex flex-wrap items-end justify-between gap-6 mb-8">
+            <div>
+              <h3
+                className="text-3xl md:text-4xl font-bold mb-3"
+                style={{
+                  color: C.head,
+                  fontFamily: '"Syne", sans-serif',
+                }}
+              >
+                {t('aboutContent.certificatesTitle')}
+              </h3>
+
+              <p
+                className="text-sm"
+                style={{
+                  color: C.muted,
+                  maxWidth: '52ch',
+                }}
+              >
+                {t('aboutContent.certificatesIntro')}
+              </p>
             </div>
 
-            <div className="flex-1 min-w-0">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activePage}
-                  initial={{ opacity: 0, x: 50, filter: 'blur(4px)' }}
-                  animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, x: -50, filter: 'blur(4px)' }}
-                  transition={{ duration: 0.35, ease: 'easeInOut' }}
-                  className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5"
-                >
-                  {visibleCerts.map((item, i) => {
-                    const globalIdx = activePage * CERTS_PER_PAGE + i;
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Search */}
+              <div
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
+                style={{
+                  background: 'rgba(255,255,255,0.04)',
+                  border:
+                    '1px solid rgba(255,255,255,0.10)',
+                }}
+              >
+                <FaSearch
+                  aria-hidden="true"
+                  style={{
+                    fontSize: 11,
+                    color: C.dim,
+                  }}
+                />
 
-                    return (
-                      <motion.div
-                        key={globalIdx}
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.09, type: 'spring', stiffness: 200 }}
-                      >
-                        <CertCard
-                          item={item}
-                          isActive={activeCard === globalIdx}
-                          onClick={() =>
-                            setActiveCard(activeCard === globalIdx ? -1 : globalIdx)
-                          }
-                        />
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
-              </AnimatePresence>
+                <input
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setOpenIndex(-1);
+                  }}
+                  placeholder={t('aboutContent.search')}
+                  aria-label={t('aboutContent.search')}
+                  className="bg-transparent text-xs outline-none focus:ring-0"
+                  style={{
+                    color: C.text,
+                    width: 170,
+                  }}
+                />
 
-              <div className="mt-8 flex items-center gap-3">
-                <div className="flex-1 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
-                    animate={{ width: `${((activePage + 1) / totalPages) * 100}%` }}
-                    transition={{ duration: 0.6, ease: 'easeOut' }}
-                  />
-                </div>
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setQuery('');
+                      setOpenIndex(-1);
+                    }}
+                    aria-label={t('aboutContent.clearSearch')}
+                    className="focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 rounded"
+                    style={{ color: C.dim }}
+                  >
+                    <FaTimes style={{ fontSize: 10 }} />
+                  </button>
+                )}
+              </div>
 
-                <span className="text-xs font-bold text-gray-400 tabular-nums">
-                  {Math.min((activePage + 1) * CERTS_PER_PAGE, certificates.length)} / {certificates.length}
-                </span>
+              {/* Filters */}
+              <div className="flex flex-wrap gap-2">
+                {FILTERS.map((filterOption) => {
+                  const active = filter === filterOption;
+
+                  return (
+                    <button
+                      key={filterOption}
+                      type="button"
+                      onClick={() => {
+                        setFilter(filterOption);
+                        setOpenIndex(-1);
+                      }}
+                      aria-pressed={active}
+                      className="text-xs font-semibold px-4 py-2 rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+                      style={{
+                        color: active ? '#fff' : C.muted,
+                        background: active
+                          ? 'linear-gradient(135deg, #a855f7, #818cf8)'
+                          : 'rgba(255,255,255,0.04)',
+                        border: active
+                          ? '1px solid transparent'
+                          : '1px solid rgba(255,255,255,0.10)',
+                      }}
+                    >
+                      {language === 'fr'
+                        ? ({
+                            All: 'Tous',
+                            Certification: 'Certification',
+                            Hackathon: 'Hackathon',
+                            Participation: 'Participation',
+                          }[filterOption] ?? filterOption)
+                        : filterOption}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
-        </motion.div>
+
+          {visibleCerts.length === 0 ? (
+            <div
+              className="rounded-2xl px-6 py-14 text-center"
+              style={{
+                background: 'rgba(255,255,255,0.03)',
+                border:
+                  '1px dashed rgba(255,255,255,0.12)',
+              }}
+            >
+              <p
+                className="text-sm"
+                style={{ color: C.muted }}
+              >
+                {t('aboutContent.noResult')}
+              </p>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery('');
+                  setFilter('All');
+                  setOpenIndex(-1);
+                }}
+                className="mt-4 text-xs font-semibold px-4 py-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+                style={{
+                  color: C.lilac,
+                  border:
+                    '1px solid rgba(168,85,247,0.35)',
+                }}
+              >
+                {t('aboutContent.showAll')}
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {visibleCerts.map((item, index) => (
+                <CertCard
+                  key={item.title.en}
+                  item={item}
+                  index={index}
+                  language={language}
+                  onExpand={() => setOpenIndex(index)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={
+            prefersReducedMotion
+              ? false
+              : { opacity: 0, y: 30 }
+          }
+          whileInView={
+            prefersReducedMotion
+              ? undefined
+              : { opacity: 1, y: 0 }
+          }
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mt-20"
+          transition={{ duration: 0.7 }}
+          className="mt-24 rounded-3xl px-8 py-12 text-center"
+          style={{
+            background:
+              'linear-gradient(135deg, rgba(168,85,247,0.12), rgba(129,140,248,0.08))',
+            border:
+              '1px solid rgba(168,85,247,0.25)',
+          }}
         >
-          <div className="flex items-center gap-4 max-w-md mx-auto mb-12">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent to-indigo-200" />
-            <span className="text-xs font-black tracking-widest text-indigo-300 uppercase">
-              Contact
-            </span>
-            <div className="flex-1 h-px bg-gradient-to-l from-transparent to-indigo-200" />
-          </div>
-
-          <p className="text-2xl md:text-3xl text-gray-700 font-medium mb-10">
-            Available for final-year internships, freelance projects, or collaborations
+          <p
+            className="text-2xl md:text-3xl font-bold mb-8"
+            style={{
+              color: C.head,
+              fontFamily: '"Syne", sans-serif',
+            }}
+          >
+            {t('aboutContent.cta')}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <motion.a
               href="#contact"
               onClick={scrollToContact}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: '0 25px 60px rgba(79,70,229,0.4)',
+              whileHover={
+                prefersReducedMotion
+                  ? undefined
+                  : {
+                      y: -3,
+                      boxShadow:
+                        '0 12px 32px rgba(168,85,247,0.4)',
+                    }
+              }
+              whileTap={
+                prefersReducedMotion
+                  ? undefined
+                  : { scale: 0.97 }
+              }
+              className="px-8 py-4 rounded-2xl font-semibold text-sm text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+              style={{
+                background:
+                  'linear-gradient(135deg, #a855f7, #818cf8)',
               }}
-              whileTap={{ scale: 0.97 }}
-              className="relative overflow-hidden px-12 py-5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full font-bold text-white text-lg md:text-xl shadow-xl group"
             >
-              <motion.span
-                className="absolute inset-0 bg-white/20 rounded-full"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '100%' }}
-                transition={{ duration: 0.4 }}
-              />
-
-              <span className="relative">Contact Me</span>
+              {t('aboutContent.contact')}
             </motion.a>
 
             <motion.a
               href={cvFile}
               download
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              className="px-12 py-5 bg-white border-4 border-indigo-600 rounded-full font-bold text-indigo-600 text-lg md:text-xl hover:bg-indigo-50 transition shadow-lg inline-flex items-center gap-3"
+              whileHover={
+                prefersReducedMotion
+                  ? undefined
+                  : {
+                      y: -3,
+                      background:
+                        'rgba(168,85,247,0.08)',
+                    }
+              }
+              whileTap={
+                prefersReducedMotion
+                  ? undefined
+                  : { scale: 0.97 }
+              }
+              className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-semibold text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+              style={{
+                border:
+                  '1px solid rgba(168,85,247,0.35)',
+                color: C.lilac,
+              }}
             >
-              <motion.span
-                animate={{ y: [0, -3, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <FaDownload />
-              </motion.span>
-              Download My CV
+              <FaDownload />
+              {t('aboutContent.downloadCv')}
             </motion.a>
           </div>
         </motion.div>
       </div>
+
+      {/* PDF Modal */}
+      <AnimatePresence>
+        {openIndex >= 0 && visibleCerts[openIndex] && (
+          <PdfViewer
+            item={visibleCerts[openIndex]}
+            position={openIndex + 1}
+            total={visibleCerts.length}
+            language={language}
+            onClose={() => setOpenIndex(-1)}
+            onPrev={() => move(-1)}
+            onNext={() => move(1)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 };
