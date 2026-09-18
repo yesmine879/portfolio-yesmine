@@ -842,8 +842,32 @@ const Hero = () => {
               </motion.a>
 
               <motion.a
-                href="/cv-yesmine-cherif.pdf"
-                download
+                href="/CV.pdf"
+                download="CV_Yesmine_Cherif.pdf"
+                onClick={(e) => {
+                  e.preventDefault();
+                  fetch('/CV.pdf')
+                    .then((res) => res.blob())
+                    .then((blob) => {
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.style.display = 'none';
+                      a.href = url;
+                      a.download = 'CV_Yesmine_Cherif.pdf';
+                      document.body.appendChild(a);
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                      document.body.removeChild(a);
+                    })
+                    .catch(() => {
+                      const a = document.createElement('a');
+                      a.href = '/CV.pdf';
+                      a.download = 'CV_Yesmine_Cherif.pdf';
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                    });
+                }}
                 className="flex items-center justify-center gap-3 rounded-2xl px-8 py-4 text-sm font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f]"
                 style={{
                   background: 'transparent',

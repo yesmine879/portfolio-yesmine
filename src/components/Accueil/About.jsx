@@ -63,7 +63,7 @@ import nvidia from '../../assets/pdf/my_learning_nvidia.pdf';
 import delfB2Pdf from '../../assets/pdf/delf-b2-nau.pdf';
 import projectsValleyPdf from '../../assets/pdf/projects-valley.pdf';
 
-const cvFile = '/cv-yesmine-cherif.pdf';
+const cvFile = '/CV.pdf';
 
 const NAVBAR_OFFSET = 95;
 
@@ -1929,7 +1929,31 @@ const About = () => {
 
             <motion.a
               href={cvFile}
-              download
+              download="CV_Yesmine_Cherif.pdf"
+              onClick={(e) => {
+                e.preventDefault();
+                fetch(cvFile)
+                  .then((res) => res.blob())
+                  .then((blob) => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = 'CV_Yesmine_Cherif.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                  })
+                  .catch(() => {
+                    const a = document.createElement('a');
+                    a.href = cvFile;
+                    a.download = 'CV_Yesmine_Cherif.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                  });
+              }}
               whileHover={
                 prefersReducedMotion
                   ? undefined

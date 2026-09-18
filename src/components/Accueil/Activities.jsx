@@ -12,48 +12,113 @@ import {
 import { useLanguage } from '../../context/LanguageContext.jsx';
 
 /* ------------------------------------------------------------------ */
-/*  DATA — points at the real files inside                            */
-/*  /public/club-event-placeholders/<club>-event/...                  */
-/*  (matches your latest folder listing exactly — missing files       */
-/*  ieee 7.jpeg and iit 14.jpeg / 28.jpeg are skipped)                 */
+/*  MEDIA DATA                                                        */
 /* ------------------------------------------------------------------ */
 
 const BASE = '/club-event-placeholders';
 
-const img = (folder, file) => ({ type: 'image', src: `${BASE}/${folder}/${file}` });
-const vid = (folder, file) => ({ type: 'video', src: `${BASE}/${folder}/${file}` });
-const range = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i);
+const img = (folder, file) => ({
+  type: 'image',
+  src: `${BASE}/${folder}/${file}`,
+});
 
-/* ---- IEEE : 1–6, 8, 9 (no 7) + v1–v8 ------------------------------ */
+const vid = (folder, file) => ({
+  type: 'video',
+  src: `${BASE}/${folder}/${file}`,
+});
+
+const range = (start, end) =>
+  Array.from({ length: end - start + 1 }, (_, i) => start + i);
+
+/* ------------------------------------------------------------------ */
+/*  IEEE                                                              */
+/*  Existing: 1-6, 8, 9                                               */
+/*  New: A B C D E F G H K                                             */
+/*  Videos: v1-v8                                                      */
+/* ------------------------------------------------------------------ */
+
 const ieeeMedia = [
+  // Existing IEEE photos
   ...range(1, 9)
     .filter((n) => n !== 7)
     .map((n) => img('ieee-event', `${n}.jpeg`)),
-  ...range(1, 8).map((n) => vid('ieee-event', `v${n}.mp4`)),
+
+  // New IEEE photos
+  ...['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K'].map((letter) =>
+    img('ieee-event', `${letter}.jpg`)
+  ),
+
+  // IEEE videos
+  ...range(1, 8).map((n) =>
+    vid('ieee-event', `v${n}.mp4`)
+  ),
 ];
 
-/* ---- ACM : just 1.jpeg -------------------------------------------- */
-const acmMedia = [img('acm-event', '1.jpeg')];
+/* ------------------------------------------------------------------ */
+/*  ACM                                                               */
+/* ------------------------------------------------------------------ */
 
-/* ---- MTC : 1 → 15.jpeg ---------------------------------------------*/
-const mtcMedia = range(1, 15).map((n) => img('mtc-event', `${n}.jpeg`));
+const acmMedia = [
+  img('acm-event', '1.jpeg'),
+];
 
-/* ---- SOS Village : 1.jpeg + 2.mp4 ---------------------------------- */
-const sosMedia = [img('sos-village-event', '1.jpeg'), vid('sos-village-event', '2.mp4')];
+/* ------------------------------------------------------------------ */
+/*  MTC                                                               */
+/* ------------------------------------------------------------------ */
 
-/* ---- IIT : 1 → 31, skipping 14 & 28, with 3 & 5 as videos ---------- */
+const mtcMedia = [
+  ...range(1, 15).map((n) =>
+    img('mtc-event', `${n}.jpeg`)
+  ),
+];
+
+/* ------------------------------------------------------------------ */
+/*  SOS VILLAGE                                                       */
+/* ------------------------------------------------------------------ */
+
+const sosMedia = [
+  img('sos-village-event', '1.jpeg'),
+  vid('sos-village-event', '2.mp4'),
+];
+
+/* ------------------------------------------------------------------ */
+/*  IIT                                                               */
+/*  1 → 31, except 14 and 28                                         */
+/*  3 and 5 are videos                                                */
+/* ------------------------------------------------------------------ */
+
 const iitMedia = range(1, 31)
   .filter((n) => n !== 14 && n !== 28)
-  .map((n) => (n === 3 || n === 5 ? vid('iit-event', `${n}.mp4`) : img('iit-event', `${n}.jpeg`)));
+  .map((n) =>
+    n === 3 || n === 5
+      ? vid('iit-event', `${n}.mp4`)
+      : img('iit-event', `${n}.jpeg`)
+  );
 
-/* ---- Robotics : 1.jpeg, 2.jpg → 5.jpg ------------------------------ */
+/* ------------------------------------------------------------------ */
+/*  ROBOTICS                                                          */
+/*  Existing: 1.jpeg, 2.jpg → 5.jpg                                  */
+/*  New: A B C D E                                                    */
+/* ------------------------------------------------------------------ */
+
 const roboticMedia = [
+  // Existing Robotics photos
   img('robotic-event', '1.jpeg'),
-  ...range(2, 5).map((n) => img('robotic-event', `${n}.jpg`)),
+
+  ...range(2, 5).map((n) =>
+    img('robotic-event', `${n}.jpg`)
+  ),
+
+  // New Robotics photos
+  ...['A', 'B', 'C', 'D', 'E'].map((letter) =>
+    img('robotic-event', `${letter}.jpg`)
+  ),
 ];
 
-/* club.name stays a literal brand name (not translated); everything   */
-/* else (title / about / story / galleryAlt) comes from useLanguage()  */
+/* ------------------------------------------------------------------ */
+/*  CLUBS                                                             */
+/* ------------------------------------------------------------------ */
+
 const clubs = [
   {
     id: 'ieee',
@@ -62,6 +127,7 @@ const clubs = [
     media: ieeeMedia,
     accent: 'from-sky-400 to-blue-500',
   },
+
   {
     id: 'mtc',
     name: 'MTC',
@@ -69,6 +135,7 @@ const clubs = [
     media: mtcMedia,
     accent: 'from-violet-400 to-fuchsia-500',
   },
+
   {
     id: 'acm',
     name: 'ACM',
@@ -76,6 +143,7 @@ const clubs = [
     media: acmMedia,
     accent: 'from-emerald-400 to-teal-500',
   },
+
   {
     id: 'sos',
     name: 'SOS Village',
@@ -83,6 +151,7 @@ const clubs = [
     media: sosMedia,
     accent: 'from-pink-400 to-rose-500',
   },
+
   {
     id: 'iit',
     name: 'IIT Event',
@@ -90,6 +159,7 @@ const clubs = [
     media: iitMedia,
     accent: 'from-orange-400 to-amber-500',
   },
+
   {
     id: 'robotic',
     name: 'Robotics Club',
@@ -100,23 +170,38 @@ const clubs = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Auto-sliding preview strip — always visible, no click required     */
+/*  AUTO SLIDER                                                       */
 /* ------------------------------------------------------------------ */
 
-const AutoSlider = ({ media, className = '', interval = 3200, alt = '' }) => {
+const AutoSlider = ({
+  media,
+  className = '',
+  interval = 3200,
+  alt = '',
+}) => {
   const reducedMotion = useReducedMotion();
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    if (reducedMotion || media.length <= 1) return undefined;
-    const timer = window.setInterval(() => setIndex((i) => (i + 1) % media.length), interval);
+    if (reducedMotion || media.length <= 1) {
+      return undefined;
+    }
+
+    const timer = window.setInterval(() => {
+      setIndex((i) => (i + 1) % media.length);
+    }, interval);
+
     return () => window.clearInterval(timer);
   }, [media.length, interval, reducedMotion]);
 
   const current = media[index];
 
+  if (!current) return null;
+
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div
+      className={`relative overflow-hidden ${className}`}
+    >
       <AnimatePresence mode="wait">
         {current.type === 'video' ? (
           <motion.video
@@ -127,10 +212,20 @@ const AutoSlider = ({ media, className = '', interval = 3200, alt = '' }) => {
             loop
             playsInline
             className="absolute inset-0 h-full w-full object-cover"
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{
+              opacity: 0,
+              scale: 1.04,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.6,
+            }}
           />
         ) : (
           <motion.img
@@ -139,21 +234,33 @@ const AutoSlider = ({ media, className = '', interval = 3200, alt = '' }) => {
             alt={alt}
             loading="lazy"
             className="absolute inset-0 h-full w-full object-cover"
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{
+              opacity: 0,
+              scale: 1.04,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
+            transition={{
+              duration: 0.6,
+            }}
           />
         )}
       </AnimatePresence>
 
       {media.length > 1 && (
-        <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-1.5">
+        <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 flex max-w-[80%] -translate-x-1/2 gap-1.5 overflow-hidden">
           {media.map((_, i) => (
             <span
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === index ? 'w-5 bg-white' : 'w-1.5 bg-white/40'
+              className={`h-1.5 shrink-0 rounded-full transition-all duration-300 ${
+                i === index
+                  ? 'w-5 bg-white'
+                  : 'w-1.5 bg-white/40'
               }`}
             />
           ))}
@@ -164,82 +271,147 @@ const AutoSlider = ({ media, className = '', interval = 3200, alt = '' }) => {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Fullscreen lightbox                                                */
+/*  LIGHTBOX                                                          */
 /* ------------------------------------------------------------------ */
 
-const Lightbox = ({ media, index, onIndexChange, onClose, t }) => {
+const Lightbox = ({
+  media,
+  index,
+  onIndexChange,
+  onClose,
+  t,
+}) => {
   const item = media[index];
 
   useEffect(() => {
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') onClose();
-      if (event.key === 'ArrowRight') onIndexChange((index + 1) % media.length);
-      if (event.key === 'ArrowLeft') onIndexChange((index - 1 + media.length) % media.length);
+      if (event.key === 'Escape') {
+        onClose();
+      }
+
+      if (event.key === 'ArrowRight') {
+        onIndexChange(
+          (index + 1) % media.length
+        );
+      }
+
+      if (event.key === 'ArrowLeft') {
+        onIndexChange(
+          (index - 1 + media.length) % media.length
+        );
+      }
     };
+
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [index, media.length, onClose, onIndexChange]);
+
+    return () =>
+      window.removeEventListener('keydown', onKeyDown);
+  }, [
+    index,
+    media.length,
+    onClose,
+    onIndexChange,
+  ]);
+
+  if (!item) return null;
 
   return (
     <motion.div
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 p-4 sm:p-8"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      exit={{
+        opacity: 0,
+      }}
       onClick={onClose}
     >
+      {/* Close */}
       <button
         type="button"
         onClick={onClose}
         aria-label={t('closeClubGallery')}
-        className="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20"
+        className="absolute right-5 top-5 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20"
       >
         <FaTimes />
       </button>
 
+      {/* Previous / Next */}
       {media.length > 1 && (
         <>
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              onIndexChange((index - 1 + media.length) % media.length);
+
+              onIndexChange(
+                (index - 1 + media.length) %
+                  media.length
+              );
             }}
             aria-label={t('prevMedia')}
-            className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 sm:left-6"
+            className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 sm:left-6"
           >
             <FaChevronLeft />
           </button>
+
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              onIndexChange((index + 1) % media.length);
+
+              onIndexChange(
+                (index + 1) % media.length
+              );
             }}
             aria-label={t('nextMedia')}
-            className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 sm:right-6"
+            className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition hover:bg-white/20 sm:right-6"
           >
             <FaChevronRight />
           </button>
         </>
       )}
 
+      {/* Media */}
       <motion.div
         key={item.src}
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.96 }}
-        transition={{ duration: 0.22 }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative max-h-[85vh] max-w-5xl"
+        initial={{
+          opacity: 0,
+          scale: 0.96,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+        }}
+        transition={{
+          duration: 0.22,
+        }}
+        onClick={(e) =>
+          e.stopPropagation()
+        }
+        className="relative flex max-h-[85vh] max-w-5xl items-center justify-center"
       >
         {item.type === 'video' ? (
-          <video src={item.src} controls autoPlay className="max-h-[85vh] max-w-full rounded-2xl shadow-2xl" />
+          <video
+            src={item.src}
+            controls
+            autoPlay
+            playsInline
+            className="max-h-[85vh] max-w-full rounded-2xl shadow-2xl"
+          />
         ) : (
-          <img src={item.src} alt="" className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl" />
+          <img
+            src={item.src}
+            alt=""
+            className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl"
+          />
         )}
       </motion.div>
 
+      {/* Counter */}
       {media.length > 1 && (
         <span className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1.5 text-xs font-bold text-white">
           {index + 1} / {media.length}
@@ -250,84 +422,214 @@ const Lightbox = ({ media, index, onIndexChange, onClose, t }) => {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Club modal                                                         */
+/*  CLUB MODAL                                                        */
 /* ------------------------------------------------------------------ */
 
-const ClubModal = ({ club, onClose, t }) => {
+const ClubModal = ({
+  club,
+  onClose,
+  t,
+}) => {
   const reducedMotion = useReducedMotion();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [lightboxIndex, setLightboxIndex] = useState(null);
+
+  const [activeIndex, setActiveIndex] =
+    useState(0);
+
+  const [lightboxIndex, setLightboxIndex] =
+    useState(null);
+
   const { media } = club;
-  const galleryAlt = t(`clubsData.${club.id}.galleryAlt`);
 
-  useEffect(() => {
-    if (reducedMotion || lightboxIndex !== null) return undefined;
-    const timer = window.setInterval(() => setActiveIndex((i) => (i + 1) % media.length), 4200);
-    return () => window.clearInterval(timer);
-  }, [club.id, media.length, reducedMotion, lightboxIndex]);
+  const galleryAlt = t(
+    `clubsData.${club.id}.galleryAlt`
+  );
 
+  /* Reset gallery when club changes */
   useEffect(() => {
-    const onKeyDown = (event) => event.key === 'Escape' && lightboxIndex === null && onClose();
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onClose, lightboxIndex]);
+    setActiveIndex(0);
+    setLightboxIndex(null);
+  }, [club.id]);
+
+  /* Auto-slide modal */
+  useEffect(() => {
+    if (
+      reducedMotion ||
+      lightboxIndex !== null ||
+      media.length <= 1
+    ) {
+      return undefined;
+    }
+
+    const timer = window.setInterval(() => {
+      setActiveIndex(
+        (i) => (i + 1) % media.length
+      );
+    }, 4200);
+
+    return () =>
+      window.clearInterval(timer);
+  }, [
+    club.id,
+    media.length,
+    reducedMotion,
+    lightboxIndex,
+  ]);
+
+  /* Escape modal */
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (
+        event.key === 'Escape' &&
+        lightboxIndex === null
+      ) {
+        onClose();
+      }
+    };
+
+    window.addEventListener(
+      'keydown',
+      onKeyDown
+    );
+
+    return () =>
+      window.removeEventListener(
+        'keydown',
+        onKeyDown
+      );
+  }, [
+    onClose,
+    lightboxIndex,
+  ]);
 
   const active = media[activeIndex];
 
+  if (!active) return null;
+
   return (
     <>
+      {/* ============================================================ */}
+      {/* CLUB MODAL                                                    */}
+      {/* ============================================================ */}
+
       <motion.div
         className="fixed inset-0 z-[100] flex items-center justify-center bg-[#05030d]/90 p-4 backdrop-blur-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        exit={{
+          opacity: 0,
+        }}
         onClick={onClose}
       >
         <motion.section
           role="dialog"
           aria-modal="true"
-          aria-label={t('clubDialogLabel')}
-          initial={{ opacity: 0, y: reducedMotion ? 0 : 20, scale: reducedMotion ? 1 : 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
-          transition={{ duration: reducedMotion ? 0.15 : 0.28 }}
-          onClick={(event) => event.stopPropagation()}
+          aria-label={t(
+            'clubDialogLabel'
+          )}
+          initial={{
+            opacity: 0,
+            y: reducedMotion ? 0 : 20,
+            scale: reducedMotion ? 1 : 0.98,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            scale: 1,
+          }}
+          exit={{
+            opacity: 0,
+            y: reducedMotion ? 0 : 12,
+          }}
+          transition={{
+            duration: reducedMotion
+              ? 0.15
+              : 0.28,
+          }}
+          onClick={(event) =>
+            event.stopPropagation()
+          }
           className="relative max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-[32px] border border-white/10 bg-[#100a19] shadow-2xl"
         >
+          {/* Close */}
           <button
             type="button"
             onClick={onClose}
-            aria-label={t('closeClubGallery')}
+            aria-label={t(
+              'closeClubGallery'
+            )}
             className="absolute right-5 top-5 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-black/30 text-white transition hover:bg-white/15"
           >
             <FaTimes />
           </button>
 
           <div className="grid lg:grid-cols-[.85fr_1.15fr]">
-            {/* -------- Left: logo + description -------- */}
+            {/* ====================================================== */}
+            {/* LEFT                                                     */}
+            {/* ====================================================== */}
+
             <div className="p-8 sm:p-10">
+              {/* Logo */}
               <img
                 src={club.logo}
-                alt={`${club.name} ${t('clubLogo')}`}
+                alt={`${club.name} ${t(
+                  'clubLogo'
+                )}`}
                 className="h-20 w-20 rounded-3xl object-cover shadow-lg"
               />
-              <p className="mt-8 text-xs font-black uppercase tracking-[.25em] text-fuchsia-300">{club.name}</p>
-              <h3 className="mt-4 text-4xl font-black tracking-[-.05em] text-white">
-                {t(`clubsData.${club.id}.title`)}
+
+              {/* Club name */}
+              <p className="mt-8 text-xs font-black uppercase tracking-[.25em] text-fuchsia-300">
+                {club.name}
+              </p>
+
+              {/* Title */}
+              <h3 className="mt-4 text-4xl font-black tracking-[-0.05em] text-white">
+                {t(
+                  `clubsData.${club.id}.title`
+                )}
               </h3>
-              <p className="mt-6 leading-8 text-violet-100/65">{t(`clubsData.${club.id}.about`)}</p>
+
+              {/* About */}
+              <p className="mt-6 leading-8 text-violet-100/65">
+                {t(
+                  `clubsData.${club.id}.about`
+                )}
+              </p>
+
+              {/* Story */}
               <div className="mt-8 rounded-2xl border border-white/10 bg-white/[.045] p-5">
-                <p className="text-xs font-black uppercase tracking-[.18em] text-violet-300">{t('clubEventStory')}</p>
-                <p className="mt-3 text-sm leading-7 text-slate-400">{t(`clubsData.${club.id}.story`)}</p>
+                <p className="text-xs font-black uppercase tracking-[.18em] text-violet-300">
+                  {t('clubEventStory')}
+                </p>
+
+                <p className="mt-3 text-sm leading-7 text-slate-400">
+                  {t(
+                    `clubsData.${club.id}.story`
+                  )}
+                </p>
               </div>
             </div>
 
-            {/* -------- Right: auto-sliding gallery + thumbnails -------- */}
+            {/* ====================================================== */}
+            {/* RIGHT                                                    */}
+            {/* ====================================================== */}
+
             <div className="bg-black/20 p-5 sm:p-7">
+              {/* Main media */}
               <button
                 type="button"
-                onClick={() => setLightboxIndex(activeIndex)}
-                aria-label={t('clubExpandMedia')}
+                onClick={() =>
+                  setLightboxIndex(
+                    activeIndex
+                  )
+                }
+                aria-label={t(
+                  'clubExpandMedia'
+                )}
                 className="group relative block aspect-[4/3] w-full overflow-hidden rounded-[24px] border border-white/10 bg-black/30"
               >
                 <AnimatePresence mode="wait">
@@ -340,9 +642,15 @@ const ClubModal = ({ club, onClose, t }) => {
                       loop
                       playsInline
                       className="h-full w-full object-cover"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
+                      initial={{
+                        opacity: 0,
+                      }}
+                      animate={{
+                        opacity: 1,
+                      }}
+                      exit={{
+                        opacity: 0,
+                      }}
                     />
                   ) : (
                     <motion.img
@@ -350,62 +658,133 @@ const ClubModal = ({ club, onClose, t }) => {
                       src={active.src}
                       alt={galleryAlt}
                       className="h-full w-full object-cover"
-                      initial={{ opacity: 0, scale: 1.03 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.35 }}
+                      initial={{
+                        opacity: 0,
+                        scale: 1.03,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                      }}
+                      exit={{
+                        opacity: 0,
+                      }}
+                      transition={{
+                        duration: 0.35,
+                      }}
                     />
                   )}
                 </AnimatePresence>
 
+                {/* Hover overlay */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition group-hover:bg-black/30 group-hover:opacity-100">
                   <span className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-bold text-white backdrop-blur">
-                    <FaExpand /> {t('clubExpandMedia')}
+                    <FaExpand />
+                    {t(
+                      'clubExpandMedia'
+                    )}
                   </span>
                 </div>
 
+                {/* Counter */}
                 <span className="absolute bottom-4 left-4 rounded-full bg-black/50 px-3 py-1.5 text-xs font-bold text-white">
-                  {activeIndex + 1} / {media.length}
+                  {activeIndex + 1} /{' '}
+                  {media.length}
                 </span>
               </button>
 
-              <div className="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-5">
-                {media.map((item, index) => (
-                  <button
-                    type="button"
-                    key={index}
-                    onClick={() => setActiveIndex(index)}
-                    onDoubleClick={() => setLightboxIndex(index)}
-                    className={`relative aspect-square overflow-hidden rounded-xl border transition ${
-                      index === activeIndex
-                        ? 'border-fuchsia-300'
-                        : 'border-white/10 opacity-60 hover:opacity-100'
-                    }`}
-                  >
-                    {item.type === 'video' ? (
-                      <video src={item.src} muted className="h-full w-full object-cover" />
-                    ) : (
-                      <img src={item.src} alt="" loading="lazy" className="h-full w-full object-cover" />
-                    )}
-                    <span className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
-                      {item.type === 'video' ? <FaPlay size={12} /> : null}
-                    </span>
-                  </button>
-                ))}
+              {/* ==================================================== */}
+              {/* THUMBNAILS                                              */}
+              {/* ==================================================== */}
+
+              <div className="mt-4 grid max-h-[280px] grid-cols-4 gap-3 overflow-y-auto pr-1 sm:grid-cols-5">
+                {media.map(
+                  (item, index) => (
+                    <button
+                      type="button"
+                      key={`${item.src}-${index}`}
+                      onClick={() =>
+                        setActiveIndex(
+                          index
+                        )
+                      }
+                      onDoubleClick={() =>
+                        setLightboxIndex(
+                          index
+                        )
+                      }
+                      aria-label={`${t(
+                        'viewGallery'
+                      )} ${index + 1}`}
+                      className={`relative aspect-square overflow-hidden rounded-xl border transition ${
+                        index ===
+                        activeIndex
+                          ? 'border-fuchsia-300 ring-1 ring-fuchsia-300/30'
+                          : 'border-white/10 opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      {item.type ===
+                      'video' ? (
+                        <video
+                          src={item.src}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <img
+                          src={item.src}
+                          alt=""
+                          loading="lazy"
+                          className="h-full w-full object-cover"
+                        />
+                      )}
+
+                      {/* Video icon */}
+                      {item.type ===
+                        'video' && (
+                        <span className="absolute inset-0 flex items-center justify-center bg-black/20 text-white">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black/50 backdrop-blur-sm">
+                            <FaPlay
+                              size={
+                                11
+                              }
+                            />
+                          </span>
+                        </span>
+                      )}
+                    </button>
+                  )
+                )}
               </div>
-              <p className="mt-5 text-center text-xs leading-5 text-slate-400">{t('clubGalleryHint')}</p>
+
+              {/* Hint */}
+              <p className="mt-5 text-center text-xs leading-5 text-slate-400">
+                {t(
+                  'clubGalleryHint'
+                )}
+              </p>
             </div>
           </div>
         </motion.section>
       </motion.div>
+
+      {/* ============================================================ */}
+      {/* LIGHTBOX                                                      */}
+      {/* ============================================================ */}
 
       <AnimatePresence>
         {lightboxIndex !== null && (
           <Lightbox
             media={media}
             index={lightboxIndex}
-            onIndexChange={setLightboxIndex}
-            onClose={() => setLightboxIndex(null)}
+            onIndexChange={
+              setLightboxIndex
+            }
+            onClose={() =>
+              setLightboxIndex(null)
+            }
             t={t}
           />
         )}
@@ -415,31 +794,58 @@ const ClubModal = ({ club, onClose, t }) => {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Club card — always-visible auto-sliding preview, nothing hidden    */
+/*  CLUB CARD                                                         */
 /* ------------------------------------------------------------------ */
 
-const ClubCard = ({ club, index, onOpen, t }) => {
-  const reducedMotion = useReducedMotion();
+const ClubCard = ({
+  club,
+  index,
+  onOpen,
+  t,
+}) => {
+  const reducedMotion =
+    useReducedMotion();
+
   const hasVideo = useMemo(
-    () => club.media.some((m) => m.type === 'video'),
+    () =>
+      club.media.some(
+        (m) => m.type === 'video'
+      ),
     [club.media]
   );
-  const galleryAlt = t(`clubsData.${club.id}.galleryAlt`);
+
+  const galleryAlt = t(
+    `clubsData.${club.id}.galleryAlt`
+  );
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: reducedMotion ? 0 : 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.12 }}
+      initial={{
+        opacity: 0,
+        y: reducedMotion ? 0 : 30,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+        amount: 0.12,
+      }}
       transition={{
-        duration: reducedMotion ? 0.2 : 0.55,
-        delay: reducedMotion ? 0 : index * 0.07,
+        duration: reducedMotion
+          ? 0.2
+          : 0.55,
+        delay: reducedMotion
+          ? 0
+          : index * 0.07,
       }}
       className="group relative grid gap-6 lg:grid-cols-[1fr_0.92fr] lg:items-stretch"
     >
-      {/* ============================================================= */}
-      {/* INFORMATION CARD                                              */}
-      {/* ============================================================= */}
+      {/* ========================================================== */}
+      {/* INFORMATION CARD                                             */}
+      {/* ========================================================== */}
+
       <button
         type="button"
         onClick={() => onOpen(club)}
@@ -461,7 +867,7 @@ const ClubCard = ({ club, index, onOpen, t }) => {
           sm:p-9
         "
       >
-        {/* Top gradient border */}
+        {/* Top gradient */}
         <span
           aria-hidden="true"
           className={`
@@ -473,7 +879,7 @@ const ClubCard = ({ club, index, onOpen, t }) => {
           `}
         />
 
-        {/* Decorative glow */}
+        {/* Glow */}
         <span
           aria-hidden="true"
           className="
@@ -509,10 +915,13 @@ const ClubCard = ({ club, index, onOpen, t }) => {
             sm:right-9 sm:top-8
           "
         >
-          {String(index + 1).padStart(2, '0')}
+          {String(index + 1).padStart(
+            2,
+            '0'
+          )}
         </span>
 
-        {/* Small label */}
+        {/* Label */}
         <div className="relative z-10 flex items-center justify-between">
           <span
             className="
@@ -533,11 +942,15 @@ const ClubCard = ({ club, index, onOpen, t }) => {
                 shadow-[0_0_12px_rgba(217,70,239,.65)]
               `}
             />
+
             Student Community
           </span>
 
           <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/20">
-            {club.media.length} {club.media.length === 1 ? 'media' : 'médias'}
+            {club.media.length}{' '}
+            {club.media.length === 1
+              ? 'media'
+              : 'médias'}
           </span>
         </div>
 
@@ -571,7 +984,9 @@ const ClubCard = ({ club, index, onOpen, t }) => {
 
             <img
               src={club.logo}
-              alt={`${club.name} ${t('clubLogo')}`}
+              alt={`${club.name} ${t(
+                'clubLogo'
+              )}`}
               className="
                 relative z-10 h-full w-full
                 rounded-[16px]
@@ -602,7 +1017,9 @@ const ClubCard = ({ club, index, onOpen, t }) => {
                 sm:text-[28px]
               "
             >
-              {t(`clubsData.${club.id}.title`)}
+              {t(
+                `clubsData.${club.id}.title`
+              )}
             </h3>
           </div>
         </div>
@@ -629,7 +1046,9 @@ const ClubCard = ({ club, index, onOpen, t }) => {
             group-hover/card:text-slate-200/80
           "
         >
-          {t(`clubsData.${club.id}.about`)}
+          {t(
+            `clubsData.${club.id}.about`
+          )}
         </p>
 
         {/* CTA */}
@@ -675,13 +1094,16 @@ const ClubCard = ({ club, index, onOpen, t }) => {
         </div>
       </button>
 
-      {/* ============================================================= */}
-      {/* MEDIA CARD                                                     */}
-      {/* ============================================================= */}
+      {/* ========================================================== */}
+      {/* MEDIA CARD                                                   */}
+      {/* ========================================================== */}
+
       <button
         type="button"
         onClick={() => onOpen(club)}
-        aria-label={`${t('openClubGallery')}: ${club.name}`}
+        aria-label={`${t(
+          'openClubGallery'
+        )}: ${club.name}`}
         className="
           group/media relative min-h-[310px]
           overflow-hidden rounded-[30px]
@@ -704,21 +1126,25 @@ const ClubCard = ({ club, index, onOpen, t }) => {
           alt={galleryAlt}
         />
 
-        {/* Image overlay */}
+        {/* Dark overlay */}
         <div
           className="
             pointer-events-none absolute inset-0
             bg-gradient-to-t
-            from-[#07040d] via-[#07040d]/20
+            from-[#07040d]
+            via-[#07040d]/20
             to-transparent
           "
         />
 
+        {/* Hover gradient */}
         <div
           className="
             pointer-events-none absolute inset-0
             bg-gradient-to-br
-            from-fuchsia-500/0 via-transparent to-violet-500/0
+            from-fuchsia-500/0
+            via-transparent
+            to-violet-500/0
             transition-all duration-500
             group-hover/media:from-fuchsia-500/[0.08]
             group-hover/media:to-violet-500/[0.08]
@@ -740,8 +1166,14 @@ const ClubCard = ({ club, index, onOpen, t }) => {
             backdrop-blur-md
           "
         >
-          {hasVideo && <FaVideo className="text-fuchsia-300" />}
-          {club.media.length} {club.media.length === 1 ? 'media' : 'médias'}
+          {hasVideo && (
+            <FaVideo className="text-fuchsia-300" />
+          )}
+
+          {club.media.length}{' '}
+          {club.media.length === 1
+            ? 'media'
+            : 'médias'}
         </span>
 
         {/* Bottom content */}
@@ -762,9 +1194,15 @@ const ClubCard = ({ club, index, onOpen, t }) => {
             "
           >
             {hasVideo ? (
-              <FaVideo className="text-fuchsia-300" size={13} />
+              <FaVideo
+                className="text-fuchsia-300"
+                size={13}
+              />
             ) : (
-              <FaPlay className="text-fuchsia-300" size={12} />
+              <FaPlay
+                className="text-fuchsia-300"
+                size={12}
+              />
             )}
 
             {t('viewGallery')}
@@ -795,44 +1233,99 @@ const ClubCard = ({ club, index, onOpen, t }) => {
 };
 
 /* ------------------------------------------------------------------ */
-/*  Section — id="activities", same purple/violet theme as the rest    */
-/*  of the site                                                        */
+/*  ACTIVITIES SECTION                                                 */
 /* ------------------------------------------------------------------ */
 
 const Activities = () => {
   const { t } = useLanguage();
-  const prefersReducedMotion = useReducedMotion();
-  const [selectedClub, setSelectedClub] = useState(null);
+
+  const prefersReducedMotion =
+    useReducedMotion();
+
+  const [selectedClub, setSelectedClub] =
+    useState(null);
 
   return (
-    <section id="activities" className="scroll-mt-28 relative overflow-hidden bg-[#0a0a0f] py-24 sm:py-28">
+    <section
+      id="activities"
+      className="relative scroll-mt-28 overflow-hidden bg-[#0a0a0f] py-24 sm:py-28"
+    >
+      {/* Background */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_85%_15%,rgba(168,85,247,.16),transparent_45%),radial-gradient(ellipse_at_10%_90%,rgba(236,72,153,.11),transparent_42%)]"
+        className="
+          pointer-events-none absolute inset-0
+          bg-[radial-gradient(ellipse_at_85%_15%,rgba(168,85,247,.16),transparent_45%),radial-gradient(ellipse_at_10%_90%,rgba(236,72,153,.11),transparent_42%)]
+        "
       />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: prefersReducedMotion ? 0.2 : 0.55 }}
+          initial={{
+            opacity: 0,
+            y: prefersReducedMotion
+              ? 0
+              : 20,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
+          transition={{
+            duration:
+              prefersReducedMotion
+                ? 0.2
+                : 0.55,
+          }}
           className="max-w-3xl"
         >
-          <p className="mb-5 text-xs font-black uppercase tracking-[.28em] text-fuchsia-300">{t('nav.activities')}</p>
-          <h2 className="text-4xl font-black tracking-[-.05em] text-white sm:text-6xl">{t('activitiesTitle')}</h2>
-          <p className="mt-6 text-base leading-8 text-violet-100/60 sm:text-lg">{t('activitiesIntro')}</p>
+          <p className="mb-5 text-xs font-black uppercase tracking-[.28em] text-fuchsia-300">
+            {t('nav.activities')}
+          </p>
+
+          <h2 className="text-4xl font-black tracking-[-.05em] text-white sm:text-6xl">
+            {t('activitiesTitle')}
+          </h2>
+
+          <p className="mt-6 text-base leading-8 text-violet-100/60 sm:text-lg">
+            {t('activitiesIntro')}
+          </p>
         </motion.div>
 
+        {/* Clubs */}
         <div className="mt-14 space-y-10">
-          {clubs.map((club, index) => (
-            <ClubCard key={club.id} club={club} index={index} onOpen={setSelectedClub} t={t} />
-          ))}
+          {clubs.map(
+            (club, index) => (
+              <ClubCard
+                key={club.id}
+                club={club}
+                index={index}
+                onOpen={
+                  setSelectedClub
+                }
+                t={t}
+              />
+            )
+          )}
         </div>
       </div>
 
+      {/* Modal */}
       <AnimatePresence>
-        {selectedClub && <ClubModal club={selectedClub} onClose={() => setSelectedClub(null)} t={t} />}
+        {selectedClub && (
+          <ClubModal
+            club={selectedClub}
+            onClose={() =>
+              setSelectedClub(null)
+            }
+            t={t}
+          />
+        )}
       </AnimatePresence>
     </section>
   );
