@@ -88,9 +88,9 @@ const sosMedia = [
 /* ------------------------------------------------------------------ */
 
 const iitMedia = range(1, 31)
-  .filter((n) => n !== 14 && n !== 28)
+  .filter((n) => n !== 3 && n !== 14 && n !== 28)
   .map((n) =>
-    n === 3 || n === 5
+    n === 5
       ? vid('iit-event', `${n}.mp4`)
       : img('iit-event', `${n}.jpeg`)
   );
