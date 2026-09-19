@@ -201,23 +201,25 @@ const Footer = () => {
               onClick={scrollToTop}
               className="
                 inline-flex
+                min-h-11
+                min-w-[148px]
                 items-center
                 justify-center
                 gap-2
-                px-6
-                py-3
-                rounded-2xl
-                bg-gradient-to-r
-                from-violet-600
-                via-fuchsia-600
-                to-pink-500
+                rounded-xl
+                border
+                border-fuchsia-400/30
+                bg-fuchsia-500/15
                 text-white
-                font-bold
-                shadow-[0_14px_35px_rgba(168,85,247,0.28)]
-                hover:shadow-[0_18px_45px_rgba(236,72,153,0.32)]
+                whitespace-nowrap
+                font-semibold
+                shadow-[0_8px_24px_rgba(168,85,247,0.18)]
+                transition-[background-color,border-color,transform,box-shadow]
+                duration-200
                 hover:-translate-y-0.5
-                transition-all
-                duration-300
+                hover:border-fuchsia-300/55
+                hover:bg-fuchsia-500/25
+                hover:shadow-[0_12px_30px_rgba(168,85,247,0.28)]
                 focus:outline-none
                 focus-visible:ring-2
                 focus-visible:ring-fuchsia-300
@@ -225,8 +227,10 @@ const Footer = () => {
                 focus-visible:ring-offset-[#05030d]
               "
             >
-              {t('backToTop')}
-              <FaArrowUp className="text-white text-sm" />
+              <span>{t('backToTop')}</span>
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-fuchsia-400/20">
+                <FaArrowUp aria-hidden="true" className="text-xs text-fuchsia-100" />
+              </span>
             </button>
 
           </div>

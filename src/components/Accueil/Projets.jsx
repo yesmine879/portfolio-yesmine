@@ -2454,9 +2454,9 @@ const Projets = () => {
 
         {/* FILTERS */}
 
-        <div className="mb-14 overflow-x-auto pb-2">
+        <div className="mb-16 overflow-x-auto pb-3">
           <div
-            className="flex min-w-max gap-2"
+            className="flex min-w-max gap-3"
             role="group"
             aria-label={t('projectCategories')}
           >
@@ -2483,23 +2483,23 @@ const Projets = () => {
                       )
                     }
                     aria-pressed={isActive}
-                    className={`site-text-control group inline-flex min-h-[46px] min-w-max items-center justify-center gap-2 rounded-full border px-4 py-2.5 text-xs font-bold tracking-wide transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 ${
+                    className={`site-text-control group inline-flex min-h-[52px] min-w-max items-center justify-center gap-2.5 rounded-full border px-6 py-3 text-sm font-semibold tracking-wide transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f0518] ${
                       isActive
-                        ? 'border-fuchsia-300/60 shadow-[0_0_18px_rgba(217,70,239,.42),0_10px_28px_rgba(124,58,237,.24)]'
-                        : 'border-white/15 shadow-[0_6px_18px_rgba(0,0,0,.18)] hover:border-fuchsia-300/45 hover:shadow-[0_0_16px_rgba(217,70,239,.22)]'
+                        ? 'border-fuchsia-300/50 shadow-[0_8px_24px_rgba(124,58,237,.35)]'
+                        : 'border-white/10 hover:border-white/25'
                     }`}
                     baseStyle={
                       isActive
                         ? {
-                            backgroundColor:
-                              'linear-gradient(135deg, rgba(168,85,247,.58), rgba(217,70,239,.42))',
+                            backgroundImage:
+                              'linear-gradient(135deg, #a855f7, #d946ef)',
                             color: '#ffffff',
                           }
                         : {
                             backgroundColor:
-                              'rgba(255,255,255,0.065)',
+                              'rgba(255,255,255,0.04)',
                             color:
-                              'rgba(237,233,254,0.78)',
+                              'rgba(233,229,247,0.75)',
                           }
                     }
                     hoverStyle={
@@ -2507,31 +2507,39 @@ const Projets = () => {
                         ? {}
                         : {
                             backgroundColor:
-                              'rgba(217,70,239,0.16)',
+                              'rgba(255,255,255,0.08)',
                             color: '#ffffff',
                           }
                     }
                   >
-                    <Icon aria-hidden="true" />
+                    <Icon
+                      aria-hidden="true"
+                      className={
+                        isActive
+                          ? 'text-sm text-white'
+                          : 'text-sm text-violet-300/70'
+                      }
+                    />
 
-                    {t(`categories.${category}`)}
+                    <span>
+                      {t(`categories.${category}`)}
+                    </span>
 
                     <span
-                      className="rounded-full px-2 py-0.5 text-[10px] font-extrabold leading-none"
+                      className="flex h-6 min-w-[24px] items-center justify-center rounded-full px-2 text-xs font-bold leading-none"
                       aria-hidden="true"
                       style={
                         isActive
                           ? {
                               backgroundColor:
-                                'rgba(35,10,55,0.42)',
-                              color:
-                                '#f5d0fe',
+                                'rgba(0,0,0,0.22)',
+                              color: '#ffffff',
                             }
                           : {
                               backgroundColor:
-                                'rgba(255,255,255,0.1)',
+                                'rgba(255,255,255,0.08)',
                               color:
-                                'rgba(221,214,254,0.72)',
+                                'rgba(221,214,254,0.7)',
                             }
                       }
                     >

@@ -71,13 +71,13 @@ const Navbar = () => {
   useEffect(() => {
     let ticking = false;
     let frameId = null;
-    let sectionOffsets = [];
+    let sections = [];
 
     const measureSections = () => {
-      sectionOffsets = navItems
+      sections = navItems
         .map((item) => {
           const section = document.getElementById(item.id);
-          return section ? { id: item.id, top: section.offsetTop } : null;
+          return section ? { id: item.id, element: section } : null;
         })
         .filter(Boolean);
     };
@@ -91,9 +91,13 @@ const Navbar = () => {
       });
 
       let currentSection = 'home';
+      const activationLine = Math.max(
+        NAVBAR_OFFSET + 40,
+        window.innerHeight * 0.38
+      );
 
-      sectionOffsets.forEach((section) => {
-        if (scrollY + NAVBAR_OFFSET + 40 >= section.top) {
+      sections.forEach((section) => {
+        if (section.element.getBoundingClientRect().top <= activationLine) {
           currentSection = section.id;
         }
       });
@@ -320,10 +324,10 @@ const Navbar = () => {
         duration: 0.55,
         ease: 'easeOut',
       }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${
         scrolled
-          ? 'bg-[#071226]/78 border-b border-fuchsia-500/20 shadow-[0_12px_32px_rgba(0,0,0,0.28)]'
-          : 'bg-[#071226]/72 border-b border-white/5'
+          ? 'bg-[#071226]/90 border-b border-white/10 shadow-[0_12px_32px_rgba(0,0,0,0.24)] backdrop-blur-lg'
+          : 'bg-[#071226]/78 border-b border-white/5 backdrop-blur-md'
       }`}
     >
       {/* =====================================================
@@ -380,42 +384,40 @@ const Navbar = () => {
               DESKTOP NAVIGATION
           ================================================= */}
 
-          <div className="hidden items-center justify-center gap-2 rounded-3xl border border-white/10 bg-white/[0.035] p-2 lg:flex">
+          <div className="hidden items-center justify-center gap-1 rounded-2xl border border-white/10 bg-[#0d1930]/75 p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.12)] lg:flex">
 
             {navItems.map((item) => {
               const isActive =
                 activeSection === item.id;
 
               return (
-                <motion.a
+                <a
                   key={item.id}
                   href={`#${item.id}`}
                   onClick={(event) =>
                     handleNavClick(event, item)
                   }
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.96 }}
                   aria-current={
                     isActive ? 'page' : undefined
                   }
-                  className="relative overflow-hidden rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 xl:px-5"
+                  className="relative overflow-hidden rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 xl:px-5"
                   style={{
                     color: isActive
-                      ? '#FFFFFF'
-                      : '#CBD5E1',
+                      ? '#F8FAFC'
+                      : '#A9B6CB',
                   }}
                 >
                   {/* Active background */}
 
                   {isActive && (
-                    <motion.span
-                      layoutId="activeNavPill"
-                      className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-500 shadow-[0_10px_30px_rgba(168,85,247,0.32)]"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 420,
-                        damping: 34,
-                      }}
+                    <span
+                      className="absolute inset-0 rounded-xl border border-white/10 bg-white/[0.08]"
+                    />
+                  )}
+
+                  {isActive && (
+                    <span
+                      className="absolute inset-x-4 bottom-0 h-0.5 rounded-full bg-gradient-to-r from-fuchsia-300 to-pink-400"
                     />
                   )}
 
@@ -432,8 +434,8 @@ const Navbar = () => {
                     <span
                       className={
                         isActive
-                          ? 'text-white'
-                          : 'text-fuchsia-300'
+                          ? 'text-fuchsia-200'
+                          : 'text-slate-400'
                       }
                     >
                       {item.icon}
@@ -442,7 +444,7 @@ const Navbar = () => {
                     {getNavLabel(item)}
 
                   </span>
-                </motion.a>
+                </a>
               );
             })}
           </div>
