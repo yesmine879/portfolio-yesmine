@@ -62,7 +62,7 @@ const translations = {
     nav: { home: 'Home', about: 'About', journey: 'Journey', activities: 'Activities', projects: 'Projects', contact: 'Contact' },
     language: 'Language',
     academicStatus: 'Current Academic Status',
-    engineeringCycle: 'Engineering Cycle in Computer Science · IIT Sfax',
+    engineeringCycle: 'Computer Science Engineering Student',
     footerBio: 'Full Stack Developer passionate about web development, Data, and Artificial Intelligence.',
     backToTop: 'Back to top',
     rights: 'All rights reserved.',
