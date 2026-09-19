@@ -29,7 +29,8 @@ const NetworkBackground = ({
 
     let width = 0;
     let height = 0;
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    let lastFrameTime = 0;
 
     // --------------------------------------------------------
     // RESIZE
@@ -40,12 +41,17 @@ const NetworkBackground = ({
 
       if (!parent) return;
 
-      const rect = parent.getBoundingClientRect();
+      if (fixed) {
+        width = Math.max(1, window.innerWidth);
+        height = Math.max(1, window.innerHeight);
+      } else {
+        const rect = parent.getBoundingClientRect();
 
-      width = Math.max(1, rect.width);
-      height = Math.max(1, rect.height);
+        width = Math.max(1, rect.width);
+        height = Math.max(1, rect.height);
+      }
 
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 1.5);
 
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
@@ -88,15 +94,25 @@ const NetworkBackground = ({
       createParticles();
     });
 
-    if (canvas.parentElement) {
+    if (!fixed && canvas.parentElement) {
       resizeObserver.observe(canvas.parentElement);
     }
+
+    window.addEventListener('resize', resize);
 
     // --------------------------------------------------------
     // MOUSE
     // --------------------------------------------------------
 
     const handleMouseMove = (event) => {
+      if (fixed) {
+        mouseRef.current = {
+          x: event.clientX,
+          y: event.clientY,
+        };
+        return;
+      }
+
       const rect = canvas.getBoundingClientRect();
 
       mouseRef.current = {
@@ -130,11 +146,18 @@ const NetworkBackground = ({
     // ANIMATION
     // --------------------------------------------------------
 
-    const draw = () => {
+    const draw = (timestamp = 0) => {
       if (!isDocumentVisibleRef.current) {
         animationRef.current = null;
         return;
       }
+
+      if (timestamp - lastFrameTime < 1000 / 30) {
+        animationRef.current = requestAnimationFrame(draw);
+        return;
+      }
+
+      lastFrameTime = timestamp;
       ctx.clearRect(0, 0, width, height);
 
       const particles = particlesRef.current;
@@ -201,10 +224,10 @@ const NetworkBackground = ({
             );
 
             const opacity =
-              (1 - distance / maxDistance) * 0.38;
+              (1 - distance / maxDistance) * 0.52;
 
             ctx.strokeStyle = `rgba(${color}, ${opacity})`;
-            ctx.lineWidth = 0.8;
+            ctx.lineWidth = 0.9;
 
             ctx.beginPath();
             ctx.moveTo(
@@ -247,7 +270,7 @@ const NetworkBackground = ({
               (1 -
                 mouseDistance /
                   mouseMaxDistance) *
-              0.5;
+              0.62;
 
             ctx.strokeStyle = `rgba(${color}, ${opacity})`;
             ctx.lineWidth = 1;
@@ -284,7 +307,7 @@ const NetworkBackground = ({
           Math.PI * 2
         );
 
-        ctx.fillStyle = `rgba(${color}, 0.95)`;
+        ctx.fillStyle = `rgba(${color}, 1)`;
 
         ctx.fill();
       });
@@ -319,6 +342,7 @@ const NetworkBackground = ({
       }
 
       resizeObserver.disconnect();
+      window.removeEventListener('resize', resize);
 
       window.removeEventListener(
         'mousemove',
@@ -336,6 +360,7 @@ const NetworkBackground = ({
     maxDistance,
     color,
     speed,
+    fixed,
   ]);
 
   return (

@@ -1,6 +1,7 @@
 import './App.css';
 
 import Layout from './Pages/Layout.jsx';
+import NetworkBackground from './components/NetworkBackground.jsx';
 
 import Hero from './components/Accueil/Hero.jsx';
 import About from './components/Accueil/About.jsx';
@@ -12,7 +13,15 @@ import ContactForm from './components/Formulaire/FormulaireG6.jsx';
 
 function App() {
   return (
-    <div className="relative min-h-screen bg-[#05030d]">
+    <div className="site-shell relative min-h-screen">
+      <NetworkBackground
+        fixed
+        particleCount={48}
+        maxDistance={120}
+        color="168, 85, 247"
+        speed={0.35}
+      />
+
       {/* Main content */}
       <div className="relative z-10">
         <Layout>

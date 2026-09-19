@@ -34,7 +34,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="relative overflow-hidden border-t border-violet-500/15 bg-[#05030d]/90">
+    <footer className="relative overflow-hidden border-t border-violet-500/15 bg-[#05030d]/55">
       {/* =====================================================
           AMBIENT BACKGROUND
       ===================================================== */}

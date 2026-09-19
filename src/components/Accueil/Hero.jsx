@@ -494,9 +494,6 @@ const Hero = () => {
       ref={containerRef}
       onMouseMove={handleSectionMove}
       className="relative min-h-screen overflow-hidden scroll-mt-24"
-      style={{
-        background: 'rgba(10,10,15,0.90)',
-      }}
     >
       {/* Base ambient gradients */}
       <div
@@ -795,7 +792,7 @@ const Hero = () => {
                 onClick={(event) =>
                   scrollToSection(event, 'projects')
                 }
-                className="group flex items-center justify-center gap-3 rounded-2xl px-8 py-4 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f]"
+                className="site-text-control group flex w-full items-center justify-center gap-3 rounded-2xl px-7 py-4 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f] sm:w-auto sm:min-w-[178px]"
                 style={{
                   background:
                     'linear-gradient(135deg, #a855f7, #818cf8)',
@@ -868,7 +865,7 @@ const Hero = () => {
                       document.body.removeChild(a);
                     });
                 }}
-                className="flex items-center justify-center gap-3 rounded-2xl px-8 py-4 text-sm font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f]"
+                className="site-text-control flex w-full items-center justify-center gap-3 rounded-2xl px-7 py-4 text-sm font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0f] sm:w-auto sm:min-w-[178px]"
                 style={{
                   background: 'transparent',
                   border: '1px solid rgba(168,85,247,0.35)',
@@ -1130,7 +1127,7 @@ const Hero = () => {
                       color: '#86efac',
                     }}
                   >
-                    Open to Collaboration
+                    {t('openToCollaboration')}
                   </p>
                 </motion.div>
               </motion.div>

@@ -1509,7 +1509,7 @@ const FeaturedProject = ({
               onClick={() =>
                 onDetails(project)
               }
-              className="group flex items-center gap-3 rounded-full border-0 px-6 py-3.5 text-sm font-black shadow-[0_10px_30px_rgba(168,20,180,.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_36px_rgba(168,20,180,.5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
+              className="site-text-control group inline-flex min-w-[190px] items-center justify-center gap-3 whitespace-nowrap rounded-full border-0 px-7 py-3.5 text-center text-sm font-black shadow-[0_10px_30px_rgba(168,20,180,.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_36px_rgba(168,20,180,.5)] focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
               baseStyle={{
                 backgroundImage:
                   'linear-gradient(to right, #d946ef, #7c3aed)',
@@ -1527,7 +1527,7 @@ const FeaturedProject = ({
             <a
               href={project.report}
               download
-              className="group flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.05] px-5 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
+              className="site-text-control group inline-flex min-w-[220px] items-center justify-center gap-2 whitespace-nowrap rounded-full border border-white/15 bg-white/[0.05] px-7 py-3.5 text-center text-sm font-bold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
             >
               <FaFilePdf
                 className="text-fuchsia-300"
@@ -2301,7 +2301,7 @@ const Projets = () => {
   return (
     <section
       id="projects"
-      className="relative overflow-hidden bg-[#0f0518]/90 py-24 sm:py-28"
+      className="relative overflow-hidden py-24 sm:py-28"
     >
       <div
         className="pointer-events-none absolute inset-0"
@@ -2483,23 +2483,23 @@ const Projets = () => {
                       )
                     }
                     aria-pressed={isActive}
-                    className={`group flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-bold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 ${
+                    className={`site-text-control group inline-flex min-h-[46px] min-w-max items-center justify-center gap-2 rounded-full border px-4 py-2.5 text-xs font-bold tracking-wide transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 ${
                       isActive
-                        ? 'border-fuchsia-400/30 shadow-lg shadow-fuchsia-950/30'
-                        : 'border-white/8 hover:border-white/15'
+                        ? 'border-fuchsia-300/60 shadow-[0_0_18px_rgba(217,70,239,.42),0_10px_28px_rgba(124,58,237,.24)]'
+                        : 'border-white/15 shadow-[0_6px_18px_rgba(0,0,0,.18)] hover:border-fuchsia-300/45 hover:shadow-[0_0_16px_rgba(217,70,239,.22)]'
                     }`}
                     baseStyle={
                       isActive
                         ? {
                             backgroundColor:
-                              'rgba(217,70,239,0.25)',
+                              'linear-gradient(135deg, rgba(168,85,247,.58), rgba(217,70,239,.42))',
                             color: '#ffffff',
                           }
                         : {
                             backgroundColor:
-                              'rgba(255,255,255,0.03)',
+                              'rgba(255,255,255,0.065)',
                             color:
-                              'rgba(221,214,254,0.5)',
+                              'rgba(237,233,254,0.78)',
                           }
                     }
                     hoverStyle={
@@ -2507,7 +2507,7 @@ const Projets = () => {
                         ? {}
                         : {
                             backgroundColor:
-                              'rgba(255,255,255,0.06)',
+                              'rgba(217,70,239,0.16)',
                             color: '#ffffff',
                           }
                     }
@@ -2517,21 +2517,21 @@ const Projets = () => {
                     {t(`categories.${category}`)}
 
                     <span
-                      className="rounded-full px-2 py-0.5 text-[10px]"
+                      className="rounded-full px-2 py-0.5 text-[10px] font-extrabold leading-none"
                       aria-hidden="true"
                       style={
                         isActive
                           ? {
                               backgroundColor:
-                                'rgba(0,0,0,0.2)',
+                                'rgba(35,10,55,0.42)',
                               color:
                                 '#f5d0fe',
                             }
                           : {
                               backgroundColor:
-                                'rgba(255,255,255,0.05)',
+                                'rgba(255,255,255,0.1)',
                               color:
-                                'rgba(196,181,253,0.4)',
+                                'rgba(221,214,254,0.72)',
                             }
                       }
                     >

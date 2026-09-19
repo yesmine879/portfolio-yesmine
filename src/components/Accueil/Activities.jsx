@@ -88,9 +88,9 @@ const sosMedia = [
 /* ------------------------------------------------------------------ */
 
 const iitMedia = range(1, 31)
-  .filter((n) => n !== 3 && n !== 14 && n !== 28)
+  .filter((n) => n !== 14 && n !== 28)
   .map((n) =>
-    n === 5
+    n === 3 || n === 5
       ? vid('iit-event', `${n}.mp4`)
       : img('iit-event', `${n}.jpeg`)
   );
@@ -168,6 +168,15 @@ const clubs = [
     accent: 'from-cyan-400 to-indigo-500',
   },
 ];
+
+/* ------------------------------------------------------------------ */
+/*  HELPER: media count label (fixes hardcoded "médias" bug)          */
+/*  Uses the translation function so it respects the active language  */
+/*  instead of always falling back to French plural.                  */
+/* ------------------------------------------------------------------ */
+
+const mediaCountLabel = (t, count) =>
+  `${count} ${t(count === 1 ? 'mediaSingular' : 'mediaPlural')}`;
 
 /* ------------------------------------------------------------------ */
 /*  AUTO SLIDER                                                       */
@@ -413,7 +422,7 @@ const Lightbox = ({
 
       {/* Counter */}
       {media.length > 1 && (
-        <span className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1.5 text-xs font-bold text-white">
+        <span className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-4 py-2 text-xs font-bold text-white">
           {index + 1} / {media.length}
         </span>
       )}
@@ -678,7 +687,7 @@ const ClubModal = ({
 
                 {/* Hover overlay */}
                 <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition group-hover:bg-black/30 group-hover:opacity-100">
-                  <span className="flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-bold text-white backdrop-blur">
+                  <span className="flex items-center gap-2 rounded-full bg-white/15 px-5 py-2.5 text-sm font-bold text-white backdrop-blur">
                     <FaExpand />
                     {t(
                       'clubExpandMedia'
@@ -687,7 +696,7 @@ const ClubModal = ({
                 </div>
 
                 {/* Counter */}
-                <span className="absolute bottom-4 left-4 rounded-full bg-black/50 px-3 py-1.5 text-xs font-bold text-white">
+                <span className="absolute bottom-4 left-4 rounded-full bg-black/50 px-4 py-2 text-xs font-bold text-white">
                   {activeIndex + 1} /{' '}
                   {media.length}
                 </span>
@@ -803,8 +812,7 @@ const ClubCard = ({
   onOpen,
   t,
 }) => {
-  const reducedMotion =
-    useReducedMotion();
+  const reducedMotion = useReducedMotion();
 
   const hasVideo = useMemo(
     () =>
@@ -840,7 +848,7 @@ const ClubCard = ({
           ? 0
           : index * 0.07,
       }}
-      className="group relative grid gap-6 lg:grid-cols-[1fr_0.92fr] lg:items-stretch"
+      className="group relative grid gap-4 lg:grid-cols-[1fr_0.92fr] lg:items-stretch"
     >
       {/* ========================================================== */}
       {/* INFORMATION CARD                                             */}
@@ -850,21 +858,31 @@ const ClubCard = ({
         type="button"
         onClick={() => onOpen(club)}
         className="
-          group/card relative min-h-[310px] overflow-hidden
-          rounded-[30px]
+          group/card relative
+          min-h-[300px]
+          w-full
+          overflow-hidden
+          rounded-[28px]
           border border-white/[0.09]
           bg-[#111018]/80
-          p-7 text-left
+          px-8
+          py-6
+          text-left
           shadow-[0_25px_80px_rgba(0,0,0,.28)]
           backdrop-blur-xl
           transition-all duration-500
+
           hover:-translate-y-1
           hover:border-fuchsia-400/35
           hover:shadow-[0_30px_90px_rgba(139,92,246,.16)]
+
           focus:outline-none
           focus-visible:ring-2
           focus-visible:ring-fuchsia-400
-          sm:p-9
+
+          sm:px-9
+          sm:py-8
+          lg:min-h-[300px]
         "
       >
         {/* Top gradient */}
@@ -883,11 +901,17 @@ const ClubCard = ({
         <span
           aria-hidden="true"
           className="
-            pointer-events-none absolute
-            -right-24 -top-28 h-64 w-64
-            rounded-full bg-fuchsia-500/[0.09]
+            pointer-events-none
+            absolute
+            -right-24
+            -top-28
+            h-64
+            w-64
+            rounded-full
+            bg-fuchsia-500/[0.09]
             blur-3xl
-            transition-all duration-700
+            transition-all
+            duration-700
             group-hover/card:bg-fuchsia-500/[0.16]
             group-hover/card:scale-110
           "
@@ -896,9 +920,14 @@ const ClubCard = ({
         <span
           aria-hidden="true"
           className="
-            pointer-events-none absolute
-            -bottom-32 -left-24 h-64 w-64
-            rounded-full bg-violet-500/[0.08]
+            pointer-events-none
+            absolute
+            -bottom-32
+            -left-24
+            h-64
+            w-64
+            rounded-full
+            bg-violet-500/[0.08]
             blur-3xl
           "
         />
@@ -906,66 +935,117 @@ const ClubCard = ({
         {/* Number */}
         <span
           className="
-            pointer-events-none absolute right-7 top-7
-            text-5xl font-black
+            pointer-events-none
+            absolute
+            right-8
+            top-8
+            text-5xl
+            font-black
             tracking-[-0.08em]
             text-white/[0.035]
-            transition-colors duration-500
+            transition-colors
+            duration-500
             group-hover/card:text-fuchsia-300/[0.08]
-            sm:right-9 sm:top-8
+            sm:right-10
+            sm:top-9
           "
         >
-          {String(index + 1).padStart(
-            2,
-            '0'
-          )}
+          {String(index + 1).padStart(2, '0')}
         </span>
 
         {/* Label */}
-        <div className="relative z-10 flex items-center justify-between">
+        <div className="
+          relative
+          z-10
+          flex
+          items-center
+          justify-between
+          gap-3
+        ">
+          {/* "Student Community" pill — extra horizontal/vertical padding
+              so the dot + text breathe inside the border */}
           <span
             className="
-              inline-flex items-center gap-2
+              inline-flex
+              items-center
+              gap-3
               rounded-full
-              border border-white/10
+              border
+              border-white/10
               bg-white/[0.035]
-              px-3 py-1.5
-              text-[9px] font-black uppercase
+              px-5
+              py-2.5
+              text-[9px]
+              font-black
+              uppercase
               tracking-[0.2em]
               text-slate-300/70
             "
           >
             <span
               className={`
-                h-1.5 w-1.5 rounded-full
-                bg-gradient-to-r ${club.accent}
+                h-1.5
+                w-1.5
+                shrink-0
+                rounded-full
+                bg-gradient-to-r
+                ${club.accent}
                 shadow-[0_0_12px_rgba(217,70,239,.65)]
               `}
             />
 
-            Student Community
+            {t('studentCommunity')}
           </span>
 
-          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/20">
-            {club.media.length}{' '}
-            {club.media.length === 1
-              ? 'media'
-              : 'médias'}
+          {/* Media count label — now goes through t() instead of a
+              hardcoded English/French fallback, and has room to breathe */}
+          <span
+            className="
+              shrink-0
+              rounded-full
+              border
+              border-white/[0.06]
+              px-3
+              py-1.5
+              text-[10px]
+              font-bold
+              uppercase
+              tracking-[0.18em]
+              text-white/25
+            "
+          >
+            {mediaCountLabel(t, club.media.length)}
           </span>
         </div>
 
         {/* Logo + title */}
-        <div className="relative z-10 mt-7 flex items-center gap-5">
+        <div
+          className="
+            relative
+            z-10
+            mt-6
+            flex
+            items-center
+            gap-4
+          "
+        >
           <div
             className="
-              relative flex h-[76px] w-[76px] shrink-0
-              items-center justify-center
-              rounded-[22px]
-              border border-white/[0.11]
+              relative
+              flex
+              h-[64px]
+              w-[64px]
+              shrink-0
+              items-center
+              justify-center
+              rounded-[18px]
+              border
+              border-white/[0.11]
               bg-black/30
               p-2
               shadow-[0_15px_40px_rgba(0,0,0,.35)]
-              transition-all duration-500
+              transition-all
+              duration-500
               group-hover/card:scale-105
               group-hover/card:border-fuchsia-300/30
               group-hover/card:shadow-[0_15px_45px_rgba(217,70,239,.12)]
@@ -974,34 +1054,45 @@ const ClubCard = ({
             <span
               aria-hidden="true"
               className="
-                absolute inset-0 rounded-[22px]
-                bg-gradient-to-br from-fuchsia-400/10 to-violet-500/10
-                opacity-0 blur-xl
-                transition-opacity duration-500
+                absolute
+                inset-0
+                rounded-[22px]
+                bg-gradient-to-br
+                from-fuchsia-400/10
+                to-violet-500/10
+                opacity-0
+                blur-xl
+                transition-opacity
+                duration-500
                 group-hover/card:opacity-100
               "
             />
 
             <img
               src={club.logo}
-              alt={`${club.name} ${t(
-                'clubLogo'
-              )}`}
+              alt={`${club.name} ${t('clubLogo')}`}
               className="
-                relative z-10 h-full w-full
+                relative
+                z-10
+                h-full
+                w-full
                 rounded-[16px]
                 object-cover
               "
             />
           </div>
 
-          <div className="min-w-0 pr-10">
+          <div className="min-w-0 flex-1 pr-3">
             <p
               className={`
-                text-[10px] font-black uppercase
+                text-[10px]
+                font-black
+                uppercase
                 tracking-[0.25em]
-                bg-gradient-to-r ${club.accent}
-                bg-clip-text text-transparent
+                bg-gradient-to-r
+                ${club.accent}
+                bg-clip-text
+                text-transparent
               `}
             >
               {club.name}
@@ -1009,10 +1100,16 @@ const ClubCard = ({
 
             <h3
               className="
-                mt-2 text-[24px] font-black
-                leading-tight tracking-[-0.045em]
+                mt-1
+                max-w-[92%]
+                break-words
+                text-[22px]
+                font-black
+                leading-[1.08]
+                tracking-[-0.045em]
                 text-white
-                transition-colors duration-300
+                transition-colors
+                duration-300
                 group-hover/card:text-violet-100
                 sm:text-[28px]
               "
@@ -1028,7 +1125,10 @@ const ClubCard = ({
         <div
           aria-hidden="true"
           className="
-            relative z-10 my-7 h-px
+            relative
+            z-10
+            my-5
+            h-px
             bg-gradient-to-r
             from-white/[0.12]
             via-white/[0.05]
@@ -1039,10 +1139,15 @@ const ClubCard = ({
         {/* Description */}
         <p
           className="
-            relative z-10 max-w-xl
-            text-[14px] leading-7
+            relative
+            z-10
+            max-w-[95%]
+            pr-2
+            text-[13px]
+            leading-6
             text-slate-300/65
-            transition-colors duration-300
+            transition-colors
+            duration-300
             group-hover/card:text-slate-200/80
           "
         >
@@ -1052,25 +1157,48 @@ const ClubCard = ({
         </p>
 
         {/* CTA */}
-        <div className="relative z-10 mt-8 flex items-center justify-between">
+        <div
+          className="
+            relative
+            z-10
+            mt-6
+            flex
+            items-center
+            justify-between
+            gap-3
+          "
+        >
           <span
             className={`
-              inline-flex items-center gap-3
-              text-sm font-black
-              bg-gradient-to-r ${club.accent}
-              bg-clip-text text-transparent
+              inline-flex
+              items-center
+              gap-3
+              pr-1
+              text-sm
+              font-black
+              bg-gradient-to-r
+              ${club.accent}
+              bg-clip-text
+              text-transparent
             `}
           >
             {t('exploreClub')}
 
             <span
               className="
-                flex h-8 w-8 items-center justify-center
+                flex
+                h-8
+                w-8
+                shrink-0
+                items-center
+                justify-center
                 rounded-full
-                border border-fuchsia-400/25
+                border
+                border-fuchsia-400/25
                 bg-fuchsia-400/[0.08]
                 text-fuchsia-300
-                transition-all duration-300
+                transition-all
+                duration-300
                 group-hover/card:translate-x-1
                 group-hover/card:border-fuchsia-300/50
                 group-hover/card:bg-fuchsia-400/[0.16]
@@ -1080,16 +1208,30 @@ const ClubCard = ({
             </span>
           </span>
 
+          {/* "View details" pill — added border/background + padding
+              so it reads as a proper box instead of bare text */}
           <span
             className="
-              hidden text-[9px] font-black uppercase
-              tracking-[0.2em] text-white/20
-              transition-colors duration-300
-              group-hover/card:text-white/40
+              hidden
+              shrink-0
+              rounded-full
+              border
+              border-white/[0.08]
+              px-4
+              py-2
+              text-[9px]
+              font-black
+              uppercase
+              tracking-[0.2em]
+              text-white/30
+              transition-colors
+              duration-300
+              group-hover/card:border-fuchsia-300/25
+              group-hover/card:text-white/50
               sm:block
             "
           >
-            View details
+            {t('viewDetails')}
           </span>
         </div>
       </button>
@@ -1101,17 +1243,20 @@ const ClubCard = ({
       <button
         type="button"
         onClick={() => onOpen(club)}
-        aria-label={`${t(
-          'openClubGallery'
-        )}: ${club.name}`}
+        aria-label={`${t('openClubGallery')}: ${club.name}`}
         className="
-          group/media relative min-h-[310px]
-          overflow-hidden rounded-[30px]
-          border border-white/[0.09]
+          group/media
+          relative
+          min-h-[300px]
+          overflow-hidden
+          rounded-[28px]
+          border
+          border-white/[0.09]
           bg-black/30
           text-left
           shadow-[0_25px_80px_rgba(0,0,0,.30)]
-          transition-all duration-500
+          transition-all
+          duration-500
           hover:-translate-y-1
           hover:border-fuchsia-400/35
           hover:shadow-[0_30px_90px_rgba(139,92,246,.17)]
@@ -1122,14 +1267,16 @@ const ClubCard = ({
       >
         <AutoSlider
           media={club.media}
-          className="h-full min-h-[310px] w-full"
+          className="h-full min-h-[360px] w-full"
           alt={galleryAlt}
         />
 
         {/* Dark overlay */}
         <div
           className="
-            pointer-events-none absolute inset-0
+            pointer-events-none
+            absolute
+            inset-0
             bg-gradient-to-t
             from-[#07040d]
             via-[#07040d]/20
@@ -1140,27 +1287,38 @@ const ClubCard = ({
         {/* Hover gradient */}
         <div
           className="
-            pointer-events-none absolute inset-0
+            pointer-events-none
+            absolute
+            inset-0
             bg-gradient-to-br
             from-fuchsia-500/0
             via-transparent
             to-violet-500/0
-            transition-all duration-500
+            transition-all
+            duration-500
             group-hover/media:from-fuchsia-500/[0.08]
             group-hover/media:to-violet-500/[0.08]
           "
         />
 
-        {/* Gallery badge */}
+        {/* Gallery badge — more breathing room around icon + text */}
         <span
           className="
-            absolute right-5 top-5
-            inline-flex items-center gap-2
+            absolute
+            right-5
+            top-5
+            inline-flex
+            items-center
+            gap-2.5
             rounded-full
-            border border-white/15
+            border
+            border-white/15
             bg-black/45
-            px-3.5 py-2
-            text-[10px] font-black uppercase
+            px-5
+            py-3
+            text-[10px]
+            font-black
+            uppercase
             tracking-[0.12em]
             text-white/80
             backdrop-blur-md
@@ -1170,25 +1328,39 @@ const ClubCard = ({
             <FaVideo className="text-fuchsia-300" />
           )}
 
-          {club.media.length}{' '}
-          {club.media.length === 1
-            ? 'media'
-            : 'médias'}
+          {mediaCountLabel(t, club.media.length)}
         </span>
 
         {/* Bottom content */}
-        <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+        <div
+          className="
+            absolute
+            bottom-5
+            left-5
+            right-5
+            flex
+            items-end
+            justify-between
+            gap-4
+          "
+        >
           <span
             className="
-              inline-flex items-center gap-2.5
+              inline-flex
+              items-center
+              gap-3
               rounded-full
-              border border-white/10
+              border
+              border-white/10
               bg-black/45
-              px-4 py-2.5
-              text-sm font-bold
+              px-6
+              py-3.5
+              text-sm
+              font-bold
               text-white
               backdrop-blur-md
-              transition-all duration-300
+              transition-all
+              duration-300
               group-hover/media:border-fuchsia-300/25
               group-hover/media:bg-black/55
             "
@@ -1210,16 +1382,22 @@ const ClubCard = ({
 
           <span
             className="
-              flex h-10 w-10 shrink-0
-              items-center justify-center
+              flex
+              h-10
+              w-10
+              shrink-0
+              items-center
+              justify-center
               rounded-full
-              border border-white/15
+              border
+              border-white/15
               bg-black/45
               text-white
               opacity-0
               translate-x-2
               backdrop-blur-md
-              transition-all duration-300
+              transition-all
+              duration-300
               group-hover/media:translate-x-0
               group-hover/media:opacity-100
             "
@@ -1248,17 +1426,8 @@ const Activities = () => {
   return (
     <section
       id="activities"
-      className="relative scroll-mt-28 overflow-hidden bg-[#0a0a0f] py-24 sm:py-28"
+      className="relative scroll-mt-28 overflow-hidden py-24 sm:py-28"
     >
-      {/* Background */}
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none absolute inset-0
-          bg-[radial-gradient(ellipse_at_85%_15%,rgba(168,85,247,.16),transparent_45%),radial-gradient(ellipse_at_10%_90%,rgba(236,72,153,.11),transparent_42%)]
-        "
-      />
-
       <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
         {/* Header */}
         <motion.div

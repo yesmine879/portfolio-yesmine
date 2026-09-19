@@ -916,9 +916,6 @@ const Parcours = () => {
     <section
       id="journey"
       className="scroll-mt-28 relative py-24 lg:py-32 overflow-hidden"
-      style={{
-        background: 'rgba(10,10,15,0.90)',
-      }}
     >
       {/* ==========================
           BACKGROUND

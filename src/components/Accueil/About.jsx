@@ -1306,7 +1306,6 @@ const About = () => {
       id="about"
       onMouseMove={handleMove}
       className="scroll-mt-24 relative overflow-hidden py-24 lg:py-32"
-      style={{ background: C.bg }}
     >
       {/* Background */}
       <motion.div
@@ -1794,7 +1793,7 @@ const About = () => {
                         setOpenIndex(-1);
                       }}
                       aria-pressed={active}
-                      className="text-xs font-semibold px-4 py-2 rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+                      className="site-text-control inline-flex min-w-[104px] items-center justify-center whitespace-nowrap rounded-full px-5 py-2.5 text-center text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
                       style={{
                         color: active ? '#fff' : C.muted,
                         background: active
@@ -1843,7 +1842,7 @@ const About = () => {
                   setFilter('All');
                   setOpenIndex(-1);
                 }}
-                className="mt-4 text-xs font-semibold px-4 py-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
+                className="mt-4 inline-flex min-w-[112px] items-center justify-center whitespace-nowrap rounded-full px-5 py-2.5 text-center text-xs font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400"
                 style={{
                   color: C.lilac,
                   border:

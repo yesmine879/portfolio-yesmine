@@ -322,8 +322,8 @@ const Navbar = () => {
       }}
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 ${
         scrolled
-          ? 'bg-[#071226]/95 border-b border-fuchsia-500/20 shadow-[0_12px_32px_rgba(0,0,0,0.28)]'
-          : 'bg-[#071226]/92 border-b border-white/5'
+          ? 'bg-[#071226]/78 border-b border-fuchsia-500/20 shadow-[0_12px_32px_rgba(0,0,0,0.28)]'
+          : 'bg-[#071226]/72 border-b border-white/5'
       }`}
     >
       {/* =====================================================
@@ -456,24 +456,29 @@ const Navbar = () => {
             {/* Language */}
 
             <div
-              className="flex items-center rounded-xl border border-white/10 bg-white/[0.06] p-1 text-xs font-black text-slate-300"
+              className="flex items-center gap-1 rounded-xl border border-white/10 bg-white/[0.06] p-1 text-xs font-black text-slate-300"
               role="group"
               aria-label={t('language')}
             >
-              {['en', 'fr'].map((code) => (
-                <button
-                  key={code}
-                  type="button"
-                  onClick={() => setLanguage(code)}
-                  aria-pressed={language === code}
-                  className={`rounded-lg px-2.5 py-1.5 transition ${
-                    language === code
-                      ? 'bg-fuchsia-500 text-white shadow-sm'
-                      : 'hover:text-white'
-                  }`}
-                >
-                  {code.toUpperCase()}
-                </button>
+              {['en', 'fr'].map((code, index) => (
+                <React.Fragment key={code}>
+                  {index > 0 && (
+                    <span className="h-5 w-px bg-white/15" aria-hidden="true" />
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setLanguage(code)}
+                    aria-pressed={language === code}
+                    className={`rounded-lg px-4 py-1.5 transition-all duration-200 ${
+                      language === code
+                        ? 'bg-fuchsia-500 text-white shadow-sm'
+                        : 'px-4 hover:text-white'
+                    }`}
+                  >
+                    {code.toUpperCase()}
+                  </button>
+                </React.Fragment>
               ))}
             </div>
 

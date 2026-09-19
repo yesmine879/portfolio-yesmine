@@ -12,6 +12,35 @@ html {
   box-sizing: border-box;
 }
 
+.site-shell {
+  background:
+    radial-gradient(
+      ellipse at 85% 15%,
+      rgba(168, 85, 247, 0.16),
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse at 10% 90%,
+      rgba(236, 72, 153, 0.11),
+      transparent 42%
+    ),
+    #0a0a0f;
+}
+
+.site-text-control {
+  min-height: 44px;
+  line-height: 1.25;
+  white-space: normal;
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media (max-width: 639px) {
+  .site-text-control {
+    min-height: 46px;
+  }
+}
+
 /* ============================================================
    ROOT
 ============================================================ */
@@ -40,7 +69,41 @@ body {
 
   overflow-x: hidden;
 
-  background: #05030d;
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at top left, rgba(168, 85, 247, 0.18), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.14), transparent 30%),
+    #05030d;
+  color: white;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -15%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(168, 85, 247, 0.28), transparent 18%),
+    radial-gradient(circle at 80% 30%, rgba(59, 130, 246, 0.22), transparent 20%),
+    radial-gradient(circle at 50% 80%, rgba(236, 72, 153, 0.16), transparent 24%);
+  filter: blur(42px);
+  animation: driftGlow 20s ease-in-out infinite alternate;
+}
+
+body::after {
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.22) 1.1px, transparent 1.4px);
+  background-size: 24px 24px;
+  background-position: center;
+  opacity: 0.22;
+  mask-image: radial-gradient(circle at center, black 30%, transparent 100%);
+  animation: driftDots 26s linear infinite;
 }
 
 /* ============================================================
@@ -74,9 +137,32 @@ img {
 ============================================================ */
 
 #root {
+  position: relative;
+  z-index: 0;
   width: 100%;
   min-height: 100vh;
 
   margin: 0;
   padding: 0;
+}
+
+@keyframes driftGlow {
+  0% {
+    transform: translate3d(-2%, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(2%, 3%, 0) scale(1.08);
+  }
+}
+
+@keyframes driftDots {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(1.5%, -1.5%, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(-1.5%, 1.2%, 0) scale(1.02);
+  }
 }

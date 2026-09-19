@@ -823,7 +823,7 @@ const FormulaireG6 = () => {
                   type="submit"
                   disabled={status === 'sending'}
                   aria-busy={status === 'sending'}
-                  className="w-full inline-flex items-center justify-center gap-3 py-4 rounded-2xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-500 text-white font-bold text-lg shadow-[0_16px_40px_rgba(168,85,247,0.36)] hover:shadow-[0_20px_50px_rgba(236,72,153,0.38)] transition-all disabled:opacity-70 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-4 focus-visible:ring-fuchsia-400/30"
+                  className="site-text-control w-full inline-flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-500 text-white font-bold text-base sm:text-lg shadow-[0_16px_40px_rgba(168,85,247,0.36)] hover:shadow-[0_20px_50px_rgba(236,72,153,0.38)] transition-all disabled:opacity-70 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-4 focus-visible:ring-fuchsia-400/30"
                 >
                   {status === 'sending' ? (
                     <>
