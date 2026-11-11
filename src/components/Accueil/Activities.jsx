@@ -43,6 +43,10 @@ const ieeeMedia = [
     .filter((n) => n !== 7)
     .map((n) => img('ieee-event', `${n}.jpeg`)),
 
+  ...range(20, 27).map((n) =>
+    img('ieee-event', `${n}.jpeg`)
+  ),
+
   // New IEEE photos
   ...['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'K'].map((letter) =>
     img('ieee-event', `${letter}.jpg`)
@@ -87,13 +91,23 @@ const sosMedia = [
 /*  5 is a video                                                      */
 /* ------------------------------------------------------------------ */
 
-const iitMedia = range(1, 31)
+const iitMedia = range(1, 34)
   .filter((n) => n !== 3 && n !== 14 && n !== 28)
   .map((n) =>
     n === 5
       ? vid('iit-event', `${n}.mp4`)
       : img('iit-event', `${n}.jpeg`)
   );
+
+/* ------------------------------------------------------------------ */
+/*  ATHLEX                                                            */
+/* ------------------------------------------------------------------ */
+
+const athlexMedia = [
+  vid('athlex-event', '1.mp4'),
+  img('athlex-event', '2.jpeg'),
+  img('athlex-event', '3.jpeg'),
+];
 
 /* ------------------------------------------------------------------ */
 /*  ROBOTICS                                                          */
@@ -158,6 +172,14 @@ const clubs = [
     logo: `${BASE}/iit-event/logo_iit.jpeg`,
     media: iitMedia,
     accent: 'from-orange-400 to-amber-500',
+  },
+
+  {
+    id: 'athlex',
+    name: 'Athlex',
+    logo: `${BASE}/athlex-event/logo.png`,
+    media: athlexMedia,
+    accent: 'from-lime-400 to-green-500',
   },
 
   {
